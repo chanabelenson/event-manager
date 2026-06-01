@@ -109,3 +109,86 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+
+/* Auth */
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100svh;
+  padding: 20px;
+  direction: rtl;
+}
+
+.auth-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 40px 32px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.auth-card h2 {
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.auth-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.auth-card input {
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 15px;
+  background: var(--bg);
+  color: var(--text-h);
+  outline: none;
+  transition: border-color 0.2s;
+  direction: rtl;
+}
+
+.auth-card input:focus {
+  border-color: var(--accent);
+}
+
+.auth-card button {
+  padding: 10px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+  margin-top: 4px;
+  transition: opacity 0.2s;
+}
+
+.auth-card button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.auth-error {
+  color: #e53e3e;
+  font-size: 14px;
+  text-align: center;
+}
+
+.auth-card > p {
+  text-align: center;
+  font-size: 14px;
+}
+
+.auth-card a {
+  color: var(--accent);
+  text-decoration: none;
+}
