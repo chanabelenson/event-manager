@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import { createEvent } from '../../services/eventService';
 
-const EVENT_TYPES = ['חתונה', 'בר מצווה', 'בת מצווה', 'יום הולדת', 'אירוסין', 'אחר'];
-
 export default function NewEventModal({ onClose, onCreated }) {
-  const [form, setForm] = useState({ title: '', type: '', date: '', location: '' });
+  const [form, setForm] = useState({
+    event_name: '',
+    event_date: '',
+    location_name: '',
+    location_address: '',
+  });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -30,13 +33,33 @@ export default function NewEventModal({ onClose, onCreated }) {
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <h2>אירוע חדש</h2>
         <form onSubmit={handleSubmit}>
-          <input name="title" placeholder="שם האירוע" value={form.title} onChange={handleChange} required />
-          <select name="type" value={form.type} onChange={handleChange} required>
-            <option value="">סוג האירוע</option>
-            {EVENT_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
-          </select>
-          <input name="date" type="date" value={form.date} onChange={handleChange} required />
-          <input name="location" placeholder="מיקום" value={form.location} onChange={handleChange} required />
+          <input
+            name="event_name"
+            placeholder="שם האירוע (למשל: חתונת כהן)"
+            value={form.event_name}
+            onChange={handleChange}
+            required
+          />
+          <input
+            name="event_date"
+            type="datetime-local"
+            value={form.event_date}
+            onChange={handleChange}
+            required
+          />
+          <input
+            name="location_name"
+            placeholder="שם המקום (למשל: אולם ורד הגליל)"
+            value={form.location_name}
+            onChange={handleChange}
+            required
+          />
+          <input
+            name="location_address"
+            placeholder="כתובת (אופציונלי)"
+            value={form.location_address}
+            onChange={handleChange}
+          />
           {error && <p className="auth-error">{error}</p>}
           <div className="modal-actions">
             <button type="submit" disabled={loading}>{loading ? 'יוצר...' : 'צור אירוע'}</button>

@@ -22,12 +22,14 @@ export default function Dashboard() {
     navigate('/login');
   };
 
-  const handleEventCreated = (newEvent) => {
-    setEvents((prev) => [newEvent, ...prev]);
-  };
-
   const formatDate = (dateStr) =>
-    new Date(dateStr).toLocaleDateString('he-IL', { day: 'numeric', month: 'long', year: 'numeric' });
+    new Date(dateStr).toLocaleDateString('he-IL', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
 
   return (
     <div className="dashboard">
@@ -50,10 +52,14 @@ export default function Dashboard() {
         <div className="events-grid">
           {events.map((event) => (
             <div key={event.id} className="event-card" onClick={() => navigate(`/event/${event.id}`)}>
-              <div className="event-card-type">{event.type}</div>
-              <h3>{event.title}</h3>
-              <p className="event-card-date">📅 {formatDate(event.date)}</p>
-              <p className="event-card-location">📍 {event.location}</p>
+              <h3>{event.event_name}</h3>
+              <p className="event-card-date">📅 {formatDate(event.event_date)}</p>
+              <p className="event-card-location">📍 {event.location_name}</p>
+              {event.location_address && (
+                <p className="event-card-location" style={{ fontSize: '13px', opacity: 0.7 }}>
+                  {event.location_address}
+                </p>
+              )}
               <span className="event-card-arrow">←</span>
             </div>
           ))}
@@ -61,7 +67,10 @@ export default function Dashboard() {
       )}
 
       {showModal && (
-        <NewEventModal onClose={() => setShowModal(false)} onCreated={handleEventCreated} />
+        <NewEventModal
+          onClose={() => setShowModal(false)}
+          onCreated={(newEvent) => setEvents((prev) => [newEvent, ...prev])}
+        />
       )}
     </div>
   );
