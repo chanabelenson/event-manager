@@ -51,3 +51,20 @@ export async function createEvent(req, res) {
     res.status(500).json({ message: 'שגיאת שרת פנימית' });
   }
 }
+
+export async function deleteEvent(req, res) {
+  try {
+    const { id } = req.params;
+    const [rows] = await pool.query(
+      'SELECT id FROM events WHERE id = ? AND user_id = ?',
+      [id, req.user.id]
+    );
+    if (!rows.length) return res.status(404).json({ message: 'אירוע לא נמצא או אין הרשאה' });
+
+    await pool.query('DELETE FROM events WHERE id = ?', [id]);
+    res.json({ message: 'האירוע נמחק בהצלחה' });
+  } catch (err) {
+    console.error('deleteEvent error:', err.message);
+    res.status(500).json({ message: 'שגיאת שרת פנימית' });
+  }
+}

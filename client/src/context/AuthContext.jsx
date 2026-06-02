@@ -1,16 +1,28 @@
-import { createContext, useContext, useState } from 'react';
-import { getToken, logout as logoutService } from '../services/authService';
+import { createContext, useContext, useState, useEffect } from 'react';
+import { getMe, logout as logoutService } from '../services/authService';
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [token, setToken] = useState(getToken());
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true); // ממתין לאימות ראשוני
 
-  const login = (newToken) => setToken(newToken);
-  const logout = () => { logoutService(); setToken(null); };
+  // בטעינה - שואל את השרת אם יש cookie תקין
+  useEffect(() => {
+    getMe()
+      .then(setUser)
+      .finally(() => setLoading(false));
+  }, []);
+
+  const login = (userData) => setUser(userData);
+
+  const logout = async () => {
+    await logoutService();
+    setUser(null);
+  };
 
   return (
-    <AuthContext.Provider value={{ token, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

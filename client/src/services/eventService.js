@@ -1,17 +1,22 @@
-import { getToken } from './authService';
+const API = '/api/events';
 
-const API = 'http://localhost:5000/api/events';
+const opts = {
+  headers: { 'Content-Type': 'application/json' },
+  credentials: 'include',
+};
 
-function authHeaders() {
-  return { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` };
-}
-
+<<<<<<< HEAD
 const handle = async (res) => {
+=======
+export async function getMyEvents() {
+  const res = await fetch(API, { ...opts });
+>>>>>>> main
   const data = await res.json();
   if (!res.ok) throw new Error(data.message || 'שגיאה');
   return data;
 };
 
+<<<<<<< HEAD
 export const getMyEvents = () => fetch(API, { headers: authHeaders() }).then(handle);
 export const getEvent = (id) => fetch(`${API}/${id}`, { headers: authHeaders() }).then(handle);
 export const createEvent = (body) => fetch(API, { method: 'POST', headers: authHeaders(), body: JSON.stringify(body) }).then(handle);
@@ -34,3 +39,25 @@ export const addTask = (eventId, body) => fetch(`${API}/${eventId}/tasks`, { met
 export const toggleTask = (id, is_completed) => fetch(`${API}/tasks/${id}/toggle`, { method: 'PATCH', headers: authHeaders(), body: JSON.stringify({ is_completed }) }).then(handle);
 export const updateTask = (id, body) => fetch(`${API}/tasks/${id}`, { method: 'PUT', headers: authHeaders(), body: JSON.stringify(body) }).then(handle);
 export const deleteTask = (id) => fetch(`${API}/tasks/${id}`, { method: 'DELETE', headers: authHeaders() }).then(handle);
+=======
+export async function createEvent(eventData) {
+  const res = await fetch(API, {
+    ...opts,
+    method: 'POST',
+    body: JSON.stringify(eventData),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'שגיאה ביצירת אירוע');
+  return data;
+}
+
+export async function deleteEvent(id) {
+  const res = await fetch(`${API}/${id}`, {
+    ...opts,
+    method: 'DELETE',
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'שגיאה במחיקת אירוע');
+  return data;
+}
+>>>>>>> main
