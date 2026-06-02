@@ -5,12 +5,12 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // ממתין לאימות ראשוני
+  const [loading, setLoading] = useState(true);
 
-  // בטעינה - שואל את השרת אם יש cookie תקין
   useEffect(() => {
     getMe()
-      .then(setUser)
+      .then((data) => setUser(data.user))
+      .catch(() => setUser(null))
       .finally(() => setLoading(false));
   }, []);
 

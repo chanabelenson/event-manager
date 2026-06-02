@@ -1,39 +1,38 @@
-const API = '/api/auth';
+const API = 'http://localhost:5000/api/auth';
 
-const opts = {
-  headers: { 'Content-Type': 'application/json' },
-  credentials: 'include',
+const handle = async (res) => {
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'שגיאה');
+  return data;
 };
 
 export async function register(name, email, password) {
-  const res = await fetch(`${API}/register`, {
-    ...opts,
+  return fetch(`${API}/register`, {
     method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
     body: JSON.stringify({ name, email, password }),
-  });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.message || 'שגיאה בהרשמה');
-  return data;
+  }).then(handle);
 }
 
 export async function login(email, password) {
-  const res = await fetch(`${API}/login`, {
-    ...opts,
+  return fetch(`${API}/login`, {
     method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
     body: JSON.stringify({ email, password }),
-  });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.message || 'שגיאה בהתחברות');
-  return data;
+  }).then(handle);
 }
 
 export async function logout() {
-  await fetch(`${API}/logout`, { ...opts, method: 'POST' });
+  return fetch(`${API}/logout`, {
+    method: 'POST',
+    credentials: 'include',
+  }).then(handle);
 }
 
 export async function getMe() {
-  const res = await fetch(`${API}/me`, { ...opts });
-  if (!res.ok) return null;
-  const data = await res.json();
-  return data.user;
+  return fetch(`${API}/me`, {
+    credentials: 'include',
+  }).then(handle);
 }
