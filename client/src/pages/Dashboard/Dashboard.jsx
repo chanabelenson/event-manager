@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getMyEvents } from '../../services/eventService';
-import { logout } from '../../services/authService';
+import { getMyEvents, deleteEvent } from '../../services/eventService';
+import { useAuth } from '../../context/AuthContext';
 import NewEventModal from './NewEventModal';
+import ConfirmModal from '../../components/ConfirmModal';
 import Confetti from '../../components/Confetti';
 
 const EVENT_ICONS = ['🎊', '💍', '🎂', '🥂', '🎈', '✨'];
@@ -12,8 +13,12 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [showConfetti, setShowConfetti] = useState(true);
-  const stopConfetti = useCallback(() => setShowConfetti(false), []);
+  const [confirmLogout, setConfirmLogout] = useState(false);
+  const [eventToDelete, setEventToDelete] = useState(null);
+
+  const { logout } = useAuth();
   const navigate = useNavigate();
+  const stopConfetti = useCallback(() => setShowConfetti(false), []);
 
   useEffect(() => {
     getMyEvents()
@@ -22,7 +27,21 @@ export default function Dashboard() {
       .finally(() => setLoading(false));
   }, []);
 
-  const handleLogout = () => { logout(); navigate('/login'); };
+  const handleLogoutConfirm = () => {
+    logout();
+    navigate('/login');
+  };
+
+  const handleDeleteConfirm = async () => {
+    try {
+      await deleteEvent(eventToDelete.id);
+      setEvents((prev) => prev.filter((e) => e.id !== eventToDelete.id));
+    } catch (err) {
+      console.error(err.message);
+    } finally {
+      setEventToDelete(null);
+    }
+  };
 
   const formatDate = (dateStr) =>
     new Date(dateStr).toLocaleDateString('he-IL', {
@@ -41,7 +60,7 @@ export default function Dashboard() {
         </div>
         <div className="header-actions">
           <button className="btn-primary" onClick={() => setShowModal(true)}>+ אירוע חדש</button>
-          <button className="btn-ghost" onClick={handleLogout}>התנתק</button>
+          <button className="btn-ghost" onClick={() => setConfirmLogout(true)}>התנתק</button>
         </div>
       </header>
 
@@ -60,15 +79,22 @@ export default function Dashboard() {
       ) : (
         <div className="events-grid">
           {events.map((event) => (
-            <div key={event.id} className="event-card" onClick={() => navigate(`/event/${event.id}`)}>
-              <span className="event-card-icon">{getIcon(event.id)}</span>
-              <h3>{event.event_name}</h3>
-              <p className="event-card-date">📅 {formatDate(event.event_date)}</p>
-              <p className="event-card-location">📍 {event.location_name}</p>
-              {event.location_address && (
-                <p className="event-card-address">{event.location_address}</p>
-              )}
-              <span className="event-card-arrow">←</span>
+            <div key={event.id} className="event-card">
+              <button
+                className="event-card-delete"
+                onClick={(e) => { e.stopPropagation(); setEventToDelete(event); }}
+                title="מחק אירוע"
+              >✕</button>
+              <div onClick={() => navigate(`/event/${event.id}`)}>
+                <span className="event-card-icon">{getIcon(event.id)}</span>
+                <h3>{event.event_name}</h3>
+                <p className="event-card-date">📅 {formatDate(event.event_date)}</p>
+                <p className="event-card-location">📍 {event.location_name}</p>
+                {event.location_address && (
+                  <p className="event-card-address">{event.location_address}</p>
+                )}
+                <span className="event-card-arrow">←</span>
+              </div>
             </div>
           ))}
         </div>
@@ -83,6 +109,28 @@ export default function Dashboard() {
             setEvents((prev) => [newEvent, ...prev]);
             setShowConfetti(true);
           }}
+        />
+      )}
+
+      {confirmLogout && (
+        <ConfirmModal
+          title="התנתקות"
+          message="האם אתה בטוח שברצונך להתנתק?"
+          confirmText="התנתק"
+          confirmClass="btn-danger"
+          onConfirm={handleLogoutConfirm}
+          onCancel={() => setConfirmLogout(false)}
+        />
+      )}
+
+      {eventToDelete && (
+        <ConfirmModal
+          title="מחיקת אירוע"
+          message={`האם אתה בטוח שברצונך למחוק את "${eventToDelete.event_name}"? פעולה זו אינה ניתנת לביטול.`}
+          confirmText="מחק"
+          confirmClass="btn-danger"
+          onConfirm={handleDeleteConfirm}
+          onCancel={() => setEventToDelete(null)}
         />
       )}
     </div>
