@@ -587,3 +587,74 @@ a:hover { color: var(--gold); }
   .auth-card { padding: 32px 24px; }
   .modal-card { padding: 28px 20px; }
 }
+
+/* Delete button on event card */
+.event-card-delete {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s, background 0.2s, color 0.2s;
+  z-index: 1;
+}
+
+.event-card:hover .event-card-delete {
+  opacity: 1;
+}
+
+.event-card-delete:hover {
+  background: var(--rose-light);
+  color: var(--rose);
+}
+
+/* Confirm Modal */
+.confirm-modal {
+  max-width: 380px;
+  text-align: center;
+}
+
+.confirm-modal h2 {
+  margin-bottom: 12px;
+}
+
+.confirm-message {
+  color: var(--text);
+  font-size: 15px;
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.confirm-modal .modal-actions {
+  justify-content: center;
+}
+
+/* Danger button */
+.btn-danger {
+  padding: 11px 22px;
+  background: var(--rose);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+  box-shadow: 0 4px 14px rgba(232, 100, 122, 0.30);
+}
+
+.btn-danger:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}

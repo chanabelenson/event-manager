@@ -6,23 +6,22 @@ import Invitation from './pages/Invitation/Invitation';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
 function ProtectedRoute({ children }) {
-  const { token } = useAuth();
-  return token ? children : <Navigate to="/login" />;
+  const { user, loading } = useAuth();
+  if (loading) return null; // ממתין לתשובה מהשרת לפני ניתוב
+  return user ? children : <Navigate to="/login" />;
 }
 
 function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="app-container">
-          <Routes>
-            <Route path="/" element={<Navigate to="/login" />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-            <Route path="/invite/:token" element={<Invitation />} />
-          </Routes>
-        </div>
+        <Routes>
+          <Route path="/" element={<Navigate to="/login" />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/invite/:token" element={<Invitation />} />
+        </Routes>
       </Router>
     </AuthProvider>
   );
