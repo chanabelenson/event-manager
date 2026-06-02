@@ -1,0 +1,78 @@
+import { useState, useEffect } from 'react';
+import { getTables, addTable, deleteTable, getGuests, updateGuestTable } from '../../services/eventService';
+
+export default function TablesTab({ eventId }) {
+  const [tables, setTables] = useState([]);
+  const [guests, setGuests] = useState([]);
+  const [form, setForm] = useState({ table_number: '', capacity: 10 });
+
+  useEffect(() => {
+    getTables(eventId).then(setTables).catch(console.error);
+    getGuests(eventId).then(setGuests).catch(console.error);
+  }, [eventId]);
+
+  const handleAddTable = async (e) => {
+    e.preventDefault();
+    const { id } = await addTable(eventId, form);
+    setTables([...tables, { id, ...form, assigned_guests: 0 }]);
+    setForm({ table_number: '', capacity: 10 });
+  };
+
+  const handleDeleteTable = async (id) => {
+    await deleteTable(id);
+    setTables(tables.filter((t) => t.id !== id));
+    setGuests(guests.map((g) => (g.table_id === id ? { ...g, table_id: null } : g)));
+  };
+
+  const handleAssign = async (guestId, tableId) => {
+    await updateGuestTable(guestId, tableId || null);
+    setGuests(guests.map((g) => (g.id === Number(guestId) ? { ...g, table_id: tableId ? Number(tableId) : null } : g)));
+  };
+
+  return (
+    <div className="tab-content">
+      <form className="inline-form" onSubmit={handleAddTable}>
+        <input type="number" placeholder="מספר שולחן" value={form.table_number} onChange={(e) => setForm({ ...form, table_number: e.target.value })} required />
+        <input type="number" placeholder="קיבולת" value={form.capacity} onChange={(e) => setForm({ ...form, capacity: e.target.value })} />
+        <button type="submit" className="btn-primary">+ הוסף שולחן</button>
+      </form>
+
+      <div className="tables-grid">
+        {tables.map((table) => {
+          const seated = guests.filter((g) => g.table_id === table.id);
+          return (
+            <div key={table.id} className="table-card">
+              <div className="table-card-header">
+                <span>שולחן {table.table_number}</span>
+                <span className="table-capacity">{seated.length}/{table.capacity}</span>
+                <button onClick={() => handleDeleteTable(table.id)}>🗑️</button>
+              </div>
+              <ul className="table-guests-list">
+                {seated.map((g) => <li key={g.id}>{g.guest_name}</li>)}
+                {seated.length === 0 && <li className="empty-row">ריק</li>}
+              </ul>
+            </div>
+          );
+        })}
+      </div>
+
+      <h3 className="section-title">שיבוץ אורחים לשולחנות</h3>
+      <table className="data-table">
+        <thead><tr><th>אורח</th><th>שולחן</th></tr></thead>
+        <tbody>
+          {guests.map((g) => (
+            <tr key={g.id}>
+              <td>{g.guest_name}</td>
+              <td>
+                <select value={g.table_id || ''} onChange={(e) => handleAssign(g.id, e.target.value)} className="status-select">
+                  <option value="">ללא שולחן</option>
+                  {tables.map((t) => <option key={t.id} value={t.id}>שולחן {t.table_number}</option>)}
+                </select>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}

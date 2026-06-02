@@ -13,6 +13,20 @@ export async function getMyEvents(req, res) {
   }
 }
 
+export async function getEventById(req, res) {
+  try {
+    const [rows] = await pool.query(
+      'SELECT * FROM events WHERE id = ? AND user_id = ?',
+      [req.params.id, req.user.id]
+    );
+    if (!rows.length) return res.status(404).json({ message: 'אירוע לא נמצא' });
+    res.json(rows[0]);
+  } catch (err) {
+    console.error('getEventById error:', err.message);
+    res.status(500).json({ message: 'שגיאת שרת פנימית' });
+  }
+}
+
 export async function createEvent(req, res) {
   try {
     const { event_name, event_date, location_name, location_address } = req.body;

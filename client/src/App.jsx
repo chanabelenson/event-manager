@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
 import Dashboard from './pages/Dashboard/Dashboard';
+import EventPage from './pages/Event/EventPage';
 import Invitation from './pages/Invitation/Invitation';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
@@ -20,6 +21,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/event/:id" element={<ProtectedRoute><EventPage /></ProtectedRoute>} />
             <Route path="/invite/:token" element={<Invitation />} />
           </Routes>
         </div>
