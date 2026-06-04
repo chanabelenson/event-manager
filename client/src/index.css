@@ -216,16 +216,85 @@ a:hover { color: var(--gold); }
 .empty-row { color: var(--text); opacity: 0.4; font-style: italic; }
 .section-title { font-family: var(--font-heading); font-size: 18px; color: var(--text-h); margin: 8px 0; }
 
-/* ── Calendar ── */
-.calendar-days { display: flex; flex-direction: column; gap: 12px; }
-.calendar-day { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; box-shadow: var(--shadow-sm); }
-.calendar-day.past { opacity: 0.55; background: #f5f5f5; }
-.calendar-day.today { border-color: var(--lavender); box-shadow: 0 0 0 3px rgba(155,114,207,0.12); }
-.calendar-day-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-.calendar-date { font-weight: 600; color: var(--text-h); font-size: 14px; }
-.past-badge { background: #e0e0e0; color: #888; font-size: 11px; padding: 2px 8px; border-radius: 20px; }
-.today-badge { background: linear-gradient(135deg, var(--lavender), var(--rose)); color: #fff; font-size: 11px; padding: 2px 8px; border-radius: 20px; }
-.task-list { list-style: none; padding: 0; margin: 0 0 10px; display: flex; flex-direction: column; gap: 6px; }
+/* ── Calendar Grid ── */
+.cal-container { display: flex; flex-direction: column; gap: 32px; }
+
+.cal-month { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow-sm); }
+
+.cal-month-label { font-family: var(--font-heading); font-size: 20px; color: var(--text-h); margin-bottom: 16px; text-align: center; }
+
+.cal-header-row { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 4px; }
+.cal-header-cell { text-align: center; font-size: 12px; font-weight: 600; color: var(--text); padding: 4px 0; }
+
+.cal-week-row { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 4px; }
+
+.cal-cell {
+  aspect-ratio: 1;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  background: var(--bg);
+  transition: background 0.15s, box-shadow 0.15s;
+  min-height: 48px;
+}
+
+.cal-cell:hover { background: var(--gold-bg); box-shadow: var(--shadow-sm); }
+.cal-cell.cal-empty { border: none; cursor: default; background: transparent; }
+.cal-cell.cal-empty:hover { background: transparent; box-shadow: none; }
+
+.cal-cell.cal-past { background: #f0f0f0; opacity: 0.6; }
+.cal-cell.cal-past:hover { background: #e8e8e8; }
+
+.cal-cell.cal-today {
+  background: linear-gradient(135deg, rgba(155,114,207,0.15), rgba(232,100,122,0.10));
+  border-color: var(--lavender);
+  box-shadow: 0 0 0 2px rgba(155,114,207,0.25);
+}
+
+.cal-cell-num { font-size: 14px; font-weight: 600; color: var(--text-h); line-height: 1; }
+.cal-cell.cal-past .cal-cell-num { color: #aaa; }
+.cal-cell.cal-today .cal-cell-num { color: var(--lavender); }
+
+.cal-cell-badge {
+  font-size: 10px;
+  background: var(--lavender);
+  color: #fff;
+  border-radius: 20px;
+  padding: 1px 5px;
+  margin-top: 3px;
+  line-height: 1.4;
+}
+
+.cal-cell-overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  background: repeating-linear-gradient(
+    -45deg, transparent, transparent 4px,
+    rgba(0,0,0,0.04) 4px, rgba(0,0,0,0.04) 6px
+  );
+  pointer-events: none;
+}
+
+.today-dot {
+  width: 5px; height: 5px;
+  background: var(--rose);
+  border-radius: 50%;
+  position: absolute;
+  bottom: 5px;
+}
+
+/* ── Day Modal ── */
+.day-modal { max-width: 420px; padding: 28px 28px 24px; }
+.day-modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.day-modal-header h3 { font-family: var(--font-heading); font-size: 18px; color: var(--text-h); }
+
+.task-list { list-style: none; padding: 0; margin: 0 0 12px; display: flex; flex-direction: column; gap: 8px; }
 .task-list li { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text); }
 .task-list li.done span { text-decoration: line-through; opacity: 0.5; }
 .task-list li button { background: none; border: none; cursor: pointer; font-size: 13px; margin-right: auto; }
