@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { getGuests, addGuest, updateGuestStatus, deleteGuest } from '../../services/eventService';
+import { getGuests, addGuest, updateGuestStatus, deleteGuest } from '../../../services/eventService';
 
 const STATUS_LABELS = { pending: '⏳ ממתין', confirmed: '✅ מאשר', declined: '❌ מסרב' };
-const EMPTY = { guest_name: '', phone_number: '', guests_count: 1 };
+const EMPTY = { guest_name: '', phone_number: '', guests_count: 1, category: '' };
 
 export default function GuestsTab({ eventId }) {
   const [guests, setGuests] = useState([]);
@@ -41,6 +41,7 @@ export default function GuestsTab({ eventId }) {
       <form className="inline-form" onSubmit={handleSubmit}>
         <input placeholder="שם מלא" value={form.guest_name} onChange={(e) => setForm({ ...form, guest_name: e.target.value })} required />
         <input placeholder="טלפון" value={form.phone_number} onChange={(e) => setForm({ ...form, phone_number: e.target.value })} />
+        <input placeholder="קטגוריה (למשל: משפחה, חברים)" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} />
         <input type="number" min="1" placeholder="מספר אנשים" value={form.guests_count} onChange={(e) => setForm({ ...form, guests_count: e.target.value })} />
         <button type="submit" className="btn-primary">+ הוסף</button>
       </form>

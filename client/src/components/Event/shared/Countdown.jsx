@@ -1,4 +1,4 @@
-import { useCountdown } from './useCountdown';
+import { useCountdown } from '../Calendar/useCountdown';
 
 export default function Countdown({ eventDate }) {
   const t = useCountdown(eventDate);

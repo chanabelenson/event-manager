@@ -211,7 +211,8 @@ a:hover { color: var(--gold); }
 .table-card-header button { background: none; border: none; cursor: pointer; font-size: 14px; }
 .table-capacity { font-size: 12px; color: var(--text); font-weight: 400; }
 .table-guests-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px; }
-.table-guests-list li { font-size: 13px; color: var(--text); padding: 4px 0; border-bottom: 1px solid var(--border); }
+.table-guests-list li { font-size: 13px; color: var(--text); padding: 4px 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 6px; }
+.guest-category-badge { font-size: 10px; background: var(--gold-bg); color: var(--gold); border: 1px solid var(--gold); border-radius: 20px; padding: 1px 6px; }
 .table-guests-list li:last-child { border-bottom: none; }
 .empty-row { color: var(--text); opacity: 0.4; font-style: italic; }
 .section-title { font-family: var(--font-heading); font-size: 18px; color: var(--text-h); margin: 8px 0; }
