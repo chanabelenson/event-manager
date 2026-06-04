@@ -1,4 +1,4 @@
-const API = 'http://localhost:5000/api/auth';
+const API = '/api/auth';
 
 const handle = async (res) => {
   const data = await res.json();

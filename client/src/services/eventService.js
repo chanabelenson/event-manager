@@ -1,4 +1,4 @@
-const API = 'http://localhost:5000/api/events';
+const API = '/api/events';
 
 const opts = (method, body) => ({
   method: method || 'GET',
