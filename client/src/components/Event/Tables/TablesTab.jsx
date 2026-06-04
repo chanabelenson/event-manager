@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { getTables, addTable, deleteTable, getGuests, updateGuestTable, autoArrangeSave } from '../../../services/eventService';
 import { autoArrangeSeating } from '../../../utils/seatingArrangement';
+import ConfirmModal from '../../Common/ConfirmModal';
 
 export default function TablesTab({ eventId }) {
   const [tables, setTables] = useState([]);
   const [guests, setGuests] = useState([]);
   const [form, setForm] = useState({ table_number: '', capacity: 10 });
   const [arranging, setArranging] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(null);
 
   useEffect(() => {
     getTables(eventId).then(setTables).catch(console.error);
@@ -24,6 +26,7 @@ export default function TablesTab({ eventId }) {
     await deleteTable(id);
     setTables(tables.filter((t) => t.id !== id));
     setGuests(guests.map((g) => (g.table_id === id ? { ...g, table_id: null } : g)));
+    setConfirmDelete(null);
   };
 
   const handleAssign = async (guestId, tableId) => {
@@ -72,7 +75,7 @@ export default function TablesTab({ eventId }) {
               <div className="table-card-header">
                 <span>שולחן {table.table_number}</span>
                 <span className="table-capacity">{totalSeated}/{table.capacity}</span>
-                <button onClick={() => handleDeleteTable(table.id)}>🗑️</button>
+                <button onClick={() => setConfirmDelete(table)}>🗑️</button>
               </div>
               <ul className="table-guests-list">
                 {seated.map((g) => (
@@ -107,6 +110,16 @@ export default function TablesTab({ eventId }) {
           ))}
         </tbody>
       </table>
+
+      {confirmDelete && (
+        <ConfirmModal
+          title="מחיקת שולחן"
+          message={`האם למחוק את שולחן ${confirmDelete.table_number}? כל האורחים ישוחררו מהשולחן.`}
+          confirmText="מחק"
+          onConfirm={() => handleDeleteTable(confirmDelete.id)}
+          onCancel={() => setConfirmDelete(null)}
+        />
+      )}
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getGuests, addGuest, updateGuestStatus, deleteGuest } from '../../../services/eventService';
+import ConfirmModal from '../../Common/ConfirmModal';
 
 const STATUS_LABELS = { pending: '⏳ ממתין', confirmed: '✅ מאשר', declined: '❌ מסרב' };
 const EMPTY = { guest_name: '', phone_number: '', guests_count: 1, category: '' };
@@ -7,6 +8,7 @@ const EMPTY = { guest_name: '', phone_number: '', guests_count: 1, category: '' 
 export default function GuestsTab({ eventId }) {
   const [guests, setGuests] = useState([]);
   const [form, setForm] = useState(EMPTY);
+  const [confirmDelete, setConfirmDelete] = useState(null);
 
   useEffect(() => { getGuests(eventId).then(setGuests).catch(console.error); }, [eventId]);
 
@@ -28,6 +30,7 @@ export default function GuestsTab({ eventId }) {
   const handleDelete = async (id) => {
     await deleteGuest(id);
     setGuests(guests.filter((g) => g.id !== id));
+    setConfirmDelete(null);
   };
 
   return (
@@ -63,12 +66,22 @@ export default function GuestsTab({ eventId }) {
               </td>
               <td><a href={`/invite/${g.invitation_token}`} target="_blank" rel="noreferrer">🔗 קישור</a></td>
               <td className="row-actions">
-                <button onClick={() => handleDelete(g.id)}>🗑️</button>
+                <button onClick={() => setConfirmDelete(g)}>🗑️</button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      {confirmDelete && (
+        <ConfirmModal
+          title="מחיקת אורח"
+          message={`האם למחוק את "${confirmDelete.guest_name}"?`}
+          confirmText="מחק"
+          onConfirm={() => handleDelete(confirmDelete.id)}
+          onCancel={() => setConfirmDelete(null)}
+        />
+      )}
     </div>
   );
 }
