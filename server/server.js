@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import authRoutes from './routes/auth.js';
 import eventRoutes from './routes/events.js';
 import eventFeaturesRoutes from './routes/eventFeatures.js';
+import invitationRoutes from './routes/invitation.js';
 import { logger } from './middleware/logger.js';
 
 dotenv.config();
@@ -19,6 +20,7 @@ app.use(logger);
 app.use('/api/auth', authRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/events', eventFeaturesRoutes);
+app.use('/api/invitation', invitationRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));

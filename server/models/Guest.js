@@ -31,3 +31,18 @@ export const updateGuestTable = async (id, tableId) => {
 export const deleteGuest = async (id) => {
   await pool.query('DELETE FROM guests WHERE id=?', [id]);
 };
+
+export const getGuestByToken = async (token) => {
+  const [rows] = await pool.query(
+    `SELECT g.*, e.event_name, e.event_date, e.location_name, e.location_address
+     FROM guests g
+     JOIN events e ON e.id = g.event_id
+     WHERE g.invitation_token = ?`,
+    [token]
+  );
+  return rows[0] || null;
+};
+
+export const updateGuestStatusByToken = async (token, status) => {
+  await pool.query('UPDATE guests SET status=? WHERE invitation_token=?', [status, token]);
+};
