@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { getMyEvents, deleteEvent } from '../../services/eventService';
 import { useAuth } from '../../context/AuthContext';
 import NewEventModal from './NewEventModal';
-import ConfirmModal from '../../components/ConfirmModal';
-import Confetti from '../../components/Confetti';
+import ConfirmModal from '../../components/Common/ConfirmModal';
+import Confetti from '../../components/Common/Confetti';
 
 const EVENT_ICONS = ['🎊', '💍', '🎂', '🥂', '🎈', '✨'];
 

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getGuests, addGuest, updateStatus, updateTable, deleteGuest } from '../controllers/guestsController.js';
+import { getGuests, addGuest, updateStatus, updateTable, bulkUpdateTables, deleteGuest } from '../controllers/guestsController.js';
 import { getTables, addTable, deleteTable } from '../controllers/tablesController.js';
 import { getTasks, addTask, toggleTask, updateTask, deleteTask } from '../controllers/tasksController.js';
 import { authMiddleware } from '../middleware/auth.js';
@@ -12,6 +12,7 @@ router.get('/:eventId/guests', getGuests);
 router.post('/:eventId/guests', addGuest);
 router.patch('/guests/:id/status', updateStatus);
 router.patch('/guests/:id/table', updateTable);
+router.post('/guests/auto-arrange', bulkUpdateTables);
 router.delete('/guests/:id', deleteGuest);
 
 // Tables

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getTasks, addTask, toggleTask, deleteTask } from '../../services/eventService';
+import { getTasks, addTask, toggleTask, deleteTask } from '../../../services/eventService';
 import CalendarGrid from './CalendarGrid';
 import DayModal from './DayModal';
 

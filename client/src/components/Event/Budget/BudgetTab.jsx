@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getTasks, addTask, updateTask, deleteTask } from '../../services/eventService';
+import { getTasks, addTask, updateTask, deleteTask } from '../../../services/eventService';
 
 const EMPTY = { task_name: '', category: '', estimated_cost: '', actual_cost: '', notes: '' };
 

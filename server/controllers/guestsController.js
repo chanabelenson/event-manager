@@ -41,6 +41,18 @@ export const updateTable = async (req, res) => {
   }
 };
 
+export const bulkUpdateTables = async (req, res) => {
+  try {
+    const { assignments } = req.body;
+    if (!Array.isArray(assignments)) return res.status(400).json({ message: 'נתונים שגויים' });
+    await Guest.bulkUpdateGuestTables(assignments);
+    res.json({ message: 'שיבוץ נשמר' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ message: 'שגיאת שרת' });
+  }
+};
+
 export const deleteGuest = async (req, res) => {
   try {
     await Guest.deleteGuest(req.params.id);

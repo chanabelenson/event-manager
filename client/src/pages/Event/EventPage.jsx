@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getEvent } from '../../services/eventService';
-import Countdown from '../../components/Event/Countdown';
-import EventNav from '../../components/Event/EventNav';
-import BudgetTab from '../../components/Event/BudgetTab';
-import GuestsTab from '../../components/Event/GuestsTab';
-import TablesTab from '../../components/Event/TablesTab';
-import CalendarTab from '../../components/Event/CalendarTab';
+import Countdown from '../../components/Event/shared/Countdown';
+import EventNav from '../../components/Event/shared/EventNav';
+import BudgetTab from '../../components/Event/Budget/BudgetTab';
+import GuestsTab from '../../components/Event/Guests/GuestsTab';
+import TablesTab from '../../components/Event/Tables/TablesTab';
+import CalendarTab from '../../components/Event/Calendar/CalendarTab';
 
 export default function EventPage() {
   const { id } = useParams();

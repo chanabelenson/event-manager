@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
-import { getTables, addTable, deleteTable, getGuests, updateGuestTable } from '../../services/eventService';
+import { getTables, addTable, deleteTable, getGuests, updateGuestTable, autoArrangeSave } from '../../../services/eventService';
+import { autoArrangeSeating } from '../../../utils/seatingArrangement';
 
 export default function TablesTab({ eventId }) {
   const [tables, setTables] = useState([]);
   const [guests, setGuests] = useState([]);
   const [form, setForm] = useState({ table_number: '', capacity: 10 });
+  const [arranging, setArranging] = useState(false);
 
   useEffect(() => {
     getTables(eventId).then(setTables).catch(console.error);
@@ -29,26 +31,56 @@ export default function TablesTab({ eventId }) {
     setGuests(guests.map((g) => (g.id === Number(guestId) ? { ...g, table_id: tableId ? Number(tableId) : null } : g)));
   };
 
+  const handleAutoArrange = async () => {
+    if (!tables.length) return alert('צריך להוסיף שולחנות קודם');
+    setArranging(true);
+    try {
+      const result = autoArrangeSeating(guests, tables);
+      const assignments = result.flatMap((t) =>
+        t.seated_guests.map((g) => ({ guestId: g.id, tableId: t.id }))
+      );
+      await autoArrangeSave(assignments);
+      setGuests(guests.map((g) => {
+        const found = assignments.find((a) => a.guestId === g.id);
+        return found ? { ...g, table_id: found.tableId } : g;
+      }));
+    } catch (err) {
+      console.error(err);
+      alert('שגיאה בסידור האוטומטי');
+    } finally {
+      setArranging(false);
+    }
+  };
+
   return (
     <div className="tab-content">
       <form className="inline-form" onSubmit={handleAddTable}>
         <input type="number" placeholder="מספר שולחן" value={form.table_number} onChange={(e) => setForm({ ...form, table_number: e.target.value })} required />
         <input type="number" placeholder="קיבולת" value={form.capacity} onChange={(e) => setForm({ ...form, capacity: e.target.value })} />
         <button type="submit" className="btn-primary">+ הוסף שולחן</button>
+        <button type="button" className="btn-secondary" onClick={handleAutoArrange} disabled={arranging}>
+          {arranging ? 'מסדר...' : '✨ סידור אוטומטי'}
+        </button>
       </form>
 
       <div className="tables-grid">
         {tables.map((table) => {
           const seated = guests.filter((g) => g.table_id === table.id);
+          const totalSeated = seated.reduce((s, g) => s + Number(g.guests_count), 0);
           return (
             <div key={table.id} className="table-card">
               <div className="table-card-header">
                 <span>שולחן {table.table_number}</span>
-                <span className="table-capacity">{seated.length}/{table.capacity}</span>
+                <span className="table-capacity">{totalSeated}/{table.capacity}</span>
                 <button onClick={() => handleDeleteTable(table.id)}>🗑️</button>
               </div>
               <ul className="table-guests-list">
-                {seated.map((g) => <li key={g.id}>{g.guest_name}</li>)}
+                {seated.map((g) => (
+                  <li key={g.id}>
+                    {g.guest_name}
+                    {g.category && <span className="guest-category-badge">{g.category}</span>}
+                  </li>
+                ))}
                 {seated.length === 0 && <li className="empty-row">ריק</li>}
               </ul>
             </div>
@@ -56,13 +88,15 @@ export default function TablesTab({ eventId }) {
         })}
       </div>
 
-      <h3 className="section-title">שיבוץ אורחים לשולחנות</h3>
+      <h3 className="section-title">שיבוץ ידני</h3>
       <table className="data-table">
-        <thead><tr><th>אורח</th><th>שולחן</th></tr></thead>
+        <thead><tr><th>אורח</th><th>קטגוריה</th><th>אנשים</th><th>שולחן</th></tr></thead>
         <tbody>
           {guests.map((g) => (
             <tr key={g.id}>
               <td>{g.guest_name}</td>
+              <td>{g.category || '-'}</td>
+              <td>{g.guests_count}</td>
               <td>
                 <select value={g.table_id || ''} onChange={(e) => handleAssign(g.id, e.target.value)} className="status-select">
                   <option value="">ללא שולחן</option>
