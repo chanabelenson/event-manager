@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { register } from '../../services/authService';
+import { register, login as loginService } from '../../services/authService';
+import { useAuth } from '../../context/AuthContext';
 
 export default function Register() {
   const [form, setForm] = useState({ name: '', email: '', password: '', confirm: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
@@ -17,7 +19,9 @@ export default function Register() {
     setLoading(true);
     try {
       await register(form.name, form.email, form.password);
-      navigate('/login');
+      const data = await loginService(form.email, form.password);
+      login(data.user);
+      navigate('/dashboard');
     } catch (err) {
       setError(err.message);
     } finally {
