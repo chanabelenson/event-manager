@@ -5,6 +5,11 @@ export async function findUserByEmail(email) {
   return rows[0] || null;
 }
 
+export async function findUserById(id) {
+  const [rows] = await pool.query('SELECT id, full_name, email FROM users WHERE id = ?', [id]);
+  return rows[0] || null;
+}
+
 export async function emailExists(email) {
   const [rows] = await pool.query('SELECT id FROM users WHERE email = ?', [email]);
   return rows.length > 0;
