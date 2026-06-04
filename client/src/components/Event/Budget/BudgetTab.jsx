@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getTasks, addTask, updateTask, deleteTask } from '../../../services/eventService';
+import ConfirmModal from '../../Common/ConfirmModal';
 
 const EMPTY = { task_name: '', category: '', estimated_cost: '', actual_cost: '', notes: '' };
 
@@ -7,6 +8,7 @@ export default function BudgetTab({ eventId }) {
   const [items, setItems] = useState([]);
   const [form, setForm] = useState(EMPTY);
   const [editId, setEditId] = useState(null);
+  const [confirmDelete, setConfirmDelete] = useState(null);
 
   useEffect(() => { getTasks(eventId).then(setItems).catch(console.error); }, [eventId]);
 
@@ -34,6 +36,7 @@ export default function BudgetTab({ eventId }) {
   const handleDelete = async (id) => {
     await deleteTask(id);
     setItems(items.filter((i) => i.id !== id));
+    setConfirmDelete(null);
   };
 
   return (
@@ -68,12 +71,22 @@ export default function BudgetTab({ eventId }) {
               <td>{item.notes || '-'}</td>
               <td className="row-actions">
                 <button onClick={() => startEdit(item)}>✏️</button>
-                <button onClick={() => handleDelete(item.id)}>🗑️</button>
+                <button onClick={() => setConfirmDelete(item)}>🗑️</button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      {confirmDelete && (
+        <ConfirmModal
+          title="מחיקת פריט"
+          message={`האם למחוק את "${confirmDelete.task_name}"?`}
+          confirmText="מחק"
+          onConfirm={() => handleDelete(confirmDelete.id)}
+          onCancel={() => setConfirmDelete(null)}
+        />
+      )}
     </div>
   );
 }
