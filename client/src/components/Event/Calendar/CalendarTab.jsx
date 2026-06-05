@@ -3,6 +3,7 @@ import { getTasks, addTask, toggleTask, deleteTask } from '../../../services/eve
 import CalendarGrid from './CalendarGrid';
 import DayModal from './DayModal';
 
+// פונקציית העזר המתוקנת שעובדת לפי הזמן המקומי (Local) ולא UTC
 function getDaysRange(createdAt, eventDate) {
   const start = new Date(createdAt);
   start.setHours(0, 0, 0, 0);
@@ -10,8 +11,13 @@ function getDaysRange(createdAt, eventDate) {
   end.setHours(0, 0, 0, 0);
   const days = [];
   const cur = new Date(start);
+  
   while (cur <= end) {
-    days.push(cur.toISOString().split('T')[0]);
+    const year = cur.getFullYear();
+    const month = String(cur.getMonth() + 1).padStart(2, '0');
+    const day = String(cur.getDate()).padStart(2, '0');
+    
+    days.push(`${year}-${month}-${day}`);
     cur.setDate(cur.getDate() + 1);
   }
   return days;
@@ -22,23 +28,46 @@ export default function CalendarTab({ eventId, createdAt, eventDate }) {
   const [selectedDate, setSelectedDate] = useState(null);
   const days = getDaysRange(createdAt, eventDate);
 
-  useEffect(() => { getTasks(eventId).then(setTasks).catch(console.error); }, [eventId]);
+  useEffect(() => { 
+    getTasks(eventId).then(setTasks).catch(console.error); 
+  }, [eventId]);
 
-  const tasksForDate = (date) => tasks.filter((t) => t.task_date?.split('T')[0] === date);
+  // פונקציית סינון משימות מתוקנת לפי זמן מקומי
+  const tasksForDate = (date) => tasks.filter((t) => {
+    if (!t.task_date) return false;
+    const dateObj = new Date(t.task_date);
+    const year = dateObj.getFullYear();
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}` === date;
+  });
 
+  // פונקציית הוספת משימה (הייתה חסרה או במקום לא נכון)
   const handleAdd = async (date, title) => {
-    const { id } = await addTask(eventId, { task_name: title, task_date: date });
-    setTasks((prev) => [...prev, { id, task_date: date, task_name: title, is_completed: false }]);
+    try {
+      const { id } = await addTask(eventId, { task_name: title, task_date: date });
+      setTasks((prev) => [...prev, { id, task_date: date, task_name: title, is_completed: false }]);
+    } catch (error) {
+      console.error("שגיאה בהוספת משימה:", error);
+    }
   };
 
   const handleToggle = async (id, is_completed) => {
-    await toggleTask(id, !is_completed);
-    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, is_completed: !is_completed } : t)));
+    try {
+      await toggleTask(id, !is_completed);
+      setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, is_completed: !is_completed } : t)));
+    } catch (error) {
+      console.error("שגיאה בעדכון משימה:", error);
+    }
   };
 
   const handleDelete = async (id) => {
-    await deleteTask(id);
-    setTasks((prev) => prev.filter((t) => t.id !== id));
+    try {
+      await deleteTask(id);
+      setTasks((prev) => prev.filter((t) => t.id !== id));
+    } catch (error) {
+      console.error("שגיאה במחיקת משימה:", error);
+    }
   };
 
   return (

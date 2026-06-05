@@ -23,16 +23,12 @@ export async function getEventById(req, res) {
 export async function createEvent(req, res) {
   try {
     const { event_name, event_date, location_name, location_address } = req.body;
-    if (!event_name || !event_date || !location_name)
-      return res.status(400).json({ message: 'שם האירוע, תאריך ומיקום הם שדות חובה' });
-
     const event = await EventService.createEvent(req.user.id, {
       event_name,
       event_date,
       location_name,
       location_address,
     });
-
     res.status(201).json(event);
   } catch (err) {
     console.error('createEvent error:', err.message || err);

@@ -1,51 +1,63 @@
-import * as TaskService from '../services/taskService.js';
+import pool from '../config/db.js';
 
 export const getTasks = async (req, res) => {
   try {
-    const tasks = await TaskService.getTasks(req.params.eventId, req.user.id);
-    res.json(tasks);
+    const [rows] = await pool.query(
+      'SELECT * FROM tasks WHERE event_id = ? ORDER BY task_date ASC, id ASC',
+      [req.params.eventId]
+    );
+    res.json(rows);
   } catch (err) {
-    console.error('getTasks error:', err.message || err);
-    res.status(err.status || 500).json({ message: err.message || 'שגיאת שרת' });
+    console.error(err.message);
+    res.status(500).json({ message: 'שגיאת שרת' });
   }
 };
 
 export const addTask = async (req, res) => {
   try {
-    const { id } = await TaskService.addTask(req.params.eventId, req.user.id, req.body);
-    res.status(201).json({ id });
+    const { task_name, task_date, estimated_cost, actual_cost, category, notes } = req.body;
+    if (!task_name) return res.status(400).json({ message: 'שם משימה חובה' });
+    const [result] = await pool.query(
+      'INSERT INTO tasks (event_id, task_name, task_date, estimated_cost, actual_cost, category, notes) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [req.params.eventId, task_name, task_date || null, estimated_cost || 0, actual_cost || 0, category || null, notes || null]
+    );
+    res.status(201).json({ id: result.insertId });
   } catch (err) {
-    console.error('addTask error:', err.message || err);
-    res.status(err.status || 500).json({ message: err.message || 'שגיאת שרת' });
+    console.error(err.message);
+    res.status(500).json({ message: 'שגיאת שרת' });
   }
 };
 
 export const toggleTask = async (req, res) => {
   try {
-    await TaskService.toggleTask(req.params.id, req.user.id, req.body.is_completed);
+    await pool.query('UPDATE tasks SET is_completed=? WHERE id=?', [req.body.is_completed, req.params.id]);
     res.json({ message: 'עודכן' });
   } catch (err) {
-    console.error('toggleTask error:', err.message || err);
-    res.status(err.status || 500).json({ message: err.message || 'שגיאת שרת' });
+    console.error(err.message);
+    res.status(500).json({ message: 'שגיאת שרת' });
   }
 };
 
 export const updateTask = async (req, res) => {
   try {
-    await TaskService.updateTask(req.params.id, req.user.id, req.body);
+    const { task_name, estimated_cost, actual_cost, category, notes } = req.body;
+    await pool.query(
+      'UPDATE tasks SET task_name=?, estimated_cost=?, actual_cost=?, category=?, notes=? WHERE id=?',
+      [task_name, estimated_cost || 0, actual_cost || 0, category || null, notes || null, req.params.id]
+    );
     res.json({ message: 'עודכן' });
   } catch (err) {
-    console.error('updateTask error:', err.message || err);
-    res.status(err.status || 500).json({ message: err.message || 'שגיאת שרת' });
+    console.error(err.message);
+    res.status(500).json({ message: 'שגיאת שרת' });
   }
 };
 
 export const deleteTask = async (req, res) => {
   try {
-    await TaskService.deleteTask(req.params.id, req.user.id);
+    await pool.query('DELETE FROM tasks WHERE id=?', [req.params.id]);
     res.json({ message: 'נמחק' });
   } catch (err) {
-    console.error('deleteTask error:', err.message || err);
-    res.status(err.status || 500).json({ message: err.message || 'שגיאת שרת' });
+    console.error(err.message);
+    res.status(500).json({ message: 'שגיאת שרת' });
   }
 };

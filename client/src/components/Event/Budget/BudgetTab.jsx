@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
-import { getTasks, addTask, updateTask, deleteTask } from '../../../services/eventService';
 import ConfirmModal from '../../Common/ConfirmModal';
 
-const EMPTY = { task_name: '', category: '', estimated_cost: '', actual_cost: '', notes: '' };
+const EMPTY = { item_name: '', category: '', estimated_cost: '', actual_cost: '', notes: '' };
 
 export default function BudgetTab({ eventId }) {
   const [items, setItems] = useState([]);
@@ -10,7 +9,8 @@ export default function BudgetTab({ eventId }) {
   const [editId, setEditId] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(null);
 
-  useEffect(() => { getTasks(eventId).then(setItems).catch(console.error); }, [eventId]);
+  // BudgetTab נפרד מ-Tasks - משימות לא מופיעות כאן
+  // TODO: יש להוסיף budget API בשרת
 
   const totalEstimated = items.reduce((s, i) => s + Number(i.estimated_cost), 0);
   const totalActual = items.reduce((s, i) => s + Number(i.actual_cost), 0);

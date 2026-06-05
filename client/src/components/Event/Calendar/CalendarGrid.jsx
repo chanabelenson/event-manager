@@ -35,10 +35,18 @@ function groupByMonth(days) {
 
 export default function CalendarGrid({ days, tasks, onCellClick }) {
   const tasksByDate = {};
-  for (const t of tasks) {
-    const d = t.task_date?.split('T')[0];
-    if (d) { if (!tasksByDate[d]) tasksByDate[d] = []; tasksByDate[d].push(t); }
+for (const t of tasks) {
+  if (t.task_date) {
+    const dateObj = new Date(t.task_date);
+    const year = dateObj.getFullYear();
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    const d = `${year}-${month}-${day}`; // תאריך מקומי נקי
+    
+    if (!tasksByDate[d]) tasksByDate[d] = [];
+    tasksByDate[d].push(t);
   }
+}
 
   const byMonth = groupByMonth(days);
 
