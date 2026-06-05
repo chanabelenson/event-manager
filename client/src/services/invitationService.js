@@ -1,19 +1,17 @@
 const API = '/api/invitation';
 
+// פונקציית עזר מקומית מותאמת לאורחים אנונימיים (ללא credentials)
+const opts = (method, body) => ({
+  method: method || 'GET',
+  headers: { 'Content-Type': 'application/json' },
+  ...(body ? { body: JSON.stringify(body) } : {}),
+});
+
 const handle = async (res) => {
   const data = await res.json();
   if (!res.ok) throw new Error(data.message || 'שגיאה');
   return data;
 };
 
-export async function getInvitation(token) {
-  return fetch(`${API}/${token}`).then(handle);
-}
-
-export async function updateInvitationStatus(token, status) {
-  return fetch(`${API}/${token}/status`, {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ status }),
-  }).then(handle);
-}
+export const getInvitation = (token) => fetch(`${API}/${token}`, opts()).then(handle);
+export const updateInvitationStatus = (token, status) => fetch(`${API}/${token}/status`, opts('PATCH', { status })).then(handle);
