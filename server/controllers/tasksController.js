@@ -1,52 +1,51 @@
-import * as Task from '../models/Task.js';
+import * as TaskService from '../services/taskService.js';
 
 export const getTasks = async (req, res) => {
   try {
-    res.json(await Task.getTasks(req.params.eventId));
+    const tasks = await TaskService.getTasks(req.params.eventId, req.user.id);
+    res.json(tasks);
   } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ message: 'שגיאת שרת' });
+    console.error('getTasks error:', err.message || err);
+    res.status(err.status || 500).json({ message: err.message || 'שגיאת שרת' });
   }
 };
 
 export const addTask = async (req, res) => {
   try {
-    const { task_name } = req.body;
-    if (!task_name) return res.status(400).json({ message: 'שם משימה חובה' });
-    const id = await Task.addTask(req.params.eventId, req.body);
+    const { id } = await TaskService.addTask(req.params.eventId, req.user.id, req.body);
     res.status(201).json({ id });
   } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ message: 'שגיאת שרת' });
+    console.error('addTask error:', err.message || err);
+    res.status(err.status || 500).json({ message: err.message || 'שגיאת שרת' });
   }
 };
 
 export const toggleTask = async (req, res) => {
   try {
-    await Task.toggleTask(req.params.id, req.body.is_completed);
+    await TaskService.toggleTask(req.params.id, req.user.id, req.body.is_completed);
     res.json({ message: 'עודכן' });
   } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ message: 'שגיאת שרת' });
+    console.error('toggleTask error:', err.message || err);
+    res.status(err.status || 500).json({ message: err.message || 'שגיאת שרת' });
   }
 };
 
 export const updateTask = async (req, res) => {
   try {
-    await Task.updateTask(req.params.id, req.body);
+    await TaskService.updateTask(req.params.id, req.user.id, req.body);
     res.json({ message: 'עודכן' });
   } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ message: 'שגיאת שרת' });
+    console.error('updateTask error:', err.message || err);
+    res.status(err.status || 500).json({ message: err.message || 'שגיאת שרת' });
   }
 };
 
 export const deleteTask = async (req, res) => {
   try {
-    await Task.deleteTask(req.params.id);
+    await TaskService.deleteTask(req.params.id, req.user.id);
     res.json({ message: 'נמחק' });
   } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ message: 'שגיאת שרת' });
+    console.error('deleteTask error:', err.message || err);
+    res.status(err.status || 500).json({ message: err.message || 'שגיאת שרת' });
   }
 };

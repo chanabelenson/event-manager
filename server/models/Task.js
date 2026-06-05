@@ -8,6 +8,16 @@ export const getTasks = async (eventId) => {
   return rows;
 };
 
+export const verifyTaskOwnership = async (taskId, userId) => {
+  const [rows] = await pool.query(
+    `SELECT t.id FROM tasks t
+     JOIN events e ON e.id = t.event_id
+     WHERE t.id = ? AND e.user_id = ?`,
+    [taskId, userId]
+  );
+  return rows.length > 0;
+};
+
 export const addTask = async (eventId, { task_name, task_date, estimated_cost, actual_cost, category, notes }) => {
   const [result] = await pool.query(
     'INSERT INTO tasks (event_id, task_name, task_date, estimated_cost, actual_cost, category, notes) VALUES (?, ?, ?, ?, ?, ?, ?)',

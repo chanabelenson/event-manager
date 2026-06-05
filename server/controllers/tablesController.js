@@ -1,31 +1,31 @@
-import * as Table from '../models/Table.js';
+import * as TableService from '../services/tableService.js';
 
 export const getTables = async (req, res) => {
   try {
-    const tables = await Table.getTables(req.params.eventId);
+    const tables = await TableService.getTables(req.params.eventId, req.user.id);
     res.json(tables);
   } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ message: 'שגיאת שרת' });
+    console.error('getTables error:', err.message || err);
+    res.status(err.status || 500).json({ message: err.message || 'שגיאת שרת' });
   }
 };
 
 export const addTable = async (req, res) => {
   try {
-    const id = await Table.addTable(req.params.eventId, req.body);
+    const id = await TableService.addTable(req.params.eventId, req.user.id, req.body);
     res.status(201).json({ id });
   } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ message: 'שגיאת שרת' });
+    console.error('addTable error:', err.message || err);
+    res.status(err.status || 500).json({ message: err.message || 'שגיאת שרת' });
   }
 };
 
 export const deleteTable = async (req, res) => {
   try {
-    await Table.deleteTable(req.params.id);
+    await TableService.deleteTable(req.params.id, req.user.id);
     res.json({ message: 'נמחק' });
   } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ message: 'שגיאת שרת' });
+    console.error('deleteTable error:', err.message || err);
+    res.status(err.status || 500).json({ message: err.message || 'שגיאת שרת' });
   }
 };

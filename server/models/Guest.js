@@ -11,6 +11,27 @@ export const getGuests = async (eventId) => {
   return rows;
 };
 
+export const verifyGuestOwnership = async (guestId, userId) => {
+  const [rows] = await pool.query(
+    `SELECT g.id FROM guests g
+     JOIN events e ON e.id = g.event_id
+     WHERE g.id = ? AND e.user_id = ?`,
+    [guestId, userId]
+  );
+  return rows.length > 0;
+};
+
+export const verifyGuestsOwnership = async (guestIds, userId) => {
+  if (!guestIds.length) return true;
+  const [rows] = await pool.query(
+    `SELECT COUNT(*) as count FROM guests g
+     JOIN events e ON e.id = g.event_id
+     WHERE g.id IN (?) AND e.user_id = ?`,
+    [guestIds, userId]
+  );
+  return rows[0].count === guestIds.length;
+};
+
 export const addGuest = async (eventId, { guest_name, phone_number, guests_count, category }) => {
   const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
   const [result] = await pool.query(
