@@ -6,8 +6,14 @@ import authRoutes from './routes/auth.js';
 import eventRoutes from './routes/events.js';
 import invitationRoutes from './routes/invitation.js';
 import { logger } from './middleware/logger.js';
+import { authMiddleware } from './middleware/auth.js';
 
 dotenv.config();
+
+if (!process.env.JWT_SECRET) {
+  console.error('FATAL: JWT_SECRET is not defined in .env');
+  process.exit(1);
+}
 
 const app = express();
 
@@ -17,7 +23,7 @@ app.use(cookieParser());
 app.use(logger);
 
 app.use('/api/auth', authRoutes);
-app.use('/api/events', eventRoutes);
+app.use('/api/events', authMiddleware, eventRoutes);
 app.use('/api/invitation', invitationRoutes);
 
 const PORT = process.env.PORT || 5000;

@@ -1,12 +1,10 @@
 import { Router } from 'express';
 import { getMyEvents, createEvent, getEventById, deleteEvent } from '../controllers/eventsController.js';
-import { authMiddleware } from '../middleware/auth.js';
 import guestsRouter from './guests.js';
 import tablesRouter from './tables.js';
 import tasksRouter from './tasks.js';
 
 const router = Router();
-router.use(authMiddleware);
 
 router.get('/', getMyEvents);
 router.post('/', createEvent);
