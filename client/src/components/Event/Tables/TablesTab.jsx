@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { getTables, addTable, deleteTable, getGuests, updateGuestTable, autoArrangeSave } from '../../../services/eventService';
+import { getTables, addTable, deleteTable } from '../../../services/tableService';
+import { getGuests, updateGuestTable, autoArrangeSave } from '../../../services/guestService';
 import { autoArrangeSeating } from '../../../utils/seatingArrangement';
 import ConfirmModal from '../../Common/ConfirmModal';
 

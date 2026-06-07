@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getGuests, addGuest, updateGuestStatus, deleteGuest } from '../../../services/eventService';
+import { getGuests, addGuest, updateGuestStatus, deleteGuest } from '../../../services/guestService';
 import ConfirmModal from '../../Common/ConfirmModal';
 
 const STATUS_LABELS = { pending: '⏳ ממתין', confirmed: '✅ מאשר', declined: '❌ מסרב' };

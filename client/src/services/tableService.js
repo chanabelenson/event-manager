@@ -13,7 +13,6 @@ const handle = async (res) => {
   return data;
 };
 
-export const getMyEvents = () => fetch(API, opts()).then(handle);
-export const getEvent = (id) => fetch(`${API}/${id}`, opts()).then(handle);
-export const createEvent = (body) => fetch(API, opts('POST', body)).then(handle);
-export const deleteEvent = (id) => fetch(`${API}/${id}`, opts('DELETE')).then(handle);
+export const getTables = (eventId) => fetch(`${API}/${eventId}/tables`, opts()).then(handle);
+export const addTable = (eventId, body) => fetch(`${API}/${eventId}/tables`, opts('POST', body)).then(handle);
+export const deleteTable = (id) => fetch(`${API}/tables/${id}`, opts('DELETE')).then(handle);

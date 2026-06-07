@@ -1,4 +1,4 @@
-import * as Event from '../models/Event.js';
+import * as Event from '../models/event.js';
 
 export async function getMyEvents(userId) {
   return await Event.getUserEvents(userId);
@@ -33,11 +33,12 @@ export async function createEvent(userId, eventData) {
 }
 
 export async function deleteEvent(eventId, userId) {
-  const event = await Event.findEventById(eventId, userId);
-  if (!event) {
+  // קריאה ישירה למחיקה (המודל כבר מחזיר true/false לפי affectedRows)
+  const isDeleted = await Event.deleteEventById(eventId, userId);
+  
+  if (!isDeleted) {
     const error = new Error('אירוע לא נמצא או אין הרשאה');
     error.status = 404;
     throw error;
   }
-  await Event.deleteEventById(eventId, userId);
 }

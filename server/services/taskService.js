@@ -1,5 +1,5 @@
 import pool from '../config/db.js';
-import * as Event from '../models/Event.js';
+import * as Event from '../models/event.js';
 
 export async function getTasks(eventId, userId) {
   // תחילה בדקן שהאירוע שייך למשתמש
