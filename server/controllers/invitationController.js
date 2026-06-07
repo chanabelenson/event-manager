@@ -1,32 +1,20 @@
 import * as InvitationService from '../services/invitationService.js';
+import asyncHandler from '../middleware/asyncHandler.js';
+import { AppError } from '../utils/AppError.js';
 
 const TWO_DAYS_MS = 2 * 24 * 60 * 60 * 1000;
 
-function isDeadlinePassed(eventDate) {
-  return new Date(eventDate).getTime() - Date.now() < TWO_DAYS_MS;
-}
+export const getInvitation = asyncHandler(async (req, res) => {
+  const guest = await InvitationService.getInvitation(req.params.token);
+  if (!guest) throw new AppError('הזמנה לא נמצאה', 404);
 
-export async function getInvitation(req, res) {
-  try {
-    const guest = await InvitationService.getInvitation(req.params.token);
-    if (!guest) return res.status(404).json({ message: 'הזמנה לא נמצאה' });
+  res.json({
+    ...guest,
+    deadline_passed: new Date(guest.event_date).getTime() - Date.now() < TWO_DAYS_MS,
+  });
+});
 
-    res.json({
-      ...guest,
-      deadline_passed: isDeadlinePassed(guest.event_date),
-    });
-  } catch (err) {
-    console.error('getInvitation error:', err.message);
-    res.status(err.status || 500).json({ message: err.message || 'שגיאת שרת פנימית' });
-  }
-}
-
-export async function updateInvitationStatus(req, res) {
-  try {
-    await InvitationService.updateInvitationStatus(req.params.token, req.body.status);
-    res.json({ message: 'סטטוס עודכן בהצלחה' });
-  } catch (err) {
-    console.error('updateInvitationStatus error:', err.message);
-    res.status(err.status || 500).json({ message: err.message || 'שגיאת שרת פנימית' });
-  }
-}
+export const updateInvitationStatus = asyncHandler(async (req, res) => {
+  await InvitationService.updateInvitationStatus(req.params.token, req.body.status);
+  res.json({ message: 'סטטוס עודכן בהצלחה' });
+});

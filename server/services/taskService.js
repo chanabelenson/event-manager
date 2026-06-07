@@ -1,14 +1,10 @@
 import pool from '../config/db.js';
 import * as Event from '../models/event.js';
+import { AppError } from '../utils/AppError.js';
 
 export async function getTasks(eventId, userId) {
-  // תחילה בדקן שהאירוע שייך למשתמש
   const event = await Event.findEventById(eventId, userId);
-  if (!event) {
-    const error = new Error('אירוע לא נמצא');
-    error.status = 404;
-    throw error;
-  }
+  if (!event) throw new AppError('אירוע לא נמצא', 404);
 
   const [rows] = await pool.query(
     'SELECT * FROM tasks WHERE event_id = ? ORDER BY task_date ASC, id ASC',
@@ -18,19 +14,9 @@ export async function getTasks(eventId, userId) {
 }
 
 export async function addTask(eventId, userId, { task_name, task_date, estimated_cost, actual_cost, category, notes }) {
-  // בדיקה שהאירוע שייך למשתמש
   const event = await Event.findEventById(eventId, userId);
-  if (!event) {
-    const error = new Error('אירוע לא נמצא');
-    error.status = 404;
-    throw error;
-  }
-
-  if (!task_name) {
-    const error = new Error('שם משימה חובה');
-    error.status = 400;
-    throw error;
-  }
+  if (!event) throw new AppError('אירוע לא נמצא', 404);
+  if (!task_name) throw new AppError('שם משימה חובה', 400);
 
   const [result] = await pool.query(
     'INSERT INTO tasks (event_id, task_name, task_date, estimated_cost, actual_cost, category, notes) VALUES (?, ?, ?, ?, ?, ?, ?)',
@@ -41,33 +27,21 @@ export async function addTask(eventId, userId, { task_name, task_date, estimated
 }
 
 export async function toggleTask(taskId, userId, is_completed) {
-  // בדיקה שהמשימה שייכת למשתמש
   const [task] = await pool.query(
     'SELECT t.* FROM tasks t JOIN events e ON t.event_id = e.id WHERE t.id = ? AND e.user_id = ?',
     [taskId, userId]
   );
-
-  if (!task || task.length === 0) {
-    const error = new Error('משימה לא נמצאה');
-    error.status = 404;
-    throw error;
-  }
+  if (!task || task.length === 0) throw new AppError('משימה לא נמצאה', 404);
 
   await pool.query('UPDATE tasks SET is_completed=? WHERE id=?', [is_completed, taskId]);
 }
 
 export async function updateTask(taskId, userId, { task_name, estimated_cost, actual_cost, category, notes }) {
-  // בדיקה שהמשימה שייכת למשתמש
   const [task] = await pool.query(
     'SELECT t.* FROM tasks t JOIN events e ON t.event_id = e.id WHERE t.id = ? AND e.user_id = ?',
     [taskId, userId]
   );
-
-  if (!task || task.length === 0) {
-    const error = new Error('משימה לא נמצאה');
-    error.status = 404;
-    throw error;
-  }
+  if (!task || task.length === 0) throw new AppError('משימה לא נמצאה', 404);
 
   await pool.query(
     'UPDATE tasks SET task_name=?, estimated_cost=?, actual_cost=?, category=?, notes=? WHERE id=?',
@@ -76,17 +50,11 @@ export async function updateTask(taskId, userId, { task_name, estimated_cost, ac
 }
 
 export async function deleteTask(taskId, userId) {
-  // בדיקה שהמשימה שייכת למשתמש
   const [task] = await pool.query(
     'SELECT t.* FROM tasks t JOIN events e ON t.event_id = e.id WHERE t.id = ? AND e.user_id = ?',
     [taskId, userId]
   );
-
-  if (!task || task.length === 0) {
-    const error = new Error('משימה לא נמצאה');
-    error.status = 404;
-    throw error;
-  }
+  if (!task || task.length === 0) throw new AppError('משימה לא נמצאה', 404);
 
   await pool.query('DELETE FROM tasks WHERE id=?', [taskId]);
 }

@@ -1,5 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { registerUser, authenticateUser, getUserProfile } from '../services/authService.js';
+import asyncHandler from '../middleware/asyncHandler.js';
+import { AppError } from '../utils/AppError.js';
 
 const COOKIE_BASE = {
   httpOnly: true,
@@ -9,57 +11,36 @@ const COOKIE_BASE = {
 
 const COOKIE_OPTIONS = { ...COOKIE_BASE, maxAge: 7 * 24 * 60 * 60 * 1000 };
 
-export async function register(req, res) {
-  try {
-    const { name, email, password } = req.body;
-    if (!name || !email || !password)
-      return res.status(400).json({ message: 'כל השדות חובה' });
+export const register = asyncHandler(async (req, res) => {
+  const { name, email, password } = req.body;
+  if (!name || !email || !password) throw new AppError('כל השדות חובה', 400);
 
-    const result = await registerUser(name, email, password);
-    if (!result.success) return res.status(result.code).json({ message: result.message });
+  await registerUser(name, email, password);
+  res.status(201).json({ message: 'נרשמת בהצלחה' });
+});
 
-    res.status(201).json({ message: 'נרשמת בהצלחה' });
-  } catch (err) {
-    console.error('Register error:', err.message);
-    res.status(500).json({ message: 'שגיאת שרת פנימית' });
-  }
-}
+export const login = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) throw new AppError('כל השדות חובה', 400);
 
-export async function login(req, res) {
-  try {
-    const { email, password } = req.body;
-    if (!email || !password)
-      return res.status(400).json({ message: 'כל השדות חובה' });
+  const user = await authenticateUser(email, password);
+  const token = jwt.sign(
+    { id: user.id, email: user.email },
+    process.env.JWT_SECRET,
+    { expiresIn: '7d' }
+  );
 
-    const user = await authenticateUser(email, password);
-    if (!user) return res.status(401).json({ message: 'אימייל או סיסמה שגויים' });
+  res.cookie('token', token, COOKIE_OPTIONS);
+  res.json({ user: { id: user.id, name: user.full_name, email: user.email } });
+});
 
-    const token = jwt.sign(
-      { id: user.id, email: user.email },
-      process.env.JWT_SECRET,
-      { expiresIn: '7d' }
-    );
-
-    res.cookie('token', token, COOKIE_OPTIONS);
-    res.json({ user: { id: user.id, name: user.full_name, email: user.email } });
-  } catch (err) {
-    console.error('Login error:', err.message);
-    res.status(500).json({ message: 'שגיאת שרת פנימית' });
-  }
-}
-
-export async function logout(req, res) {
+export function logout(req, res) {
   res.clearCookie('token', COOKIE_BASE);
   res.json({ message: 'התנתקת בהצלחה' });
 }
 
-export async function getMe(req, res) {
-  try {
-    const user = await getUserProfile(req.user.id);
-    if (!user) return res.status(404).json({ message: 'משתמש לא נמצא' });
-    res.json({ user: { id: user.id, name: user.full_name, email: user.email } });
-  } catch (err) {
-    console.error('getMe error:', err.message);
-    res.status(500).json({ message: 'שגיאת שרת פנימית' });
-  }
-}
+export const getMe = asyncHandler(async (req, res) => {
+  const user = await getUserProfile(req.user.id);
+  if (!user) throw new AppError('משתמש לא נמצא', 404);
+  res.json({ user: { id: user.id, name: user.full_name, email: user.email } });
+});

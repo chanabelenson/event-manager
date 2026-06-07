@@ -1,28 +1,21 @@
 import bcrypt from 'bcrypt';
 import * as User from '../models/User.js';
+import { AppError } from '../utils/AppError.js';
 
 export async function registerUser(name, email, password) {
-  if (!name || !email || !password) {
-    throw new Error('Missing required fields');
-  }
-
   const exists = await User.emailExists(email);
-  if (exists) {
-    return { success: false, code: 409, message: 'אימייל כבר קיים' };
-  }
+  if (exists) throw new AppError('אימייל כבר קיים', 409);
 
   const hashedPassword = await bcrypt.hash(password, 10);
-  const userId = await User.createUser(name, email, hashedPassword);
-
-  return { success: true, userId };
+  await User.createUser(name, email, hashedPassword);
 }
 
 export async function authenticateUser(email, password) {
   const user = await User.findUserByEmail(email);
-  if (!user) return null;
+  if (!user) throw new AppError('אימייל או סיסמה שגויים', 401);
 
   const isMatch = await bcrypt.compare(password, user.password_hash);
-  if (!isMatch) return null;
+  if (!isMatch) throw new AppError('אימייל או סיסמה שגויים', 401);
 
   return user;
 }

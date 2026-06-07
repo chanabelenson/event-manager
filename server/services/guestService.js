@@ -1,16 +1,13 @@
 import pool from '../config/db.js';
 import * as Event from '../models/event.js';
+import { AppError } from '../utils/AppError.js';
 
 export async function getGuests(eventId, userId) {
   const event = await Event.findEventById(eventId, userId);
-  if (!event) {
-    const error = new Error('אירוע לא נמצא');
-    error.status = 404;
-    throw error;
-  }
+  if (!event) throw new AppError('אירוע לא נמצא', 404);
 
   const [guests] = await pool.query(
-    `SELECT g.*, t.table_number as assigned_table 
+    `SELECT g.*, t.table_number as assigned_table
      FROM guests g
      LEFT JOIN tables t ON t.id = g.table_id
      WHERE g.event_id = ? ORDER BY g.guest_name ASC`,
@@ -21,17 +18,8 @@ export async function getGuests(eventId, userId) {
 
 export async function addGuest(eventId, userId, { guest_name, phone_number, guests_count, category }) {
   const event = await Event.findEventById(eventId, userId);
-  if (!event) {
-    const error = new Error('אירוע לא נמצא');
-    error.status = 404;
-    throw error;
-  }
-
-  if (!guest_name) {
-    const error = new Error('שם חובה');
-    error.status = 400;
-    throw error;
-  }
+  if (!event) throw new AppError('אירוע לא נמצא', 404);
+  if (!guest_name) throw new AppError('שם חובה', 400);
 
   const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
   const [result] = await pool.query(
@@ -47,12 +35,7 @@ export async function updateGuestStatus(guestId, userId, status) {
     'SELECT g.* FROM guests g JOIN events e ON g.event_id = e.id WHERE g.id = ? AND e.user_id = ?',
     [guestId, userId]
   );
-
-  if (!guest || guest.length === 0) {
-    const error = new Error('אורח לא נמצא');
-    error.status = 404;
-    throw error;
-  }
+  if (!guest || guest.length === 0) throw new AppError('אורח לא נמצא', 404);
 
   await pool.query('UPDATE guests SET status=? WHERE id=?', [status, guestId]);
 }
@@ -62,32 +45,20 @@ export async function updateGuestTable(guestId, userId, tableId) {
     'SELECT g.* FROM guests g JOIN events e ON g.event_id = e.id WHERE g.id = ? AND e.user_id = ?',
     [guestId, userId]
   );
-
-  if (!guest || guest.length === 0) {
-    const error = new Error('אורח לא נמצא');
-    error.status = 404;
-    throw error;
-  }
+  if (!guest || guest.length === 0) throw new AppError('אורח לא נמצא', 404);
 
   await pool.query('UPDATE guests SET table_id=? WHERE id=?', [tableId || null, guestId]);
 }
 
 export async function bulkUpdateTables(assignments, userId) {
-  // בדיקה קטנה שהעבודה חוקית
-  if (!Array.isArray(assignments)) {
-    const error = new Error('נתונים שגויים');
-    error.status = 400;
-    throw error;
-  }
+  if (!Array.isArray(assignments)) throw new AppError('נתונים שגויים', 400);
 
   for (const { guestId, tableId } of assignments) {
     const [guest] = await pool.query(
       'SELECT g.* FROM guests g JOIN events e ON g.event_id = e.id WHERE g.id = ? AND e.user_id = ?',
       [guestId, userId]
     );
-
-    if (!guest || guest.length === 0) continue; // דלג על אורחים לא רלוונטיים
-
+    if (!guest || guest.length === 0) continue;
     await pool.query('UPDATE guests SET table_id=? WHERE id=?', [tableId, guestId]);
   }
 }
@@ -97,12 +68,7 @@ export async function deleteGuest(guestId, userId) {
     'SELECT g.* FROM guests g JOIN events e ON g.event_id = e.id WHERE g.id = ? AND e.user_id = ?',
     [guestId, userId]
   );
-
-  if (!guest || guest.length === 0) {
-    const error = new Error('אורח לא נמצא');
-    error.status = 404;
-    throw error;
-  }
+  if (!guest || guest.length === 0) throw new AppError('אורח לא נמצא', 404);
 
   await pool.query('DELETE FROM guests WHERE id=?', [guestId]);
 }
