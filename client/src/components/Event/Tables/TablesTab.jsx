@@ -70,7 +70,7 @@ export default function TablesTab({ eventId }) {
       <div className="tables-grid">
         {tables.map((table) => {
           const seated = guests.filter((g) => g.table_id === table.id);
-          const totalSeated = seated.reduce((s, g) => s + Number(g.guests_count), 0);
+          const totalSeated = seated.reduce((s, g) => s + Number(g.status === 'confirmed' && g.confirmed_count != null ? g.confirmed_count : g.status === 'confirmed' ? g.guests_count : 0), 0);
           return (
             <div key={table.id} className="table-card">
               <div className="table-card-header">
@@ -100,7 +100,7 @@ export default function TablesTab({ eventId }) {
             <tr key={g.id}>
               <td>{g.guest_name}</td>
               <td>{g.category || '-'}</td>
-              <td>{g.guests_count}</td>
+              <td>{g.status === 'confirmed' && g.confirmed_count != null ? g.confirmed_count : g.status === 'confirmed' ? g.guests_count : '-'}</td>
               <td>
                 <select value={g.table_id || ''} onChange={(e) => handleAssign(g.id, e.target.value)} className="status-select">
                   <option value="">ללא שולחן</option>

@@ -11,11 +11,17 @@ function initTables(tables) {
 
 // ─── Group guests by category ─────────────────────────────────────────────────
 
+function effectiveCount(guest) {
+  return Number(guest.status === 'confirmed' && guest.confirmed_count != null
+    ? guest.confirmed_count
+    : guest.guests_count);
+}
+
 function groupByCategory(guests) {
   return guests.reduce((acc, guest) => {
     const key = guest.category || 'ללא קטגוריה';
     if (!acc[key]) acc[key] = [];
-    acc[key].push({ ...guest, guests_count: Number(guest.guests_count) });
+    acc[key].push({ ...guest, guests_count: effectiveCount(guest) });
     return acc;
   }, {});
 }

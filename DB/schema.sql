@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS events (
     audio_url VARCHAR(255),
     
     total_budget DECIMAL(10, 2) DEFAULT 0.00,
+    rsvp_deadline DATE DEFAULT NULL,
     
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
@@ -48,6 +49,7 @@ CREATE TABLE IF NOT EXISTS guests (
     phone_number VARCHAR(20),
     status ENUM('pending', 'confirmed', 'declined') DEFAULT 'pending',
     guests_count INT DEFAULT 1,
+    confirmed_count INT DEFAULT NULL,
     invitation_token VARCHAR(64) UNIQUE NOT NULL,
     table_id INT DEFAULT NULL,
     

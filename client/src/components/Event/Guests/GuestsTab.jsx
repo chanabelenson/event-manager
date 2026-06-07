@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getGuests, addGuest, updateGuestStatus, deleteGuest } from '../../../services/guestService';
+import { getEvent, updateRsvpDeadline } from '../../../services/eventService';
 import ConfirmModal from '../../Common/ConfirmModal';
 
 const STATUS_LABELS = { pending: '⏳ ממתין', confirmed: '✅ מאשר', declined: '❌ מסרב' };
@@ -9,10 +10,17 @@ export default function GuestsTab({ eventId }) {
   const [guests, setGuests] = useState([]);
   const [form, setForm] = useState(EMPTY);
   const [confirmDelete, setConfirmDelete] = useState(null);
+  const [rsvpDeadline, setRsvpDeadline] = useState('');
+  const [deadlineSaved, setDeadlineSaved] = useState(false);
 
-  useEffect(() => { getGuests(eventId).then(setGuests).catch(console.error); }, [eventId]);
+  useEffect(() => {
+    getGuests(eventId).then(setGuests).catch(console.error);
+    getEvent(eventId).then((e) => {
+      if (e.rsvp_deadline) setRsvpDeadline(e.rsvp_deadline.split('T')[0]);
+    }).catch(console.error);
+  }, [eventId]);
 
-  const confirmed = guests.filter((g) => g.status === 'confirmed').reduce((s, g) => s + Number(g.guests_count), 0);
+  const confirmed = guests.filter((g) => g.status === 'confirmed').reduce((s, g) => s + Number(g.confirmed_count ?? g.guests_count), 0);
   const pending = guests.filter((g) => g.status === 'pending').length;
 
   const handleSubmit = async (e) => {
@@ -33,12 +41,30 @@ export default function GuestsTab({ eventId }) {
     setConfirmDelete(null);
   };
 
+  const handleDeadlineSave = async () => {
+    await updateRsvpDeadline(eventId, rsvpDeadline || null);
+    setDeadlineSaved(true);
+    setTimeout(() => setDeadlineSaved(false), 2000);
+  };
+
   return (
     <div className="tab-content">
       <div className="budget-summary">
         <div className="budget-summary-item"><span>סה"כ מוזמנים</span><strong>{guests.length}</strong></div>
         <div className="budget-summary-item actual"><span>מאשרים ({confirmed} אנשים)</span><strong>{guests.filter(g => g.status === 'confirmed').length}</strong></div>
         <div className="budget-summary-item"><span>ממתינים</span><strong>{pending}</strong></div>
+      </div>
+
+      <div className="inline-form" style={{ alignItems: 'center' }}>
+        <label style={{ whiteSpace: 'nowrap' }}>מועד אחרון לאישור:</label>
+        <input
+          type="date"
+          value={rsvpDeadline}
+          onChange={(e) => setRsvpDeadline(e.target.value)}
+        />
+        <button className="btn-primary" onClick={handleDeadlineSave}>שמור</button>
+        {deadlineSaved && <span style={{ color: 'green' }}>✓ נשמר</span>}
+        {!rsvpDeadline && <small style={{ color: 'gray' }}>(ברירת מחדל: יומיים לפני האירוע)</small>}
       </div>
 
       <form className="inline-form" onSubmit={handleSubmit}>
@@ -50,13 +76,14 @@ export default function GuestsTab({ eventId }) {
       </form>
 
       <table className="data-table">
-        <thead><tr><th>שם</th><th>טלפון</th><th>אנשים</th><th>סטטוס</th><th>קישור הזמנה</th><th></th></tr></thead>
+        <thead><tr><th>שם</th><th>טלפון</th><th>מוזמנים</th><th>מגיעים</th><th>סטטוס</th><th>קישור הזמנה</th><th></th></tr></thead>
         <tbody>
           {guests.map((g) => (
             <tr key={g.id}>
               <td>{g.guest_name}</td>
               <td>{g.phone_number || '-'}</td>
               <td>{g.guests_count}</td>
+              <td>{g.status === 'confirmed' ? (g.confirmed_count ?? g.guests_count) : '-'}</td>
               <td>
                 <select value={g.status} onChange={(e) => handleStatus(g.id, e.target.value)} className="status-select">
                   {Object.entries(STATUS_LABELS).map(([val, label]) => (

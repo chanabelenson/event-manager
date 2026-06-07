@@ -8,6 +8,9 @@ const formatDate = (dateStr) =>
     year: 'numeric', hour: '2-digit', minute: '2-digit',
   });
 
+const formatDeadline = (dateStr) =>
+  new Date(dateStr).toLocaleDateString('he-IL', { day: 'numeric', month: 'long', year: 'numeric' });
+
 export default function Invitation() {
   const { token } = useParams();
   const [data, setData] = useState(null);
@@ -15,10 +18,11 @@ export default function Invitation() {
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
+  const [confirmedCount, setConfirmedCount] = useState(1);
 
   useEffect(() => {
     getInvitation(token)
-      .then(setData)
+      .then((d) => { setData(d); setConfirmedCount(d.guests_count); })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   }, [token]);
@@ -28,9 +32,9 @@ export default function Invitation() {
     setSubmitting(true);
     setSuccessMsg('');
     try {
-      await updateInvitationStatus(token, status);
-      setData((prev) => ({ ...prev, status }));
-      setSuccessMsg(status === 'confirmed' ? 'אישרת הגעה! נשמח לראותך 🎉' : 'עדכנו שלא תוכל להגיע 😔');
+      await updateInvitationStatus(token, status, status === 'confirmed' ? confirmedCount : 0);
+      setData((prev) => ({ ...prev, status, confirmed_count: status === 'confirmed' ? confirmedCount : 0 }));
+      setSuccessMsg(status === 'confirmed' ? `אישרת הגעה ל-${confirmedCount} אנשים! נשמח לראותכם 🎉` : 'עדכנו שלא תוכל להגיע 😔');
     } catch (err) {
       setError(err.message);
     } finally {
@@ -54,7 +58,7 @@ export default function Invitation() {
     </div>
   );
 
-  const { status, deadline_passed } = data;
+  const { status, deadline_passed, deadline_date } = data;
   const isConfirmed = status === 'confirmed';
   const isDeclined = status === 'declined';
 
@@ -88,23 +92,36 @@ export default function Invitation() {
           {deadline_passed ? (
             <div className="invitation-locked">
               <span>🔒</span>
-              <p>לא ניתן לשנות אישור הגעה פחות מיומיים לפני האירוע</p>
-              {isConfirmed && <small>סטטוס נוכחי: אישרת הגעה ✅</small>}
+              <p>לא ניתן לשנות אישור הגעה לאחר {formatDeadline(deadline_date)}</p>
+              {isConfirmed && <small>סטטוס נוכחי: אישרת הגעה ל-{data.confirmed_count} אנשים ✅</small>}
               {isDeclined && <small>סטטוס נוכחי: לא מגיע 😔</small>}
               {status === 'pending' && <small>סטטוס נוכחי: לא ענית</small>}
             </div>
           ) : (
             <div className="invitation-actions">
               <p className="invitation-question">
-                {status === 'pending' ? 'האם תגיעו?' : 'ניתן לשנות את תשובתך עד יומיים לפני האירוע'}
+                {status === 'pending' ? 'האם תגיעו?' : 'ניתן לשנות את תשובתך'}
               </p>
+              <p className="invitation-deadline">ניתן לשנות עד {formatDeadline(deadline_date)}</p>
+
+              {data.guests_count > 1 && (
+                <div className="guests-count-selector">
+                  <label>כמה אנשים מגיעים?</label>
+                  <select value={confirmedCount} onChange={(e) => setConfirmedCount(Number(e.target.value))}>
+                    {Array.from({ length: data.guests_count }, (_, i) => i + 1).map((n) => (
+                      <option key={n} value={n}>{n}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
               <div className="invitation-buttons">
                 <button
                   className={`btn-confirm ${isConfirmed ? 'btn-active' : ''}`}
                   onClick={() => handleResponse('confirmed')}
-                  disabled={submitting || isConfirmed}
+                  disabled={submitting}
                 >
-                  ✓ {isConfirmed ? 'אישרת הגעה' : 'כן, אגיע'}
+                  ✓ {isConfirmed ? `אישרת הגעה (${data.confirmed_count})` : 'כן, אגיע'}
                 </button>
                 <button
                   className={`btn-decline ${isDeclined ? 'btn-active-decline' : ''}`}

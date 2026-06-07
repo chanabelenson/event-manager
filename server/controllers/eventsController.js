@@ -22,6 +22,11 @@ export const createEvent = asyncHandler(async (req, res) => {
   res.status(201).json(event);
 });
 
+export const updateRsvpDeadline = asyncHandler(async (req, res) => {
+  await EventService.updateRsvpDeadline(req.params.id, req.user.id, req.body.rsvp_deadline);
+  res.json({ message: 'עודכן' });
+});
+
 export const deleteEvent = asyncHandler(async (req, res) => {
   await EventService.deleteEvent(req.params.id, req.user.id);
   res.json({ message: 'האירוע נמחק בהצלחה' });

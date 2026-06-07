@@ -24,6 +24,14 @@ export async function createEvent(userId, { event_name, event_date, location_nam
   return result.insertId;
 }
 
+export async function updateRsvpDeadline(eventId, userId, rsvp_deadline) {
+  const [result] = await pool.query(
+    'UPDATE events SET rsvp_deadline=? WHERE id=? AND user_id=?',
+    [rsvp_deadline || null, eventId, userId]
+  );
+  return result.affectedRows > 0;
+}
+
 export async function deleteEventById(eventId, userId) {
   const [result] = await pool.query(
     'DELETE FROM events WHERE id = ? AND user_id = ?',

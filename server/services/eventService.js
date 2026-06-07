@@ -20,6 +20,11 @@ export async function createEvent(userId, eventData) {
   return { id: eventId, user_id: userId, event_name, event_date, location_name, location_address: location_address || null };
 }
 
+export async function updateRsvpDeadline(eventId, userId, rsvp_deadline) {
+  const updated = await Event.updateRsvpDeadline(eventId, userId, rsvp_deadline);
+  if (!updated) throw new AppError('אירוע לא נמצא או אין הרשאה', 404);
+}
+
 export async function deleteEvent(eventId, userId) {
   const isDeleted = await Event.deleteEventById(eventId, userId);
   if (!isDeleted) throw new AppError('אירוע לא נמצא או אין הרשאה', 404);
