@@ -24,14 +24,14 @@ export default function TablesTab({ eventId }) {
   };
 
   const handleDeleteTable = async (id) => {
-    await deleteTable(id);
+    await deleteTable(eventId, id);
     setTables(tables.filter((t) => t.id !== id));
     setGuests(guests.map((g) => (g.table_id === id ? { ...g, table_id: null } : g)));
     setConfirmDelete(null);
   };
 
   const handleAssign = async (guestId, tableId) => {
-    await updateGuestTable(guestId, tableId || null);
+    await updateGuestTable(eventId, guestId, tableId || null);
     setGuests(guests.map((g) => (g.id === Number(guestId) ? { ...g, table_id: tableId ? Number(tableId) : null } : g)));
   };
 
@@ -43,7 +43,7 @@ export default function TablesTab({ eventId }) {
       const assignments = result.flatMap((t) =>
         t.seated_guests.map((g) => ({ guestId: g.id, tableId: t.id }))
       );
-      await autoArrangeSave(assignments);
+      await autoArrangeSave(eventId, assignments);
       setGuests(guests.map((g) => {
         const found = assignments.find((a) => a.guestId === g.id);
         return found ? { ...g, table_id: found.tableId } : g;

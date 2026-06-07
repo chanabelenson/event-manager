@@ -15,6 +15,6 @@ const handle = async (res) => {
 
 export const getTasks = (eventId) => fetch(`${API}/${eventId}/tasks`, opts()).then(handle);
 export const addTask = (eventId, body) => fetch(`${API}/${eventId}/tasks`, opts('POST', body)).then(handle);
-export const toggleTask = (id, is_completed) => fetch(`${API}/tasks/${id}/toggle`, opts('PATCH', { is_completed })).then(handle);
-export const updateTask = (id, body) => fetch(`${API}/tasks/${id}`, opts('PUT', body)).then(handle);
-export const deleteTask = (id) => fetch(`${API}/tasks/${id}`, opts('DELETE')).then(handle);
+export const toggleTask = (eventId, id, is_completed) => fetch(`${API}/${eventId}/tasks/${id}/toggle`, opts('PATCH', { is_completed })).then(handle);
+export const updateTask = (eventId, id, body) => fetch(`${API}/${eventId}/tasks/${id}`, opts('PUT', body)).then(handle);
+export const deleteTask = (eventId, id) => fetch(`${API}/${eventId}/tasks/${id}`, opts('DELETE')).then(handle);

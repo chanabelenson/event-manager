@@ -19,7 +19,7 @@ export default function BudgetTab({ eventId }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (editId) {
-      await updateTask(editId, form);
+      await updateTask(eventId, editId, form);
       setItems(items.map((i) => (i.id === editId ? { ...i, ...form } : i)));
       setEditId(null);
     } else {
@@ -35,7 +35,7 @@ export default function BudgetTab({ eventId }) {
   };
 
   const handleDelete = async (id) => {
-    await deleteTask(id);
+    await deleteTask(eventId, id);
     setItems(items.filter((i) => i.id !== id));
     setConfirmDelete(null);
   };

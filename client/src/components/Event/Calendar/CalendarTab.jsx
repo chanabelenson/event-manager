@@ -54,7 +54,7 @@ export default function CalendarTab({ eventId, createdAt, eventDate }) {
 
   const handleToggle = async (id, is_completed) => {
     try {
-      await toggleTask(id, !is_completed);
+      await toggleTask(eventId, id, !is_completed);
       setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, is_completed: !is_completed } : t)));
     } catch (error) {
       console.error("שגיאה בעדכון משימה:", error);
@@ -63,7 +63,7 @@ export default function CalendarTab({ eventId, createdAt, eventDate }) {
 
   const handleDelete = async (id) => {
     try {
-      await deleteTask(id);
+      await deleteTask(eventId, id);
       setTasks((prev) => prev.filter((t) => t.id !== id));
     } catch (error) {
       console.error("שגיאה במחיקת משימה:", error);

@@ -23,12 +23,12 @@ export default function GuestsTab({ eventId }) {
   };
 
   const handleStatus = async (id, status) => {
-    await updateGuestStatus(id, status);
+    await updateGuestStatus(eventId, id, status);
     setGuests(guests.map((g) => (g.id === id ? { ...g, status } : g)));
   };
 
   const handleDelete = async (id) => {
-    await deleteGuest(id);
+    await deleteGuest(eventId, id);
     setGuests(guests.filter((g) => g.id !== id));
     setConfirmDelete(null);
   };
