@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
-import { addTask, updateTask, deleteTask } from '../../../services/taskService';
+import { getTasks, addTask, updateTask, deleteTask } from '../../../services/taskService';
 import ConfirmModal from '../../Common/ConfirmModal';
 
 const EMPTY = { item_name: '', category: '', estimated_cost: '', actual_cost: '', notes: '' };
 
 export default function BudgetTab({ eventId }) {
   const [items, setItems] = useState([]);
+
+  useEffect(() => { getTasks(eventId).then(setItems).catch(console.error); }, [eventId]);
   const [form, setForm] = useState(EMPTY);
   const [editId, setEditId] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(null);
