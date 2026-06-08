@@ -1,9 +1,8 @@
 import pool from '../config/db.js';
 import * as Event from '../models/Event.js';
 import { AppError } from '../utils/AppError.js';
-import asyncHandler from '../middleware/asyncHandler.js';
 
-export const getCategories = asyncHandler(async (req, res) => {
+export const getCategories = async (req, res) => {
   const event = await Event.findEventById(req.params.eventId, req.user.id);
   if (!event) throw new AppError('אירוע לא נמצא', 404);
 
@@ -12,9 +11,9 @@ export const getCategories = asyncHandler(async (req, res) => {
     [req.params.eventId]
   );
   res.json(rows);
-});
+};
 
-export const addCategory = asyncHandler(async (req, res) => {
+export const addCategory = async (req, res) => {
   const event = await Event.findEventById(req.params.eventId, req.user.id);
   if (!event) throw new AppError('אירוע לא נמצא', 404);
 
@@ -26,12 +25,12 @@ export const addCategory = asyncHandler(async (req, res) => {
     [req.params.eventId, category_name]
   );
   res.status(201).json({ id: result.insertId, category_name });
-});
+};
 
-export const deleteCategory = asyncHandler(async (req, res) => {
+export const deleteCategory = async (req, res) => {
   const event = await Event.findEventById(req.params.eventId, req.user.id);
   if (!event) throw new AppError('אירוע לא נמצא', 404);
 
   await pool.query('DELETE FROM guest_categories WHERE id = ? AND event_id = ?', [req.params.categoryId, req.params.eventId]);
   res.json({ message: 'נמחק' });
-});
+};

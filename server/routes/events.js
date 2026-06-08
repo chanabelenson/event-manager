@@ -3,6 +3,7 @@ import { getMyEvents, createEvent, getEventById, updateRsvpDeadline, deleteEvent
 import guestsRouter from './guests.js';
 import tablesRouter from './tables.js';
 import tasksRouter from './tasks.js';
+import budgetRouter from './budget.js';
 import giftsRouter from './gifts.js';
 import categoriesRouter from './categories.js';
 
@@ -17,6 +18,7 @@ router.delete('/:id', deleteEvent);
 router.use('/:eventId/guests', guestsRouter);
 router.use('/:eventId/tables', tablesRouter);
 router.use('/:eventId/tasks', tasksRouter);
+router.use('/:eventId/budget', budgetRouter);
 router.use('/:eventId/gifts', giftsRouter);
 router.use('/:eventId/categories', categoriesRouter);
 

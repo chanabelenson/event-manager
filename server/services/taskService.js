@@ -13,16 +13,15 @@ export async function getTasks(eventId, userId) {
   return rows;
 }
 
-export async function addTask(eventId, userId, { task_name, task_date, estimated_cost, actual_cost, category, notes }) {
+export async function addTask(eventId, userId, { task_name, task_date, notes }) {
   const event = await Event.findEventById(eventId, userId);
   if (!event) throw new AppError('אירוע לא נמצא', 404);
   if (!task_name) throw new AppError('שם משימה חובה', 400);
 
   const [result] = await pool.query(
-    'INSERT INTO tasks (event_id, task_name, task_date, estimated_cost, actual_cost, category, notes) VALUES (?, ?, ?, ?, ?, ?, ?)',
-    [eventId, task_name, task_date || null, estimated_cost || 0, actual_cost || 0, category || null, notes || null]
+    'INSERT INTO tasks (event_id, task_name, task_date, notes) VALUES (?, ?, ?, ?)',
+    [eventId, task_name, task_date || null, notes || null]
   );
-
   return { id: result.insertId };
 }
 
@@ -36,7 +35,7 @@ export async function toggleTask(taskId, userId, is_completed) {
   await pool.query('UPDATE tasks SET is_completed=? WHERE id=?', [is_completed, taskId]);
 }
 
-export async function updateTask(taskId, userId, { task_name, estimated_cost, actual_cost, category, notes }) {
+export async function updateTask(taskId, userId, { task_name, task_date, notes }) {
   const [task] = await pool.query(
     'SELECT t.* FROM tasks t JOIN events e ON t.event_id = e.id WHERE t.id = ? AND e.user_id = ?',
     [taskId, userId]
@@ -44,8 +43,8 @@ export async function updateTask(taskId, userId, { task_name, estimated_cost, ac
   if (!task || task.length === 0) throw new AppError('משימה לא נמצאה', 404);
 
   await pool.query(
-    'UPDATE tasks SET task_name=?, estimated_cost=?, actual_cost=?, category=?, notes=? WHERE id=?',
-    [task_name, estimated_cost || 0, actual_cost || 0, category || null, notes || null, taskId]
+    'UPDATE tasks SET task_name=?, task_date=?, notes=? WHERE id=?',
+    [task_name, task_date || null, notes || null, taskId]
   );
 }
 

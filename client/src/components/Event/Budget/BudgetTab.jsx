@@ -1,19 +1,16 @@
 import { useState, useEffect } from 'react';
-import { getTasks, addTask, updateTask, deleteTask } from '../../../services/taskService';
+import { getBudgetItems, addBudgetItem, updateBudgetItem, deleteBudgetItem } from '../../../services/budgetService';
 import ConfirmModal from '../../Common/ConfirmModal';
 
 const EMPTY = { item_name: '', category: '', estimated_cost: '', actual_cost: '', notes: '' };
 
 export default function BudgetTab({ eventId }) {
   const [items, setItems] = useState([]);
-
-  useEffect(() => { getTasks(eventId).then(setItems).catch(console.error); }, [eventId]);
   const [form, setForm] = useState(EMPTY);
   const [editId, setEditId] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(null);
 
-  // BudgetTab נפרד מ-Tasks - משימות לא מופיעות כאן
-  // TODO: יש להוסיף budget API בשרת
+  useEffect(() => { getBudgetItems(eventId).then(setItems).catch(console.error); }, [eventId]);
 
   const totalEstimated = items.reduce((s, i) => s + Number(i.estimated_cost), 0);
   const totalActual = items.reduce((s, i) => s + Number(i.actual_cost), 0);
@@ -21,23 +18,29 @@ export default function BudgetTab({ eventId }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (editId) {
-      await updateTask(eventId, editId, form);
+      await updateBudgetItem(eventId, editId, form);
       setItems(items.map((i) => (i.id === editId ? { ...i, ...form } : i)));
       setEditId(null);
     } else {
-      const { id } = await addTask(eventId, form);
-      setItems([...items, { id, ...form, is_completed: false }]);
+      const { id } = await addBudgetItem(eventId, form);
+      setItems([...items, { id, ...form }]);
     }
     setForm(EMPTY);
   };
 
   const startEdit = (item) => {
     setEditId(item.id);
-    setForm({ task_name: item.task_name, category: item.category || '', estimated_cost: item.estimated_cost, actual_cost: item.actual_cost || '', notes: item.notes || '' });
+    setForm({
+      item_name: item.item_name,
+      category: item.category || '',
+      estimated_cost: item.estimated_cost,
+      actual_cost: item.actual_cost || '',
+      notes: item.notes || '',
+    });
   };
 
   const handleDelete = async (id) => {
-    await deleteTask(eventId, id);
+    await deleteBudgetItem(eventId, id);
     setItems(items.filter((i) => i.id !== id));
     setConfirmDelete(null);
   };
@@ -53,7 +56,7 @@ export default function BudgetTab({ eventId }) {
       </div>
 
       <form className="inline-form" onSubmit={handleSubmit}>
-        <input placeholder="שם פריט" value={form.task_name} onChange={(e) => setForm({ ...form, task_name: e.target.value })} required />
+        <input placeholder="שם פריט" value={form.item_name} onChange={(e) => setForm({ ...form, item_name: e.target.value })} required />
         <input placeholder="קטגוריה" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} />
         <input type="number" placeholder="עלות צפויה" value={form.estimated_cost} onChange={(e) => setForm({ ...form, estimated_cost: e.target.value })} />
         <input type="number" placeholder="עלות בפועל" value={form.actual_cost} onChange={(e) => setForm({ ...form, actual_cost: e.target.value })} />
@@ -67,7 +70,7 @@ export default function BudgetTab({ eventId }) {
         <tbody>
           {items.map((item) => (
             <tr key={item.id}>
-              <td>{item.task_name}</td>
+              <td>{item.item_name}</td>
               <td>{item.category || '-'}</td>
               <td>₪{Number(item.estimated_cost).toLocaleString()}</td>
               <td>₪{Number(item.actual_cost || 0).toLocaleString()}</td>
@@ -84,7 +87,7 @@ export default function BudgetTab({ eventId }) {
       {confirmDelete && (
         <ConfirmModal
           title="מחיקת פריט"
-          message={`האם למחוק את "${confirmDelete.task_name}"?`}
+          message={`האם למחוק את "${confirmDelete.item_name}"?`}
           confirmText="מחק"
           onConfirm={() => handleDelete(confirmDelete.id)}
           onCancel={() => setConfirmDelete(null)}
