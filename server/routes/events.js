@@ -4,6 +4,7 @@ import guestsRouter from './guests.js';
 import tablesRouter from './tables.js';
 import tasksRouter from './tasks.js';
 import giftsRouter from './gifts.js';
+import categoriesRouter from './categories.js';
 
 const router = Router();
 
@@ -17,5 +18,6 @@ router.use('/:eventId/guests', guestsRouter);
 router.use('/:eventId/tables', tablesRouter);
 router.use('/:eventId/tasks', tasksRouter);
 router.use('/:eventId/gifts', giftsRouter);
+router.use('/:eventId/categories', categoriesRouter);
 
 export default router;

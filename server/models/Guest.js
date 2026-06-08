@@ -2,9 +2,11 @@ import pool from '../config/db.js';
 
 export const getGuests = async (eventId) => {
   const [rows] = await pool.query(
-    `SELECT g.*, t.table_number as assigned_table 
+    `SELECT g.*, t.table_number as assigned_table, gs.status_name as status, gc.category_name as category
      FROM guests g
      LEFT JOIN tables t ON t.id = g.table_id
+     LEFT JOIN guest_statuses gs ON gs.id = g.status_id
+     LEFT JOIN guest_categories gc ON gc.id = g.category_id
      WHERE g.event_id = ? ORDER BY g.guest_name ASC`,
     [eventId]
   );
@@ -32,17 +34,17 @@ export const verifyGuestsOwnership = async (guestIds, userId) => {
   return rows[0].count === guestIds.length;
 };
 
-export const addGuest = async (eventId, { guest_name, phone_number, guests_count, category }) => {
+export const addGuest = async (eventId, { guest_name, phone_number, guests_count, category_id }) => {
   const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
   const [result] = await pool.query(
-    'INSERT INTO guests (event_id, guest_name, phone_number, guests_count, category, invitation_token) VALUES (?, ?, ?, ?, ?, ?)',
-    [eventId, guest_name, phone_number || null, guests_count || 1, category || null, token]
+    'INSERT INTO guests (event_id, guest_name, phone_number, guests_count, category_id, status_id, invitation_token) VALUES (?, ?, ?, ?, ?, 1, ?)',
+    [eventId, guest_name, phone_number || null, guests_count || 1, category_id || null, token]
   );
   return { insertId: result.insertId, invitation_token: token };
 };
 
-export const updateGuestStatus = async (id, status) => {
-  await pool.query('UPDATE guests SET status=? WHERE id=?', [status, id]);
+export const updateGuestStatus = async (id, statusId) => {
+  await pool.query('UPDATE guests SET status_id=? WHERE id=?', [statusId, id]);
 };
 
 export const updateGuestTable = async (id, tableId) => {
@@ -50,7 +52,6 @@ export const updateGuestTable = async (id, tableId) => {
 };
 
 export const bulkUpdateGuestTables = async (assignments) => {
-  // assignments = [{ guestId, tableId }, ...]
   await Promise.all(
     assignments.map(({ guestId, tableId }) =>
       pool.query('UPDATE guests SET table_id=? WHERE id=?', [tableId, guestId])
@@ -64,15 +65,16 @@ export const deleteGuest = async (id) => {
 
 export const getGuestByToken = async (token) => {
   const [rows] = await pool.query(
-    `SELECT g.*, e.event_name, e.event_date, e.location_name, e.location_address
+    `SELECT g.*, gs.status_name as status, e.event_name, e.event_date, e.location_name, e.location_address
      FROM guests g
      JOIN events e ON e.id = g.event_id
+     JOIN guest_statuses gs ON gs.id = g.status_id
      WHERE g.invitation_token = ?`,
     [token]
   );
   return rows[0] || null;
 };
 
-export const updateGuestStatusByToken = async (token, status) => {
-  await pool.query('UPDATE guests SET status=? WHERE invitation_token=?', [status, token]);
+export const updateGuestStatusByToken = async (token, statusId) => {
+  await pool.query('UPDATE guests SET status_id=? WHERE invitation_token=?', [statusId, token]);
 };
