@@ -124,6 +124,7 @@ export async function addGuest(eventId, userId, { guest_name, email, phone_numbe
     sendInvitationEmail({
       guestEmail: email,
       guestName: guest_name,
+      eventName: event.event_name,
       invitationLink: invitationLink
     });
   }
