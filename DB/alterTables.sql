@@ -1,1 +1,2 @@
 ALTER TABLE guests ADD COLUMN email VARCHAR(255) NULL;
+ALTER TABLE guests DROP COLUMN phone_number;

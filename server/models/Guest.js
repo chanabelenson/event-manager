@@ -34,11 +34,11 @@ export const verifyGuestsOwnership = async (guestIds, userId) => {
   return rows[0].count === guestIds.length;
 };
 
-export const addGuest = async (eventId, { guest_name, phone_number, guests_count, category_id }) => {
+export const addGuest = async (eventId, { guest_name, guests_count, category_id }) => {
   const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
   const [result] = await pool.query(
-    'INSERT INTO guests (event_id, guest_name, phone_number, guests_count, category_id, status_id, invitation_token) VALUES (?, ?, ?, ?, ?, 1, ?)',
-    [eventId, guest_name, phone_number || null, guests_count || 1, category_id || null, token]
+    'INSERT INTO guests (event_id, guest_name, guests_count, category_id, status_id, invitation_token) VALUES (?, ?, ?, ?, 1, ?)',
+    [eventId, guest_name, guests_count || 1, category_id || null, token]
   );
   return { insertId: result.insertId, invitation_token: token };
 };

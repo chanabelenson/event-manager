@@ -102,17 +102,16 @@ export async function getGuests(eventId, userId) {
 }
 
 // ---- עדכון פונקציית addGuest: הוספת email לקליטה ----
-export async function addGuest(eventId, userId, { guest_name, email, phone_number, guests_count, category_id }) {
+export async function addGuest(eventId, userId, { guest_name, email, guests_count, category_id }) {
   const event = await Event.findEventById(eventId, userId);
   if (!event) throw new AppError('אירוע לא נמצא', 404);
   if (!guest_name) throw new AppError('שם חובה', 400);
 
   const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
-  
-  // 1. שמירת האורח בבסיס הנתונים (הוספתי גם את עמודת ה-email בהנחה שהיא קיימת בטבלה שלך ב-DB)
+
   const [result] = await pool.query(
-    'INSERT INTO guests (event_id, guest_name, email, phone_number, guests_count, category_id, status_id, invitation_token) VALUES (?, ?, ?, ?, ?, ?, 1, ?)',
-    [eventId, guest_name, email || null, phone_number || null, guests_count || 1, category_id || null, token]
+    'INSERT INTO guests (event_id, guest_name, email, guests_count, category_id, status_id, invitation_token) VALUES (?, ?, ?, ?, ?, 1, ?)',
+    [eventId, guest_name, email || null, guests_count || 1, category_id || null, token]
   );
 
   // 2. יצירת הקישור הייחודי של האורח (נשתמש בפורמט של הדומיין של ה-Client שלך עם הטוקן)
