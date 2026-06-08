@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import authRoutes from './routes/auth.js';
 import eventRoutes from './routes/events.js';
 import invitationRoutes from './routes/invitation.js';
+import producerRoutes from './routes/producers.js';
 import { logger } from './middleware/logger.js';
 import { authMiddleware } from './middleware/auth.js';
 import { errorHandler } from './middleware/errorHandler.js';
@@ -26,6 +27,7 @@ app.use(logger);
 app.use('/api/auth', authRoutes);
 app.use('/api/events', authMiddleware, eventRoutes);
 app.use('/api/invitation', invitationRoutes);
+app.use('/api/producers', authMiddleware, producerRoutes);
 
 app.use(errorHandler);
 

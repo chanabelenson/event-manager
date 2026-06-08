@@ -19,7 +19,7 @@ export default function Login() {
     try {
       const data = await loginService(form.email, form.password);
       login(data.user);
-      navigate('/dashboard');
+      navigate(data.user.role === 'producer' ? '/producer/dashboard' : '/dashboard');
     } catch (err) {
       setError(err.message);
     } finally {

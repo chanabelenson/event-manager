@@ -14,7 +14,8 @@ const handle = async (res) => {
   return data;
 };
 
-export const register = (name, email, password) => fetch(`${API}/register`, opts('POST', { name, email, password })).then(handle);
+export const register = (name, email, password, role, producerData) =>
+  fetch(`${API}/register`, opts('POST', { name, email, password, role, ...producerData })).then(handle);
 export const login = (email, password) => fetch(`${API}/login`, opts('POST', { email, password })).then(handle);
 export const logout = () => fetch(`${API}/logout`, opts('POST')).then(handle);
 export const getMe = () => fetch(`${API}/me`, opts()).then(handle);
