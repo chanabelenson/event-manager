@@ -106,3 +106,17 @@ INSERT INTO guest_statuses  (id, status_name) VALUES
   (1, 'pending'), 
   (2, 'confirmed'), 
   (3, 'declined');
+  
+  
+  
+  CREATE TABLE budget_items (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    event_id INT NOT NULL,
+    item_name VARCHAR(255) NOT NULL,
+    category VARCHAR(100) DEFAULT NULL,
+    estimated_cost DECIMAL(10,2) DEFAULT 0.00,
+    actual_cost DECIMAL(10,2) DEFAULT 0.00,
+    notes TEXT,
+    FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
+);
+

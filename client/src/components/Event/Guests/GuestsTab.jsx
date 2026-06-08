@@ -5,7 +5,7 @@ import { getCategories, addCategory } from '../../../services/categoryService';
 import ConfirmModal from '../../Common/ConfirmModal';
 
 const STATUS_LABELS = { pending: '⏳ ממתין', confirmed: '✅ מאשר', declined: '❌ מסרב' };
-const EMPTY = { guest_name: '', phone_number: '', guests_count: 1, category_id: '' };
+const EMPTY = { guest_name: '', phone_number: '', email: '', guests_count: 1, category_id: '' };
 
 export default function GuestsTab({ eventId }) {
   const [guests, setGuests] = useState([]);
@@ -88,6 +88,7 @@ export default function GuestsTab({ eventId }) {
       <form className="inline-form" onSubmit={handleSubmit}>
         <input placeholder="שם מלא" value={form.guest_name} onChange={(e) => setForm({ ...form, guest_name: e.target.value })} required />
         <input placeholder="טלפון" value={form.phone_number} onChange={(e) => setForm({ ...form, phone_number: e.target.value })} />
+        <input type="email" placeholder="אימייל (לשליחת הזמנה)" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
         <select value={form.category_id} onChange={(e) => setForm({ ...form, category_id: e.target.value })} className="status-select">
           <option value="">ללא קטגוריה</option>
           {categories.map((c) => <option key={c.id} value={c.id}>{c.category_name}</option>)}
