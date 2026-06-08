@@ -397,9 +397,11 @@ a:hover { color: var(--gold); }
 .invitation-page {
   min-height: 100svh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 20px;
+  gap: 16px;
   background: linear-gradient(135deg, var(--lavender) 0%, var(--rose) 100%);
   direction: rtl;
 }
@@ -646,3 +648,198 @@ a:hover { color: var(--gold); }
   color: var(--rose) !important;
   cursor: default !important;
 }
+
+/* ── Gifts Tab (owner) ── */
+.gifts-tab { display: flex; flex-direction: column; gap: 24px; }
+
+.gifts-form {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.gifts-form h3 { font-family: var(--font-heading); font-size: 18px; color: var(--text-h); margin-bottom: 16px; }
+
+.gifts-form-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.gifts-form-row input {
+  flex: 1;
+  min-width: 140px;
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text-h);
+  outline: none;
+  direction: rtl;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.gifts-form-row input:focus {
+  border-color: var(--lavender);
+  box-shadow: 0 0 0 3px rgba(155, 114, 207, 0.12);
+}
+
+.gifts-stats {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.gift-stat {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  box-shadow: var(--shadow-sm);
+}
+
+.gift-stat-claimed { border-color: #4caf50; color: #2e7d32; background: rgba(76,175,80,0.08); }
+.gift-stat-unclaimed { border-color: var(--gold); color: var(--gold); background: var(--gold-bg); }
+
+.gifts-list { display: flex; flex-direction: column; gap: 10px; }
+
+.gift-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s;
+}
+
+.gift-item:hover { box-shadow: var(--shadow-md); }
+
+.gift-item.gift-claimed {
+  background: rgba(76, 175, 80, 0.06);
+  border-color: rgba(76, 175, 80, 0.3);
+}
+
+.gift-info { display: flex; align-items: flex-start; gap: 14px; flex: 1; }
+.gift-status-dot { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+.gift-name { font-size: 15px; font-weight: 600; color: var(--text-h); }
+.gift-desc { font-size: 13px; color: var(--text); margin-top: 3px; }
+.gift-link { font-size: 13px; color: var(--lavender); display: inline-block; margin-top: 4px; }
+.gift-link:hover { color: var(--gold); }
+.gift-claimer { font-size: 13px; color: #2e7d32; margin-top: 4px; }
+.gift-delete-btn { background: none; border: none; font-size: 16px; cursor: pointer; color: var(--text); opacity: 0.4; padding: 4px 8px; border-radius: 6px; transition: opacity 0.2s, background 0.2s; flex-shrink: 0; }
+.gift-delete-btn:hover { opacity: 1; background: var(--rose-light); color: var(--rose); }
+
+/* ── Gifts List (invitation / guest) ── */
+.gifts-list-invitation {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  max-width: 500px;
+  width: 100%;
+  margin-top: 16px;
+  overflow: hidden;
+}
+
+.gifts-invitation-header {
+  background: linear-gradient(135deg, rgba(155,114,207,0.12), rgba(201,168,76,0.10));
+  border-bottom: 1px solid var(--border);
+  padding: 20px 24px 16px;
+  text-align: center;
+}
+
+.gifts-invitation-header h3 {
+  font-family: var(--font-heading);
+  font-size: 20px;
+  color: var(--text-h);
+  margin-bottom: 6px;
+}
+
+.gifts-invitation-hint {
+  font-size: 13px;
+  color: var(--text);
+}
+
+.gifts-items {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.gift-item-inv {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.gift-item-inv:hover { box-shadow: var(--shadow-sm); }
+
+.gift-item-inv.gift-inv-mine {
+  border-color: #4caf50;
+  background: rgba(76,175,80,0.06);
+}
+
+.gift-item-inv.gift-inv-taken {
+  opacity: 0.55;
+}
+
+.gift-inv-icon { font-size: 20px; flex-shrink: 0; }
+
+.gift-inv-body { flex: 1; min-width: 0; }
+.gift-inv-name { font-size: 14px; font-weight: 600; color: var(--text-h); }
+.gift-inv-desc { font-size: 12px; color: var(--text); margin-top: 2px; }
+.gift-inv-link { font-size: 12px; color: var(--lavender); display: inline-block; margin-top: 3px; }
+
+.gift-inv-badge {
+  display: inline-block;
+  font-size: 11px;
+  border-radius: 20px;
+  padding: 2px 10px;
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+.gift-inv-badge.taken { background: rgba(0,0,0,0.06); color: var(--text); }
+.gift-inv-badge.mine { background: rgba(76,175,80,0.15); color: #2e7d32; }
+
+.gift-inv-btn {
+  flex-shrink: 0;
+  padding: 8px 14px;
+  background: linear-gradient(135deg, var(--lavender), var(--rose));
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+  white-space: nowrap;
+}
+
+.gift-inv-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+
+.gift-inv-btn.gift-inv-btn-unclaim {
+  background: transparent;
+  border: 1.5px solid #4caf50;
+  color: #2e7d32;
+}
+
+.gift-inv-btn.gift-inv-btn-unclaim:hover { background: rgba(76,175,80,0.1); transform: none; }

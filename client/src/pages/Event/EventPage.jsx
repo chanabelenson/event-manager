@@ -7,6 +7,7 @@ import BudgetTab from '../../components/Event/Budget/BudgetTab';
 import GuestsTab from '../../components/Event/Guests/GuestsTab';
 import TablesTab from '../../components/Event/Tables/TablesTab';
 import CalendarTab from '../../components/Event/Calendar/CalendarTab';
+import GiftsTab from '../../components/Event/Gifts/GiftsTab';
 
 export default function EventPage() {
   const { id } = useParams();
@@ -23,6 +24,7 @@ export default function EventPage() {
     guests: <GuestsTab eventId={id} />,
     tables: <TablesTab eventId={id} />,
     calendar: <CalendarTab eventId={id} createdAt={event.created_at} eventDate={event.event_date} />,
+    gifts: <GiftsTab eventId={id} />,
   };
 
   return (

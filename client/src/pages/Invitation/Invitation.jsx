@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { getInvitation, updateInvitationStatus } from '../../services/invitationService';
+import GiftsList from '../../components/Invitation/GiftsList';
 
 const formatDate = (dateStr) =>
   new Date(dateStr).toLocaleDateString('he-IL', {
@@ -135,6 +136,7 @@ export default function Invitation() {
           )}
         </div>
       </div>
+      <GiftsList token={token} />
     </div>
   );
 }

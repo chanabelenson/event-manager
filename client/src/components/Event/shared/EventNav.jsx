@@ -3,6 +3,7 @@ const TABS = [
   { key: 'guests', label: '👥 מוזמנים' },
   { key: 'tables', label: '🪑 שולחנות' },
   { key: 'calendar', label: '📅 יומן' },
+  { key: 'gifts', label: '🎁 מתנות' },
 ];
 
 export default function EventNav({ active, onChange }) {
