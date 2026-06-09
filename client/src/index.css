@@ -80,6 +80,8 @@ a:hover { color: var(--gold); }
   box-shadow: var(--shadow-lg); display: flex; flex-direction: column; gap: 20px;
 }
 
+.auth-card-register { max-width: 640px; padding: 40px; }
+
 .auth-logo { text-align: center; font-family: var(--font-heading); font-size: 28px; color: var(--text-h); letter-spacing: 0.5px; margin-bottom: 4px; }
 .auth-logo span { display: block; font-size: 13px; font-family: var(--font-body); font-weight: 400; color: var(--text); letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; }
 .auth-card h2 { text-align: center; font-family: var(--font-heading); font-size: 22px; color: var(--text-h); }
@@ -88,12 +90,45 @@ a:hover { color: var(--gold); }
 .input-group { display: flex; flex-direction: column; gap: 6px; }
 .input-group label { font-size: 13px; font-weight: 500; color: var(--text); padding-right: 2px; }
 
-.auth-card input {
+.auth-card input,
+.auth-card select,
+.auth-card textarea {
   padding: 12px 16px; border: 1.5px solid var(--border); border-radius: var(--radius-sm);
   font-size: 15px; font-family: var(--font-body); background: var(--bg); color: var(--text-h);
   outline: none; transition: border-color 0.2s, box-shadow 0.2s; direction: rtl; width: 100%;
 }
-.auth-card input:focus { border-color: var(--lavender); box-shadow: 0 0 0 3px rgba(155, 114, 207, 0.12); }
+.auth-card select { cursor: pointer; }
+.auth-card textarea { resize: vertical; min-height: 92px; line-height: 1.5; }
+.auth-card input:focus,
+.auth-card select:focus,
+.auth-card textarea:focus { border-color: var(--lavender); box-shadow: 0 0 0 3px rgba(155, 114, 207, 0.12); }
+
+.auth-form-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 16px !important;
+}
+
+.auth-form-grid > .input-group:first-child,
+.auth-form-grid > .auth-error,
+.auth-form-grid > button,
+.producer-fields {
+  grid-column: 1 / -1;
+}
+
+.producer-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 16px;
+  padding: 16px;
+  background: linear-gradient(135deg, rgba(155,114,207,0.08), rgba(201,168,76,0.08));
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.producer-fields .input-group:last-child {
+  grid-column: 1 / -1;
+}
 
 .auth-card button[type="submit"] {
   padding: 13px; background: linear-gradient(135deg, var(--lavender), var(--rose)); color: #fff;
@@ -311,6 +346,9 @@ a:hover { color: var(--gold); }
   .dashboard { padding: 20px 16px; }
   .dashboard-title h1 { font-size: 26px; }
   .auth-card { padding: 32px 24px; }
+  .auth-card-register { max-width: 420px; }
+  .auth-form-grid,
+  .producer-fields { grid-template-columns: 1fr; }
   .modal-card { padding: 28px 20px; }
   .event-page { padding: 16px; }
   .event-page-title { font-size: 28px; }
@@ -742,6 +780,35 @@ a:hover { color: var(--gold); }
 .gift-delete-btn:hover { opacity: 1; background: var(--rose-light); color: var(--rose); }
 
 /* ── Gifts List (invitation / guest) ── */
+.gifts-invitation-toggle {
+  max-width: 500px;
+  width: 100%;
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+}
+
+.gift-open-btn {
+  width: 100%;
+  padding: 14px 20px;
+  background: var(--bg-card);
+  color: var(--text-h);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  font-size: 16px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.2s, border-color 0.2s;
+}
+
+.gift-open-btn:hover {
+  border-color: var(--gold);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
 .gifts-list-invitation {
   background: var(--bg-card);
   border-radius: var(--radius);
@@ -769,6 +836,13 @@ a:hover { color: var(--gold); }
 .gifts-invitation-hint {
   font-size: 13px;
   color: var(--text);
+}
+
+.gifts-empty {
+  padding: 18px 20px;
+  text-align: center;
+  color: var(--text);
+  font-size: 14px;
 }
 
 .gifts-items {

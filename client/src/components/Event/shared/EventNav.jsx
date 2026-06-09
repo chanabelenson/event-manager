@@ -4,6 +4,7 @@ const TABS = [
   { key: 'tables', label: '🪑 שולחנות' },
   { key: 'calendar', label: '📅 יומן' },
   { key: 'gifts', label: '🎁 מתנות' },
+  { key: 'producer', label: '🎬 מפיק' },
 ];
 
 export default function EventNav({ active, onChange }) {

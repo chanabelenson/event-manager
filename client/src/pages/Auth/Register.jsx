@@ -4,7 +4,7 @@ import { register, login as loginService } from '../../services/authService';
 import { useAuth } from '../../context/AuthContext';
 
 export default function Register() {
-  const [form, setForm] = useState({ name: '', email: '', password: '', confirm: '' });
+  const [form, setForm] = useState({ name: '', email: '', password: '', confirm: '', role: 'owner', phone: '', contact_email: '', bio: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
@@ -18,10 +18,11 @@ export default function Register() {
     if (form.password !== form.confirm) return setError('הסיסמאות אינן תואמות');
     setLoading(true);
     try {
-      await register(form.name, form.email, form.password);
+      const producerData = form.role === 'producer' ? { phone: form.phone, contact_email: form.contact_email, bio: form.bio } : {};
+      await register(form.name, form.email, form.password, form.role, producerData);
       const data = await loginService(form.email, form.password);
       login(data.user);
-      navigate('/dashboard');
+      navigate(data.user.role === 'producer' ? '/producer/dashboard' : '/dashboard');
     } catch (err) {
       setError(err.message);
     } finally {
@@ -31,17 +32,22 @@ export default function Register() {
 
   return (
     <div className="auth-container">
-      <div className="auth-bg-shapes">
-        <span /><span /><span />
-      </div>
-      <div className="auth-card">
+      <div className="auth-bg-shapes"><span /><span /><span /></div>
+      <div className="auth-card auth-card-register">
         <div className="auth-logo">
           🎊 SimchaManager
           <span>ניהול אירועים</span>
         </div>
         <div className="auth-divider" />
         <h2>הרשמה</h2>
-        <form onSubmit={handleSubmit}>
+        <form className="auth-form auth-form-grid" onSubmit={handleSubmit}>
+          <div className="input-group">
+            <label>סוג חשבון</label>
+            <select name="role" value={form.role} onChange={handleChange}>
+              <option value="owner">בעל אירוע</option>
+              <option value="producer">מפיק אירועים</option>
+            </select>
+          </div>
           <div className="input-group">
             <label>שם מלא</label>
             <input type="text" name="name" placeholder="ישראל ישראלי" value={form.name} onChange={handleChange} required />
@@ -58,6 +64,24 @@ export default function Register() {
             <label>אימות סיסמה</label>
             <input type="password" name="confirm" placeholder="••••••••" value={form.confirm} onChange={handleChange} required />
           </div>
+
+          {form.role === 'producer' && (
+            <div className="producer-fields">
+              <div className="input-group">
+                <label>טלפון</label>
+                <input type="tel" name="phone" placeholder="050-0000000" value={form.phone} onChange={handleChange} />
+              </div>
+              <div className="input-group">
+                <label>אימייל ליצירת קשר</label>
+                <input type="email" name="contact_email" placeholder="contact@example.com" value={form.contact_email} onChange={handleChange} />
+              </div>
+              <div className="input-group">
+                <label>תיאור / ביוגרפיה</label>
+                <textarea name="bio" placeholder="ספר על עצמך..." value={form.bio} onChange={handleChange} rows={3} />
+              </div>
+            </div>
+          )}
+
           {error && <p className="auth-error">{error}</p>}
           <button type="submit" disabled={loading}>
             {loading ? '...נרשם' : 'יצירת חשבון 🎉'}
