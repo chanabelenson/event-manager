@@ -70,11 +70,11 @@ export default function BudgetTab({ eventId }) {
         <tbody>
           {items.map((item) => (
             <tr key={item.id}>
-              <td>{item.item_name}</td>
-              <td>{item.category || '-'}</td>
-              <td>₪{Number(item.estimated_cost).toLocaleString()}</td>
-              <td>₪{Number(item.actual_cost || 0).toLocaleString()}</td>
-              <td>{item.notes || '-'}</td>
+              <td data-label="פריט">{item.item_name}</td>
+              <td data-label="קטגוריה">{item.category || '-'}</td>
+              <td data-label="צפוי">₪{Number(item.estimated_cost).toLocaleString()}</td>
+              <td data-label="בפועל">₪{Number(item.actual_cost || 0).toLocaleString()}</td>
+              <td data-label="הערות">{item.notes || '-'}</td>
               <td className="row-actions">
                 <button onClick={() => startEdit(item)}>✏️</button>
                 <button onClick={() => setConfirmDelete(item)}>🗑️</button>
