@@ -127,3 +127,11 @@ CREATE TABLE IF NOT EXISTS password_reset_codes (
     expires_at TIMESTAMP NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+CREATE TABLE producer_profiles (
+    user_id INT PRIMARY KEY,
+    phone VARCHAR(20),
+    contact_email VARCHAR(150),
+    bio TEXT,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);

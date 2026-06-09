@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { registerUser, authenticateUser, getUserProfile, sendResetCode as sendResetCodeService, verifyResetCode as verifyResetCodeService, changePassword as changePasswordService } from '../services/authService.js';
-import { registerUser, authenticateUser, getUserProfile, listProducers } from '../services/authService.js';
+import { registerUser, authenticateUser, getUserProfile, listProducers, sendResetCode as sendResetCodeService, verifyResetCode as verifyResetCodeService, changePassword as changePasswordService } from '../services/authService.js';
 import { AppError } from '../utils/AppError.js';
 
 const COOKIE_BASE = {

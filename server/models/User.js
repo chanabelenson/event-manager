@@ -27,7 +27,6 @@ export async function emailExists(email) {
   return rows.length > 0;
 }
 
-<<<<<<< HEAD
 export async function getPasswordHash(userId) {
   const [rows] = await pool.query('SELECT password_text as password_hash FROM user_passwords WHERE user_id = ?', [userId]);
   return rows[0]?.password_hash || null;
@@ -53,10 +52,7 @@ export async function deleteResetCode(userId) {
   await pool.query('DELETE FROM password_reset_codes WHERE user_id = ?', [userId]);
 }
 
-export async function createUser(name, email, hashedPassword) {
-=======
 export async function createUser(name, email, hashedPassword, role = 'owner') {
->>>>>>> b77efedf1ae7bdd42a638f5d33ab2719c0c745d3
   const [result] = await pool.query(
     'INSERT INTO users (full_name, email, role) VALUES (?, ?, ?)',
     [name, email, role]

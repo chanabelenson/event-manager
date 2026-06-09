@@ -3,11 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { getProducerDashboard } from '../../services/producerService';
 import { useAuth } from '../../context/AuthContext';
 import ConfirmModal from '../../components/Common/ConfirmModal';
+import Settings from '../Settings/Settings';
 
 export default function ProducerDashboard() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [confirmLogout, setConfirmLogout] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -34,6 +36,7 @@ export default function ProducerDashboard() {
           <p>שלום {user?.name} | מפיק אירועים</p>
         </div>
         <div className="header-actions">
+          <button className="btn-secondary" onClick={() => setShowSettings(true)}>שינוי סיסמה</button>
           <button className="btn-ghost" onClick={() => setConfirmLogout(true)}>התנתק</button>
         </div>
       </header>
@@ -60,6 +63,8 @@ export default function ProducerDashboard() {
           ))}
         </div>
       )}
+
+      {showSettings && <Settings onClose={() => setShowSettings(false)} />}
 
       {confirmLogout && (
         <ConfirmModal

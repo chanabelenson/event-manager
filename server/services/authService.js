@@ -61,6 +61,8 @@ export async function changePassword(userId, code, currentPassword, newPassword)
   const newHash = await bcrypt.hash(newPassword, 10);
   await User.updatePassword(userId, newHash);
   await User.deleteResetCode(userId);
+}
+
 export async function listProducers() {
   return await User.getAllProducers();
 }
