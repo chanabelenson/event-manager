@@ -153,6 +153,16 @@ export async function updateGuestTable(guestId, userId, tableId) {
   await pool.query('UPDATE guests SET table_id=? WHERE id=?', [tableId || null, guestId]);
 }
 
+export async function getTableAssignments(eventId, userId) {
+  const event = await Event.findEventById(eventId, userId);
+  if (!event) throw new AppError('אירוע לא נמצא', 404);
+  const [rows] = await pool.query(
+    'SELECT guest_id as guestId, table_id as tableId, count FROM guest_table_assignments WHERE event_id = ?',
+    [eventId]
+  );
+  return rows;
+}
+
 export async function autoArrangeBulk(eventId, userId, assignments) {
   if (!Array.isArray(assignments)) throw new AppError('נתונים שגויים', 400);
   const event = await Event.findEventById(eventId, userId);

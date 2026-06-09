@@ -1,0 +1,214 @@
+/* ── Floating drag chip ──────────────────────────────────────── */
+.floating-chip {
+  position: fixed;
+  transform: translate(-50%, -50%);
+  background: rgba(30, 20, 50, 0.92);
+  color: #fdd835;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  pointer-events: none;
+  z-index: 9999;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+  border: 1px solid rgba(255,215,0,0.4);
+  white-space: nowrap;
+}
+
+/* ── Layout ──────────────────────────────────────────────────── */
+.seating-chart {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+/* ── Floor plan ──────────────────────────────────────────────── */
+.floor-plan {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  align-content: flex-start;
+  background: radial-gradient(ellipse at 50% 30%, #1e1040 0%, #0b0820 100%);
+  border-radius: 20px;
+  padding: 28px;
+  min-height: 320px;
+  border: 1px solid rgba(255, 215, 0, 0.18);
+  box-shadow: inset 0 0 80px rgba(0,0,0,0.5), 0 8px 32px rgba(0,0,0,0.2);
+}
+
+/* ── Table wrap ──────────────────────────────────────────────── */
+.t-wrap {
+  transition: filter 0.2s;
+  border-radius: 50%;
+}
+
+.t-wrap.t-drag-over {
+  filter: brightness(1.25) drop-shadow(0 0 16px rgba(255, 215, 0, 0.9));
+}
+
+/* ── SVG text inside tables ──────────────────────────────────── */
+.t-num {
+  fill: #fff8e7;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: inherit;
+}
+
+.t-fill {
+  fill: #fdd835;
+  font-size: 12px;
+  font-family: inherit;
+}
+
+.s-name {
+  fill: #fff;
+  font-size: 9.5px;
+  font-weight: 600;
+  font-family: inherit;
+  pointer-events: none;
+}
+
+.s-cat {
+  fill: #ffe082;
+  font-size: 7.5px;
+  font-family: inherit;
+  pointer-events: none;
+}
+
+/* ── Sidebar ─────────────────────────────────────────────────── */
+.guest-pool {
+  width: 195px;
+  flex-shrink: 0;
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px 14px;
+  max-height: 640px;
+  overflow-y: auto;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.1);
+  border: 1px solid #f0e6c8;
+}
+
+.pool-title {
+  margin: 0 0 3px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a1025;
+  text-align: center;
+}
+
+.pool-hint {
+  font-size: 10.5px;
+  color: #b0a090;
+  text-align: center;
+  margin: 0 0 12px;
+}
+
+.pool-empty {
+  text-align: center;
+  color: #27ae60;
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: 24px;
+  padding: 8px;
+  background: #f0faf4;
+  border-radius: 10px;
+}
+
+/* ── Guest chip ──────────────────────────────────────────────── */
+.guest-chip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fafaf8;
+  border: 1px solid #e8e0d0;
+  border-radius: 10px;
+  padding: 7px 10px 7px 10px;
+  margin-bottom: 6px;
+  cursor: grab;
+  user-select: none;
+  transition: box-shadow 0.15s, transform 0.1s;
+}
+
+.guest-chip:hover {
+  box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+  transform: translateY(-1px);
+  background: #fff;
+}
+
+.guest-chip:active {
+  cursor: grabbing;
+  transform: scale(0.97);
+}
+
+.chip-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.chip-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #2c2420;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+}
+
+.chip-cat {
+  font-size: 10px;
+  color: #999;
+}
+
+.chip-count {
+  flex-shrink: 0;
+  background: #fef3c7;
+  color: #92400e;
+  border-radius: 12px;
+  padding: 2px 9px;
+  font-size: 12px;
+  font-weight: 700;
+  margin-right: 6px;
+}
+
+/* ── Category legend ─────────────────────────────────────────── */
+.cat-legend {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid #ede8df;
+}
+
+.legend-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #888;
+  margin: 0 0 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.legend-dot {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+
+.legend-label {
+  font-size: 12px;
+  color: #444;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

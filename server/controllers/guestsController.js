@@ -20,6 +20,11 @@ export const updateTable = async (req, res) => {
   res.json({ message: 'עודכן' });
 };
 
+export const getAssignments = async (req, res) => {
+  const data = await GuestService.getTableAssignments(req.params.eventId, req.user.id);
+  res.json(data);
+};
+
 export const bulkUpdateTables = async (req, res) => {
   await GuestService.autoArrangeBulk(req.params.eventId, req.user.id, req.body.assignments);
   res.json({ message: 'שיבוץ נשמר' });

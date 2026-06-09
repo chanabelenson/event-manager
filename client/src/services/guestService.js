@@ -19,3 +19,4 @@ export const updateGuestStatus = (eventId, id, status) => fetch(`${API}/${eventI
 export const updateGuestTable = (eventId, id, table_id) => fetch(`${API}/${eventId}/guests/${id}/table`, opts('PATCH', { table_id })).then(handle);
 export const autoArrangeSave = (eventId, assignments) => fetch(`${API}/${eventId}/guests/auto-arrange`, opts('POST', { assignments })).then(handle);
 export const deleteGuest = (eventId, id) => fetch(`${API}/${eventId}/guests/${id}`, opts('DELETE')).then(handle);
+export const getAssignments = (eventId) => fetch(`${API}/${eventId}/guests/assignments`, opts()).then(handle);
