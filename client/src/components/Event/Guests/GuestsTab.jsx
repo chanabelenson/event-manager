@@ -97,23 +97,23 @@ export default function GuestsTab({ eventId }) {
       </form>
 
       <table className="data-table">
-        <thead><tr><th>שם</th><th>אימייל</th><th>קטגוריה</th><th>מוזמנים</th><th>מגיעים</th><th>סטטוס</th><th>קישור הזמנה</th><th></th></tr></thead>
+        <thead><tr><th>שם</th><th>אימייל</th><th>קטגוריה</th><th>מוזמנים</th><th>מגיעים</th><th>סטטוס</th><th>קישור</th><th></th></tr></thead>
         <tbody>
           {guests.map((g) => (
             <tr key={g.id}>
-              <td>{g.guest_name}</td>
-              <td>{g.email || '-'}</td>
-              <td>{g.category || '-'}</td>
-              <td>{g.guests_count}</td>
-              <td>{g.status === 'confirmed' ? (g.confirmed_count ?? g.guests_count) : '-'}</td>
-              <td>
+              <td data-label="שם">{g.guest_name}</td>
+              <td data-label="אימייל">{g.email || '-'}</td>
+              <td data-label="קטגוריה">{g.category || '-'}</td>
+              <td data-label="מוזמנים">{g.guests_count}</td>
+              <td data-label="מגיעים">{g.status === 'confirmed' ? (g.confirmed_count ?? g.guests_count) : '-'}</td>
+              <td data-label="סטטוס">
                 <select value={g.status} onChange={(e) => handleStatus(g.id, e.target.value)} className="status-select">
                   {Object.entries(STATUS_LABELS).map(([val, label]) => (
                     <option key={val} value={val}>{label}</option>
                   ))}
                 </select>
               </td>
-              <td><a href={`/invite/${g.invitation_token}`} target="_blank" rel="noreferrer">🔗 קישור</a></td>
+              <td data-label="קישור"><a href={`/invite/${g.invitation_token}`} target="_blank" rel="noreferrer">🔗 קישור</a></td>
               <td className="row-actions">
                 <button onClick={() => setConfirmDelete(g)}>🗑️</button>
               </td>
