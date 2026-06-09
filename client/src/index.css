@@ -780,6 +780,35 @@ a:hover { color: var(--gold); }
 .gift-delete-btn:hover { opacity: 1; background: var(--rose-light); color: var(--rose); }
 
 /* ── Gifts List (invitation / guest) ── */
+.gifts-invitation-toggle {
+  max-width: 500px;
+  width: 100%;
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+}
+
+.gift-open-btn {
+  width: 100%;
+  padding: 14px 20px;
+  background: var(--bg-card);
+  color: var(--text-h);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  font-size: 16px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.2s, border-color 0.2s;
+}
+
+.gift-open-btn:hover {
+  border-color: var(--gold);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
 .gifts-list-invitation {
   background: var(--bg-card);
   border-radius: var(--radius);
@@ -807,6 +836,13 @@ a:hover { color: var(--gold); }
 .gifts-invitation-hint {
   font-size: 13px;
   color: var(--text);
+}
+
+.gifts-empty {
+  padding: 18px 20px;
+  text-align: center;
+  color: var(--text);
+  font-size: 14px;
 }
 
 .gifts-items {
