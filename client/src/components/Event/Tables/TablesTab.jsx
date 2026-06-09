@@ -98,10 +98,10 @@ export default function TablesTab({ eventId }) {
         <tbody>
           {guests.map((g) => (
             <tr key={g.id}>
-              <td>{g.guest_name}</td>
-              <td>{g.category || '-'}</td>
-              <td>{g.status === 'confirmed' && g.confirmed_count != null ? g.confirmed_count : g.status === 'confirmed' ? g.guests_count : '-'}</td>
-              <td>
+              <td data-label="אורח">{g.guest_name}</td>
+              <td data-label="קטגוריה">{g.category || '-'}</td>
+              <td data-label="אנשים">{g.status === 'confirmed' && g.confirmed_count != null ? g.confirmed_count : g.status === 'confirmed' ? g.guests_count : '-'}</td>
+              <td data-label="שולחן">
                 <select value={g.table_id || ''} onChange={(e) => handleAssign(g.id, e.target.value)} className="status-select">
                   <option value="">ללא שולחן</option>
                   {tables.map((t) => <option key={t.id} value={t.id}>שולחן {t.table_number}</option>)}

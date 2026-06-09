@@ -38,6 +38,7 @@ body {
   background: var(--bg);
   -webkit-font-smoothing: antialiased;
   direction: rtl;
+  overflow-x: hidden;
 }
 
 #root {
@@ -343,21 +344,95 @@ a:hover { color: var(--gold); }
 
 /* ── Responsive ── */
 @media (max-width: 768px) {
-  .dashboard { padding: 20px 16px; }
-  .dashboard-title h1 { font-size: 26px; }
-  .auth-card { padding: 32px 24px; }
-  .auth-card-register { max-width: 420px; }
+  /* Auth */
+  .auth-card { padding: 28px 18px; }
+  .auth-card-register { max-width: 100%; padding: 28px 18px; }
   .auth-form-grid,
   .producer-fields { grid-template-columns: 1fr; }
-  .modal-card { padding: 28px 20px; }
-  .event-page { padding: 16px; }
-  .event-page-title { font-size: 28px; }
-  .countdown { gap: 8px; }
-  .countdown-unit { padding: 10px 12px; min-width: 58px; }
-  .countdown-val { font-size: 22px; }
-  .event-nav { overflow-x: auto; }
+
+  /* Dashboard */
+  .dashboard { padding: 16px 14px; }
+  .dashboard-header { flex-direction: column; align-items: flex-start; gap: 12px; margin-bottom: 24px; }
+  .dashboard-title h1 { font-size: 24px; }
+  .header-actions { width: 100%; justify-content: space-between; }
+  .events-grid { grid-template-columns: 1fr; gap: 14px; }
+
+  /* Modal */
+  .modal-overlay { padding: 12px; align-items: flex-end; }
+  .modal-card { padding: 24px 18px; border-radius: var(--radius) var(--radius) 0 0; max-width: 100%; }
+
+  /* Event Page */
+  .event-page { padding: 12px 14px; }
+  .event-page-title { font-size: 24px; }
+  .event-page-meta { font-size: 13px; }
+
+  /* Countdown */
+  .countdown { gap: 6px; }
+  .countdown-unit { padding: 8px 10px; min-width: 52px; }
+  .countdown-val { font-size: 20px; }
+  .countdown-label { font-size: 10px; }
+
+  /* Nav tabs — icon only on mobile */
+  .event-nav { overflow-x: auto; gap: 2px; scrollbar-width: none; -ms-overflow-style: none; }
+  .event-nav::-webkit-scrollbar { display: none; }
+  .event-nav-btn { padding: 10px 10px; font-size: 18px; flex-shrink: 0; }
+  .event-nav-btn .tab-label { display: none; }
+
+  /* Inline form */
   .inline-form { flex-direction: column; }
-  .inline-form input { min-width: unset; width: 100%; }
+  .inline-form input,
+  .inline-form select,
+  .inline-form button { min-width: unset; width: 100%; }
+
+  /* Budget summary */
+  .budget-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .budget-summary-item { padding: 12px; min-width: unset; }
+  .budget-summary-item strong { font-size: 17px; }
+
+  /* Data tables → card layout */
+  .data-table { font-size: 13px; }
+  .data-table thead { display: none; }
+  .data-table, .data-table tbody, .data-table tr, .data-table td { display: block; width: 100%; }
+  .data-table tr {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    margin-bottom: 10px;
+    padding: 10px 12px;
+    background: var(--bg-card);
+    box-shadow: var(--shadow-sm);
+    position: relative;
+  }
+  .data-table td {
+    padding: 4px 0;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .data-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: var(--text-h);
+    font-size: 12px;
+    min-width: 80px;
+    flex-shrink: 0;
+  }
+  .data-table td:empty { display: none; }
+  .row-actions { justify-content: flex-start; padding-top: 6px; }
+  .row-actions::before { display: none; }
+
+  /* Tables grid */
+  .tables-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+
+  /* Calendar */
+  .cal-cell { min-height: 36px; }
+  .cal-cell-num { font-size: 12px; }
+  .cal-cell-badge { font-size: 9px; padding: 0 4px; }
+
+  /* Gifts */
+  .gifts-form-row { flex-direction: column; }
+  .gifts-form-row input { min-width: unset; width: 100%; }
+  .gift-item { flex-wrap: wrap; }
 }
 
 /* Delete button on event card */
@@ -917,3 +992,165 @@ a:hover { color: var(--gold); }
 }
 
 .gift-inv-btn.gift-inv-btn-unclaim:hover { background: rgba(76,175,80,0.1); transform: none; }
+
+@media (max-width: 600px) {
+  .invitation-page {
+    justify-content: flex-start;
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .invitation-card,
+  .gifts-invitation-toggle,
+  .gifts-list-invitation {
+    max-width: none;
+    width: 100%;
+    margin-top: 0;
+  }
+
+  .invitation-card,
+  .gifts-list-invitation,
+  .gift-open-btn {
+    border-radius: 14px;
+  }
+
+  .invitation-header {
+    padding: 28px 18px;
+  }
+
+  .invitation-icon {
+    font-size: 38px;
+    margin-bottom: 8px;
+  }
+
+  .invitation-header h1 {
+    font-size: 24px;
+  }
+
+  .invitation-body {
+    padding: 22px 16px;
+  }
+
+  .invitation-body h2 {
+    font-size: 21px;
+    margin-bottom: 16px;
+    overflow-wrap: anywhere;
+  }
+
+  .invitation-details {
+    padding: 14px;
+    margin-bottom: 18px;
+  }
+
+  .invitation-date,
+  .invitation-location {
+    font-size: 14px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+
+  .invitation-address,
+  .invitation-guest p,
+  .invitation-deadline {
+    font-size: 13px;
+    overflow-wrap: anywhere;
+  }
+
+  .invitation-guest {
+    margin-bottom: 20px;
+  }
+
+  .invitation-question {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  .guests-count-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: stretch;
+    margin: 14px 0;
+    text-align: right;
+  }
+
+  .guests-count-selector select {
+    width: 100%;
+    min-height: 42px;
+    padding: 8px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+    color: var(--text-h);
+    font-family: var(--font-body);
+    font-size: 15px;
+  }
+
+  .invitation-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .btn-confirm,
+  .btn-decline,
+  .gift-open-btn {
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 14px;
+    font-size: 15px;
+  }
+
+  .gifts-invitation-header {
+    padding: 16px 14px 14px;
+  }
+
+  .gifts-invitation-header h3 {
+    font-size: 18px;
+  }
+
+  .gifts-invitation-hint {
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .gifts-items {
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .gift-item-inv {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: start;
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .gift-inv-icon {
+    grid-row: 1 / span 2;
+    font-size: 19px;
+    line-height: 1.4;
+  }
+
+  .gift-inv-body {
+    min-width: 0;
+  }
+
+  .gift-inv-name,
+  .gift-inv-desc,
+  .gift-inv-link {
+    overflow-wrap: anywhere;
+  }
+
+  .gift-inv-btn {
+    grid-column: 2;
+    width: 100%;
+    min-height: 40px;
+    padding: 8px 12px;
+  }
+
+  .auth-error,
+  .gifts-empty {
+    margin: 0 12px 12px;
+  }
+}

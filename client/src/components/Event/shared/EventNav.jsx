@@ -1,10 +1,10 @@
 const TABS = [
-  { key: 'budget', label: '💰 תקציב' },
-  { key: 'guests', label: '👥 מוזמנים' },
-  { key: 'tables', label: '🪑 שולחנות' },
-  { key: 'calendar', label: '📅 יומן' },
-  { key: 'gifts', label: '🎁 מתנות' },
-  { key: 'producer', label: '🎬 מפיק' },
+  { key: 'budget', icon: '💰', label: 'תקציב' },
+  { key: 'guests', icon: '👥', label: 'מוזמנים' },
+  { key: 'tables', icon: '🪑', label: 'שולחנות' },
+  { key: 'calendar', icon: '📅', label: 'יומן' },
+  { key: 'gifts', icon: '🎁', label: 'מתנות' },
+  { key: 'producer', icon: '🎬', label: 'מפיק' },
 ];
 
 export default function EventNav({ active, onChange }) {
@@ -15,8 +15,9 @@ export default function EventNav({ active, onChange }) {
           key={tab.key}
           className={`event-nav-btn ${active === tab.key ? 'active' : ''}`}
           onClick={() => onChange(tab.key)}
+          title={tab.label}
         >
-          {tab.label}
+          {tab.icon} <span className="tab-label">{tab.label}</span>
         </button>
       ))}
     </nav>
