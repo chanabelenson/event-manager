@@ -153,15 +153,27 @@ export async function updateGuestTable(guestId, userId, tableId) {
   await pool.query('UPDATE guests SET table_id=? WHERE id=?', [tableId || null, guestId]);
 }
 
-export async function bulkUpdateTables(assignments, userId) {
+export async function autoArrangeBulk(eventId, userId, assignments) {
   if (!Array.isArray(assignments)) throw new AppError('נתונים שגויים', 400);
-  for (const { guestId, tableId } of assignments) {
-    const [guest] = await pool.query(
-      'SELECT g.* FROM guests g JOIN events e ON g.event_id = e.id WHERE g.id = ? AND e.user_id = ?',
-      [guestId, userId]
+  const event = await Event.findEventById(eventId, userId);
+  if (!event) throw new AppError('אירוע לא נמצא', 404);
+
+  await pool.query('DELETE FROM guest_table_assignments WHERE event_id = ?', [eventId]);
+  await pool.query('UPDATE guests SET table_id = NULL WHERE event_id = ?', [eventId]);
+
+  for (const { guestId, tableId, count } of assignments) {
+    await pool.query(
+      'INSERT INTO guest_table_assignments (event_id, guest_id, table_id, count) VALUES (?, ?, ?, ?)',
+      [eventId, guestId, tableId, count ?? 1]
     );
-    if (!guest.length) continue;
-    await pool.query('UPDATE guests SET table_id=? WHERE id=?', [tableId, guestId]);
+  }
+
+  const seen = new Set();
+  for (const { guestId, tableId } of assignments) {
+    if (!seen.has(guestId)) {
+      seen.add(guestId);
+      await pool.query('UPDATE guests SET table_id = ? WHERE id = ?', [tableId, guestId]);
+    }
   }
 }
 

@@ -21,7 +21,7 @@ export const updateTable = async (req, res) => {
 };
 
 export const bulkUpdateTables = async (req, res) => {
-  await GuestService.bulkUpdateTables(req.body.assignments, req.user.id);
+  await GuestService.autoArrangeBulk(req.params.eventId, req.user.id, req.body.assignments);
   res.json({ message: 'שיבוץ נשמר' });
 };
 

@@ -135,3 +135,18 @@ CREATE TABLE producer_profiles (
     bio TEXT,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS guest_table_assignments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    event_id INT NOT NULL,
+    guest_id INT NOT NULL,
+    table_id INT NOT NULL,
+    count INT NOT NULL DEFAULT 1,
+    FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE,
+    FOREIGN KEY (guest_id) REFERENCES guests(id) ON DELETE CASCADE,
+    FOREIGN KEY (table_id) REFERENCES tables(id) ON DELETE CASCADE
+);
+
+
+
+[]
