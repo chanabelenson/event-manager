@@ -120,3 +120,10 @@ INSERT INTO guest_statuses  (id, status_name) VALUES
     FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
 );
 
+
+CREATE TABLE IF NOT EXISTS password_reset_codes (
+    user_id INT PRIMARY KEY,
+    code VARCHAR(6) NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);

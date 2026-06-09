@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { registerUser, authenticateUser, getUserProfile } from '../services/authService.js';
+import { registerUser, authenticateUser, getUserProfile, sendResetCode as sendResetCodeService, verifyResetCode as verifyResetCodeService, changePassword as changePasswordService } from '../services/authService.js';
 import { AppError } from '../utils/AppError.js';
 
 const COOKIE_BASE = {
@@ -37,6 +37,27 @@ export function logout(req, res) {
   res.clearCookie('token', COOKIE_BASE);
   res.json({ message: 'התנתקת בהצלחה' });
 }
+
+export const sendResetCode = async (req, res) => {
+  await sendResetCodeService(req.user.id);
+  res.json({ message: 'קוד אימות נשלח לאימייל שלך' });
+};
+
+export const verifyResetCode = async (req, res) => {
+  const { code } = req.body;
+  if (!code) throw new AppError('קוד חובה', 400);
+  await verifyResetCodeService(req.user.id, code);
+  res.json({ message: 'הקוד אומת בהצלחה' });
+};
+
+export const changePassword = async (req, res) => {
+  const { code, currentPassword, newPassword } = req.body;
+  if (!code || !currentPassword || !newPassword) throw new AppError('כל השדות חובה', 400);
+  if (newPassword.length < 6) throw new AppError('הסיסמה החדשה חייבת להכיל לפחות 6 תווים', 400);
+
+  await changePasswordService(req.user.id, code, currentPassword, newPassword);
+  res.json({ message: 'הסיסמה שונתה בהצלחה' });
+};
 
 export const getMe = async (req, res) => {
   const user = await getUserProfile(req.user.id);

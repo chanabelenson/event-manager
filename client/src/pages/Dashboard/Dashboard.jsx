@@ -5,6 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import NewEventModal from './NewEventModal';
 import ConfirmModal from '../../components/Common/ConfirmModal';
 import Confetti from '../../components/Common/Confetti';
+import Settings from '../Settings/Settings';
 
 const EVENT_ICONS = ['🎊', '💍', '🎂', '🥂', '🎈', '✨'];
 
@@ -15,8 +16,9 @@ export default function Dashboard() {
   const [showConfetti, setShowConfetti] = useState(true);
   const [confirmLogout, setConfirmLogout] = useState(false);
   const [eventToDelete, setEventToDelete] = useState(null);
+  const [showSettings, setShowSettings] = useState(false);
 
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const stopConfetti = useCallback(() => setShowConfetti(false), []);
 
@@ -55,11 +57,12 @@ export default function Dashboard() {
     <div className="dashboard">
       <header className="dashboard-header">
         <div className="dashboard-title">
-          <h1>האירועים שלי 🎊</h1>
+          <h1>האירועים של {user?.name} 🎊</h1>
           <p>{events.length > 0 ? `${events.length} אירועים פעילים` : 'ברוך הבא למערכת'}</p>
         </div>
         <div className="header-actions">
           <button className="btn-primary" onClick={() => setShowModal(true)}>+ אירוע חדש</button>
+          <button className="btn-secondary" onClick={() => setShowSettings(true)}>שינוי סיסמה</button>
           <button className="btn-ghost" onClick={() => setConfirmLogout(true)}>התנתק</button>
         </div>
       </header>
@@ -101,6 +104,7 @@ export default function Dashboard() {
       )}
 
       {showConfetti && <Confetti onDone={stopConfetti} />}
+      {showSettings && <Settings onClose={() => setShowSettings(false)} />}
 
       {showModal && (
         <NewEventModal

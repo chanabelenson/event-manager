@@ -21,6 +21,31 @@ export async function emailExists(email) {
   return rows.length > 0;
 }
 
+export async function getPasswordHash(userId) {
+  const [rows] = await pool.query('SELECT password_text as password_hash FROM user_passwords WHERE user_id = ?', [userId]);
+  return rows[0]?.password_hash || null;
+}
+
+export async function updatePassword(userId, hashedPassword) {
+  await pool.query('UPDATE user_passwords SET password_text = ? WHERE user_id = ?', [hashedPassword, userId]);
+}
+
+export async function saveResetCode(userId, code, expiresAt) {
+  await pool.query(
+    'INSERT INTO password_reset_codes (user_id, code, expires_at) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE code = ?, expires_at = ?',
+    [userId, code, expiresAt, code, expiresAt]
+  );
+}
+
+export async function getResetCode(userId) {
+  const [rows] = await pool.query('SELECT code, expires_at FROM password_reset_codes WHERE user_id = ?', [userId]);
+  return rows[0] || null;
+}
+
+export async function deleteResetCode(userId) {
+  await pool.query('DELETE FROM password_reset_codes WHERE user_id = ?', [userId]);
+}
+
 export async function createUser(name, email, hashedPassword) {
   const [result] = await pool.query(
     'INSERT INTO users (full_name, email) VALUES (?, ?)',
