@@ -215,15 +215,6 @@ a:hover { color: var(--gold); }
 /* ── Tab Content ── */
 .tab-content { display: flex; flex-direction: column; gap: 20px; }
 
-/* ── Budget Summary ── */
-.budget-summary { display: flex; gap: 16px; flex-wrap: wrap; }
-.budget-summary-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px 24px; display: flex; flex-direction: column; gap: 4px; min-width: 120px; box-shadow: var(--shadow-sm); }
-.budget-summary-item span { font-size: 12px; color: var(--text); }
-.budget-summary-item strong { font-size: 22px; color: var(--text-h); }
-.budget-summary-item.actual strong { color: var(--teal); }
-.budget-summary-item.over strong { color: var(--rose); }
-.budget-summary-item.under strong { color: var(--teal); }
-
 /* ── Inline Form ── */
 .inline-form { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; }
 .inline-form input { padding: 10px 14px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; font-family: var(--font-body); background: var(--bg); color: var(--text-h); outline: none; direction: rtl; min-width: 120px; flex: 1; }
@@ -383,11 +374,6 @@ a:hover { color: var(--gold); }
   .inline-form input,
   .inline-form select,
   .inline-form button { min-width: unset; width: 100%; }
-
-  /* Budget summary */
-  .budget-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-  .budget-summary-item { padding: 12px; min-width: unset; }
-  .budget-summary-item strong { font-size: 17px; }
 
   /* Data tables → card layout */
   .data-table { font-size: 13px; }

@@ -32,6 +32,13 @@ export async function updateRsvpDeadline(eventId, userId, rsvp_deadline) {
   return result.affectedRows > 0;
 }
 
+export async function updateTotalBudget(eventId, userId, total_budget) {
+  await pool.query(
+    'UPDATE events SET total_budget=? WHERE id=? AND user_id=?',
+    [total_budget, eventId, userId]
+  );
+}
+
 export async function deleteEventById(eventId, userId) {
   const [result] = await pool.query(
     'DELETE FROM events WHERE id = ? AND user_id = ?',
