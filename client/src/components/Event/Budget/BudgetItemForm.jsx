@@ -52,6 +52,7 @@ export default function BudgetItemForm({ initial, onSubmit, onCancel }) {
       </select>
       {isCustom && (
         <input
+          autoFocus
           placeholder="שם הקטגוריה"
           value={customCat}
           onChange={e => setCustomCat(e.target.value)}
