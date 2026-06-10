@@ -13,7 +13,11 @@ export function useCountdown(eventDate) {
 
 function calcTime(eventDate) {
   const diff = new Date(eventDate) - new Date();
-  if (diff <= 0) return null;
+  if (diff <= 0) {
+    const today = new Date();
+    const event = new Date(eventDate);
+    return today.toDateString() === event.toDateString() ? 'today' : 'past';
+  }
 
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
   const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));

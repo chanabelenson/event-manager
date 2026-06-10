@@ -3,7 +3,8 @@ import { useCountdown } from '../Calendar/useCountdown';
 export default function Countdown({ eventDate }) {
   const t = useCountdown(eventDate);
 
-  if (!t) return <p className="countdown-done">🎉 האירוע הגיע!</p>;
+  if (t === 'past') return <p className="countdown-done">האירוע עבר</p>;
+  if (t === 'today') return <p className="countdown-done">🎉 האירוע הגיע!</p>;
 
   return (
     <div className="countdown">
