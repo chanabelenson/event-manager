@@ -6,7 +6,7 @@ export const getTables = async (req, res) => {
 };
 
 export const addTable = async (req, res) => {
-  const id = await TableService.addTable(req.params.eventId, req.user.id, req.body);
+  const { id } = await TableService.addTable(req.params.eventId, req.user.id, req.body);
   res.status(201).json({ id });
 };
 

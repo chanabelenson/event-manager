@@ -16,7 +16,7 @@ function effectiveCount(guest) {
 export default function TablesTab({ eventId }) {
   const [tables, setTables] = useState([]);
   const [guests, setGuests] = useState([]);
-  const [form, setForm] = useState({ table_number: '', capacity: 10 });
+  const [form, setForm] = useState({ capacity: 10 });
   const [arranging, setArranging] = useState(false);
   const [arrangedTables, setArrangedTables] = useState(null);
   const [savedAssignments, setSavedAssignments] = useState(null);
@@ -37,11 +37,13 @@ export default function TablesTab({ eventId }) {
     }).catch(console.error);
   }, [eventId]);
 
+  const nextTableNumber = Math.max(...tables.map(t => t.table_number), 0) + 1;
+
   const handleAddTable = async (e) => {
     e.preventDefault();
-    const { id } = await addTable(eventId, form);
-    setTables([...tables, { id, ...form, assigned_guests: 0 }]);
-    setForm({ table_number: '', capacity: 10 });
+    const { id } = await addTable(eventId, { ...form, table_number: nextTableNumber });
+    setTables([...tables, { id, ...form, table_number: nextTableNumber, assigned_guests: 0 }]);
+    setForm({ capacity: 10 });
   };
 
   const handleDeleteTable = async (id) => {
@@ -92,13 +94,7 @@ export default function TablesTab({ eventId }) {
     <div className="tab-content">
       <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-end', flexWrap: 'wrap', marginBottom: '8px' }}>
         <form className="inline-form" onSubmit={handleAddTable} style={{ margin: 0 }}>
-          <input
-            type="number"
-            placeholder="מספר שולחן"
-            value={form.table_number}
-            onChange={(e) => setForm({ ...form, table_number: e.target.value })}
-            required
-          />
+          <span>שולחן מספר {nextTableNumber}</span>
           <input
             type="number"
             placeholder="קיבולת"

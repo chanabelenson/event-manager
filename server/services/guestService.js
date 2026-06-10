@@ -55,6 +55,12 @@ export async function autoArrangeBulk(eventId, userId, assignments) {
   await Guest.bulkUpdateGuestTables(assignments);
 }
 
+export async function getTableAssignments(eventId, userId) {
+  const event = await Event.findEventById(eventId, userId);
+  if (!event) throw new AppError('אירוע לא נמצא', 404);
+  return await Guest.getTableAssignments(eventId);
+}
+
 export async function deleteGuest(guestId, userId) {
   const owned = await Guest.verifyGuestOwnership(guestId, userId);
   if (!owned) throw new AppError('אורח לא נמצא', 404);

@@ -78,3 +78,14 @@ export const getGuestByToken = async (token) => {
 export const updateGuestStatusByToken = async (token, statusId) => {
   await pool.query('UPDATE guests SET status_id=? WHERE invitation_token=?', [statusId, token]);
 };
+
+export const getTableAssignments = async (eventId) => {
+  const [rows] = await pool.query(
+    `SELECT g.id as guestId, g.table_id as tableId,
+      COALESCE(g.confirmed_count, g.guests_count, 1) as count
+     FROM guests g
+     WHERE g.event_id = ? AND g.table_id IS NOT NULL`,
+    [eventId]
+  );
+  return rows;
+};
