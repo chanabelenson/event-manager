@@ -88,7 +88,7 @@ export default function Dashboard() {
                 onClick={(e) => { e.stopPropagation(); setEventToDelete(event); }}
                 title="מחק אירוע"
               >✕</button>
-              <div onClick={() => navigate(`/event/${event.id}`)}>
+              <div onClick={() => navigate(`/event/${event.id}/budget`)}>
                 <span className="event-card-icon">{getIcon(event.id)}</span>
                 <h3>{event.event_name}</h3>
                 <p className="event-card-date">📅 {formatDate(event.event_date)}</p>

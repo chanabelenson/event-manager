@@ -26,7 +26,8 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/dashboard" element={<ProtectedRoute role="owner"><Dashboard /></ProtectedRoute>} />
             <Route path="/producer/dashboard" element={<ProtectedRoute role="producer"><ProducerDashboard /></ProtectedRoute>} />
-            <Route path="/event/:id" element={<ProtectedRoute role="owner"><EventPage /></ProtectedRoute>} />
+            <Route path="/event/:id" element={<Navigate to="budget" replace />} />
+            <Route path="/event/:id/:tab" element={<ProtectedRoute role="owner"><EventPage /></ProtectedRoute>} />
             <Route path="/invite/:token" element={<Invitation />} />
           </Routes>
         </div>

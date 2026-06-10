@@ -11,10 +11,9 @@ import GiftsTab from '../../components/Event/Gifts/GiftsTab';
 import ProducerTab from '../../components/Event/Producer/ProducerTab';
 
 export default function EventPage() {
-  const { id } = useParams();
+  const { id, tab } = useParams();
   const navigate = useNavigate();
   const [event, setEvent] = useState(null);
-  const [activeTab, setActiveTab] = useState('budget');
 
   useEffect(() => { getEvent(id).then(setEvent).catch(() => navigate('/dashboard')); }, [id]);
 
@@ -39,10 +38,10 @@ export default function EventPage() {
         <Countdown eventDate={event.event_date} />
       </header>
 
-      <EventNav active={activeTab} onChange={setActiveTab} />
+      <EventNav active={tab} onChange={(t) => navigate(`/event/${id}/${t}`)} />
 
       <main className="event-page-body">
-        {tabs[activeTab]}
+        {tabs[tab]}
       </main>
     </div>
   );
