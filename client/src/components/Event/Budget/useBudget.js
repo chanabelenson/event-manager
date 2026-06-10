@@ -24,23 +24,22 @@ export function useBudget(eventId) {
   useEffect(() => { load().catch(console.error); }, [load]);
 
   // ── Derived totals ──
-  const totalEstimated = items.reduce((s, i) => s + Number(i.estimated_cost), 0);
-  const totalActual    = items.reduce((s, i) => s + Number(i.actual_cost), 0);
-  const totalPaid      = items.reduce(
+  const totalCost  = items.reduce((s, i) => s + Number(i.cost), 0);
+  const totalPaid  = items.reduce(
     (s, i) => s + (i.payments || []).reduce((ps, p) => ps + Number(p.amount), 0),
     0
   );
-  const remaining = totalBudget - totalEstimated;
+  const remaining = totalBudget - totalCost;
 
   // ── Item CRUD ──
   const createItem = async (form) => {
     const { id } = await addBudgetItem(eventId, form);
-    setItems(prev => [...prev, { id, ...form, estimated_cost: Number(form.estimated_cost) || 0, actual_cost: Number(form.actual_cost) || 0, payments: [] }]);
+    setItems(prev => [...prev, { id, ...form, cost: Number(form.cost) || 0, payments: [] }]);
   };
 
   const editItem = async (itemId, form) => {
     await updateBudgetItem(eventId, itemId, form);
-    setItems(prev => prev.map(i => i.id === itemId ? { ...i, ...form, estimated_cost: Number(form.estimated_cost) || 0, actual_cost: Number(form.actual_cost) || 0 } : i));
+    setItems(prev => prev.map(i => i.id === itemId ? { ...i, ...form, cost: Number(form.cost) || 0 } : i));
   };
 
   const removeItem = async (itemId) => {
@@ -75,7 +74,7 @@ export function useBudget(eventId) {
 
   return {
     items, totalBudget, loading,
-    totalEstimated, totalActual, totalPaid, remaining,
+    totalCost, totalPaid, totalUnpaid: totalCost - totalPaid, remaining,
     createItem, editItem, removeItem,
     updateCeiling,
     createPayment, removePayment,

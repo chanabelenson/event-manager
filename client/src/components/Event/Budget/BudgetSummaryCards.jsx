@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default function BudgetSummaryCards({ totalBudget, totalEstimated, totalPaid, remaining, onCeilingUpdate }) {
+export default function BudgetSummaryCards({ totalBudget, totalCost, totalPaid, totalUnpaid, remaining, onCeilingUpdate }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState('');
   const isOver = remaining < 0;
@@ -47,12 +47,17 @@ export default function BudgetSummaryCards({ totalBudget, totalEstimated, totalP
 
       <div className="budget-summary-item">
         <span>עלויות צפויות</span>
-        <strong>₪{totalEstimated.toLocaleString()}</strong>
+        <strong>₪{totalCost.toLocaleString()}</strong>
       </div>
 
       <div className="budget-summary-item actual">
         <span>שולם בפועל</span>
         <strong>₪{totalPaid.toLocaleString()}</strong>
+      </div>
+
+      <div className="budget-summary-item">
+        <span>נותר לתשלום</span>
+        <strong>₪{totalUnpaid.toLocaleString()}</strong>
       </div>
 
       <div className={`budget-summary-item ${isOver ? 'over' : 'under'}`}>

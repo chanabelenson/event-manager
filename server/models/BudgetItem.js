@@ -16,18 +16,18 @@ export const verifyOwnership = async (itemId, userId) => {
   return rows.length > 0;
 };
 
-export const addBudgetItem = async (eventId, { item_name, category, estimated_cost, actual_cost, notes }) => {
+export const addBudgetItem = async (eventId, { item_name, category, cost, notes }) => {
   const [result] = await pool.query(
-    'INSERT INTO budget_items (event_id, item_name, category, estimated_cost, actual_cost, notes) VALUES (?, ?, ?, ?, ?, ?)',
-    [eventId, item_name, category || null, estimated_cost || 0, actual_cost || 0, notes || null]
+    'INSERT INTO budget_items (event_id, item_name, category, cost, notes) VALUES (?, ?, ?, ?, ?)',
+    [eventId, item_name, category || null, cost || 0, notes || null]
   );
   return result.insertId;
 };
 
-export const updateBudgetItem = async (itemId, { item_name, category, estimated_cost, actual_cost, notes }) => {
+export const updateBudgetItem = async (itemId, { item_name, category, cost, notes }) => {
   await pool.query(
-    'UPDATE budget_items SET item_name=?, category=?, estimated_cost=?, actual_cost=?, notes=? WHERE id=?',
-    [item_name, category || null, estimated_cost || 0, actual_cost || 0, notes || null, itemId]
+    'UPDATE budget_items SET item_name=?, category=?, cost=?, notes=? WHERE id=?',
+    [item_name, category || null, cost || 0, notes || null, itemId]
   );
 };
 

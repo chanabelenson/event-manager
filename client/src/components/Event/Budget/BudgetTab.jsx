@@ -21,8 +21,9 @@ export default function BudgetTab({ eventId }) {
     <div className="tab-content">
       <BudgetSummaryCards
         totalBudget={budget.totalBudget}
-        totalEstimated={budget.totalEstimated}
+        totalCost={budget.totalCost}
         totalPaid={budget.totalPaid}
+        totalUnpaid={budget.totalUnpaid}
         remaining={budget.remaining}
         onCeilingUpdate={budget.updateCeiling}
       />

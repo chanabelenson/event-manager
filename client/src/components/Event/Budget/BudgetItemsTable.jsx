@@ -24,8 +24,7 @@ export default function BudgetItemsTable({ items, onEdit, onDelete, onAddPayment
           <tr>
             <th>פריט</th>
             <th>קטגוריה</th>
-            <th>עלות צפויה</th>
-            <th>מחיר סגור</th>
+            <th>מחיר</th>
             <th>שולם</th>
             <th>יתרה</th>
             <th>הערות</th>
@@ -35,18 +34,16 @@ export default function BudgetItemsTable({ items, onEdit, onDelete, onAddPayment
         <tbody>
           {!items.length && (
             <tr>
-              <td colSpan={8} className="empty-row" style={{ textAlign: 'center', padding: '24px' }}>
+              <td colSpan={7} className="empty-row" style={{ textAlign: 'center', padding: '24px' }}>
                 אין פריטים עדיין — הוסף פריט ראשון למעלה
               </td>
             </tr>
           )}
           {items.map(item => {
-            const paid      = itemTotalPaid(item);
-            const actual    = Number(item.actual_cost);
-            const estimated = Number(item.estimated_cost);
-            const balance   = actual - paid;
-            const isOver    = actual > 0 && actual > estimated;
-            const isOpen    = expandedId === item.id;
+            const paid    = itemTotalPaid(item);
+            const cost    = Number(item.cost);
+            const balance = cost - paid;
+            const isOpen  = expandedId === item.id;
 
             return (
               <Fragment key={item.id}>
@@ -61,11 +58,7 @@ export default function BudgetItemsTable({ items, onEdit, onDelete, onAddPayment
                       ? <span className="category-badge">{item.category}</span>
                       : <span className="text-muted">-</span>}
                   </td>
-                  <td data-label="עלות צפויה">₪{estimated.toLocaleString()}</td>
-                  <td data-label="מחיר סגור" className={isOver ? 'text-over' : ''}>
-                    ₪{actual.toLocaleString()}
-                    {isOver && <span className="over-icon" title="חריגה מהצפוי"> ⚠️</span>}
-                  </td>
+                  <td data-label="מחיר">₪{cost.toLocaleString()}</td>
                   <td data-label="שולם">₪{paid.toLocaleString()}</td>
                   <td data-label="יתרה" className={balance > 0 ? 'text-remaining' : 'text-done'}>
                     {balance > 0 ? `₪${balance.toLocaleString()}` : '✓'}
@@ -79,7 +72,7 @@ export default function BudgetItemsTable({ items, onEdit, onDelete, onAddPayment
 
                 {isOpen && (
                   <tr className="drawer-row">
-                    <td colSpan={8} className="drawer-cell">
+                    <td colSpan={7} className="drawer-cell">
                       <PaymentDrawer
                         item={item}
                         onAdd={onAddPayment}

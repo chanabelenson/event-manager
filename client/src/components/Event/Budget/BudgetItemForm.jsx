@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { BUDGET_CATEGORIES } from './budgetCategories';
 
-const EMPTY = { item_name: '', category: '', estimated_cost: '', actual_cost: '', notes: '' };
+const EMPTY = { item_name: '', category: '', cost: '', notes: '' };
 
 function resolveCategory(category) {
   if (!category) return { select: '', custom: '' };
@@ -12,7 +12,7 @@ function resolveCategory(category) {
 export default function BudgetItemForm({ initial, onSubmit, onCancel }) {
   const resolved = resolveCategory(initial?.category);
   const [form, setForm] = useState(initial
-    ? { item_name: initial.item_name, category: resolved.select, estimated_cost: initial.estimated_cost, actual_cost: initial.actual_cost || '', notes: initial.notes || '' }
+    ? { item_name: initial.item_name, category: resolved.select, cost: initial.cost, notes: initial.notes || '' }
     : EMPTY
   );
   const [customCat, setCustomCat] = useState(resolved.custom);
@@ -61,16 +61,9 @@ export default function BudgetItemForm({ initial, onSubmit, onCancel }) {
       )}
       <input
         type="number"
-        placeholder="עלות צפויה ₪"
-        value={form.estimated_cost}
-        onChange={e => set('estimated_cost', e.target.value)}
-        min="0"
-      />
-      <input
-        type="number"
-        placeholder="מחיר סגור ₪"
-        value={form.actual_cost}
-        onChange={e => set('actual_cost', e.target.value)}
+        placeholder="מחיר ₪"
+        value={form.cost}
+        onChange={e => set('cost', e.target.value)}
         min="0"
       />
       <input
