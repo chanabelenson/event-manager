@@ -7,25 +7,15 @@ import {
   rateProducer,
   getProducerDashboard,
 } from '../controllers/producerController.js';
+import { requireRole } from '../middleware/auth.js';
 
 const router = Router({ mergeParams: true });
 
-// GET /api/producers - רשימת כל המפיקים
-router.get('/', getProducers);
-
-// GET /api/producers/dashboard - לוח בקרה של המפיק המחובר
-router.get('/dashboard', getProducerDashboard);
-
-// GET /api/producers/event/:eventId - מפיק משויך לאירוע
-router.get('/event/:eventId', getEventProducer);
-
-// POST /api/producers/event/:eventId - שיוך מפיק לאירוע
-router.post('/event/:eventId', assignProducer);
-
-// DELETE /api/producers/event/:eventId - הסרת מפיק מאירוע
-router.delete('/event/:eventId', removeProducer);
-
-// POST /api/producers/event/:eventId/rate - דירוג מפיק
-router.post('/event/:eventId/rate', rateProducer);
+router.get('/', requireRole('owner'), getProducers);
+router.get('/dashboard', requireRole('producer'), getProducerDashboard);
+router.get('/event/:eventId', requireRole('owner'), getEventProducer);
+router.post('/event/:eventId', requireRole('owner'), assignProducer);
+router.delete('/event/:eventId', requireRole('owner'), removeProducer);
+router.post('/event/:eventId/rate', requireRole('owner'), rateProducer);
 
 export default router;
