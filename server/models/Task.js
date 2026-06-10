@@ -18,10 +18,10 @@ export const verifyTaskOwnership = async (taskId, userId) => {
   return rows.length > 0;
 };
 
-export const addTask = async (eventId, { task_name, task_date, estimated_cost, actual_cost, category, notes }) => {
+export const addTask = async (eventId, { task_name, task_date, estimated_cost, actual_cost, notes }) => {
   const [result] = await pool.query(
-    'INSERT INTO tasks (event_id, task_name, task_date, estimated_cost, actual_cost, category, notes) VALUES (?, ?, ?, ?, ?, ?, ?)',
-    [eventId, task_name, task_date || null, estimated_cost || 0, actual_cost || 0, category || null, notes || null]
+    'INSERT INTO tasks (event_id, task_name, task_date, estimated_cost, actual_cost, notes) VALUES (?, ?, ?, ?, ?, ?)',
+    [eventId, task_name, task_date || null, estimated_cost || 0, actual_cost || 0, notes || null]
   );
   return result.insertId;
 };
@@ -30,10 +30,10 @@ export const toggleTask = async (id, is_completed) => {
   await pool.query('UPDATE tasks SET is_completed=? WHERE id=?', [is_completed, id]);
 };
 
-export const updateTask = async (id, { task_name, estimated_cost, actual_cost, category, notes }) => {
+export const updateTask = async (id, { task_name, estimated_cost, actual_cost, notes }) => {
   await pool.query(
-    'UPDATE tasks SET task_name=?, estimated_cost=?, actual_cost=?, category=?, notes=? WHERE id=?',
-    [task_name, estimated_cost || 0, actual_cost || 0, category || null, notes || null, id]
+    'UPDATE tasks SET task_name=?, estimated_cost=?, actual_cost=?, notes=? WHERE id=?',
+    [task_name, estimated_cost || 0, actual_cost || 0, notes || null, id]
   );
 };
 
