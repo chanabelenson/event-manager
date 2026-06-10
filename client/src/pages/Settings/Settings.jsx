@@ -15,6 +15,10 @@ export default function Settings({ onClose }) {
     setLoading(true);
     try {
       await sendResetCode();
+      setCode('');
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
       setStep('verify');
     } catch (err) {
       setError(err.message);
@@ -58,6 +62,8 @@ export default function Settings({ onClose }) {
       setStep('success');
     } catch (err) {
       setError(err.message);
+      const isCodeError = err.message.includes('פג תוקף') || err.message.includes('שגוי') || err.message.includes('קוד');
+      if (isCodeError) setStep('expired');
     } finally {
       setLoading(false);
     }
@@ -130,6 +136,18 @@ export default function Settings({ onClose }) {
               {loading ? 'שומר...' : 'שנה סיסמה'}
             </button>
           </form>
+        )}
+
+        {step === 'expired' && (
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ fontSize: '32px', marginBottom: '8px' }}>⏰</p>
+            <p style={{ color: 'var(--rose)', fontWeight: 600, marginBottom: '8px' }}>{error}</p>
+            <p style={{ color: '#555', fontSize: '14px', marginBottom: '20px' }}>יש לשלוח קוד חדש ולנסות שוב.</p>
+            <button className="btn-primary" onClick={handleSendCode} disabled={loading} style={{ width: '100%', marginBottom: '10px' }}>
+              {loading ? 'שולח...' : 'שלח קוד חדש'}
+            </button>
+            <button className="btn-ghost" onClick={onClose} style={{ width: '100%' }}>ביטול</button>
+          </div>
         )}
 
         {step === 'success' && (
