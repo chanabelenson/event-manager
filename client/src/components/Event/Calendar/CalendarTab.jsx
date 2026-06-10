@@ -3,7 +3,6 @@ import { getTasks, addTask, toggleTask, deleteTask } from '../../../services/tas
 import CalendarGrid from './CalendarGrid';
 import DayModal from './DayModal';
 
-// פונקציית העזר המתוקנת שעובדת לפי הזמן המקומי (Local) ולא UTC
 function getDaysRange(createdAt, eventDate) {
   const start = new Date(createdAt);
   start.setHours(0, 0, 0, 0);
@@ -32,7 +31,6 @@ export default function CalendarTab({ eventId, createdAt, eventDate }) {
     getTasks(eventId).then(setTasks).catch(console.error); 
   }, [eventId]);
 
-  // פונקציית סינון משימות מתוקנת לפי זמן מקומי
   const tasksForDate = (date) => tasks.filter((t) => {
     if (!t.task_date) return false;
     const dateObj = new Date(t.task_date);
@@ -42,7 +40,6 @@ export default function CalendarTab({ eventId, createdAt, eventDate }) {
     return `${year}-${month}-${day}` === date;
   });
 
-  // פונקציית הוספת משימה (הייתה חסרה או במקום לא נכון)
   const handleAdd = async (date, title) => {
     try {
       const { id } = await addTask(eventId, { task_name: title, task_date: date });

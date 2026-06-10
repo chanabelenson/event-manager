@@ -56,7 +56,6 @@ export default function TablesTab({ eventId }) {
 
   const handleSave = async (assignments) => {
     await autoArrangeSave(eventId, assignments);
-    // Update local guests with primary table per guest
     const primaryByGuest = {};
     assignments.forEach(({ guestId, tableId }) => {
       if (!primaryByGuest[guestId]) primaryByGuest[guestId] = tableId;

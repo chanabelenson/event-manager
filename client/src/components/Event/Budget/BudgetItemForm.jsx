@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BUDGET_CATEGORIES } from '../../../constants/budgetCategories';
+import { BUDGET_CATEGORIES } from './budgetCategories';
 
 const EMPTY = { item_name: '', category: '', estimated_cost: '', actual_cost: '', notes: '' };
 
