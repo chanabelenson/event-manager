@@ -6,6 +6,7 @@ import { sendResetCodeEmail } from '../utils/email.js';
 export async function registerUser(name, email, password, role = 'owner', producerData = {}) {
   const exists = await User.emailExists(email);
   if (exists) throw new AppError('אימייל כבר קיים', 409);
+  if (password.length < 6) throw new AppError('הסיסמה חייבת להכיל לפחות 6 תווים', 400);
   if (!['owner', 'producer'].includes(role)) throw new AppError('תפקיד לא תקין', 400);
 
   const hashedPassword = await bcrypt.hash(password, 10);

@@ -15,6 +15,7 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    if (form.password.length < 6) return setError('הסיסמה חייבת להכיל לפחות 6 תווים');
     if (form.password !== form.confirm) return setError('הסיסמאות אינן תואמות');
     setLoading(true);
     try {
