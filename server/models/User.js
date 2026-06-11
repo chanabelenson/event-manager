@@ -2,7 +2,7 @@ import pool from '../config/db.js';
 
 export async function findUserByEmail(email) {
   const [rows] = await pool.query(
-    `SELECT u.*, up.password_text as password_hash
+    `SELECT u.*, up.password_hash
      FROM users u
      JOIN user_passwords up ON up.user_id = u.id
      WHERE u.email = ?`,
@@ -28,12 +28,12 @@ export async function emailExists(email) {
 }
 
 export async function getPasswordHash(userId) {
-  const [rows] = await pool.query('SELECT password_text as password_hash FROM user_passwords WHERE user_id = ?', [userId]);
+  const [rows] = await pool.query('SELECT password_hash FROM user_passwords WHERE user_id = ?', [userId]);
   return rows[0]?.password_hash || null;
 }
 
 export async function updatePassword(userId, hashedPassword) {
-  await pool.query('UPDATE user_passwords SET password_text = ? WHERE user_id = ?', [hashedPassword, userId]);
+  await pool.query('UPDATE user_passwords SET password_hash = ? WHERE user_id = ?', [hashedPassword, userId]);
 }
 
 export async function saveResetCode(userId, code, expiresAt) {
@@ -59,7 +59,7 @@ export async function createUser(name, email, hashedPassword, role = 'owner') {
   );
   const userId = result.insertId;
   await pool.query(
-    'INSERT INTO user_passwords (user_id, password_text) VALUES (?, ?)',
+    'INSERT INTO user_passwords (user_id, password_hash) VALUES (?, ?)',
     [userId, hashedPassword]
   );
   return userId;

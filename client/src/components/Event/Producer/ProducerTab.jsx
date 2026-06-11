@@ -6,7 +6,7 @@ import RequestConfirmModal from './RequestConfirmModal';
 import AssignedProducerView from './AssignedProducerView';
 
 export default function ProducerTab({ eventId }) {
-  const [producers, setProducers] = useState([]);
+const [producers, setProducers] = useState([]);
   const [assigned, setAssigned] = useState(null);
   const [viewProducer, setViewProducer] = useState(null);
   const [showManage, setShowManage] = useState(false);
@@ -14,8 +14,8 @@ export default function ProducerTab({ eventId }) {
   const [sentProducerId, setSentProducerId] = useState(null);
 
   useEffect(() => {
-    getProducers().then((data) => { console.log('producers:', data); setProducers(data); }).catch(console.error);
-    getEventProducer(eventId).then((data) => { console.log('assigned:', data); setAssigned(data); }).catch(console.error);
+    getProducers().then(setProducers).catch(console.error);
+    getEventProducer(eventId).then(setAssigned).catch(console.error);
     getEventRequest(eventId).then((req) => {
       if (req) setSentProducerId(req.producer_id);
     }).catch(console.error);

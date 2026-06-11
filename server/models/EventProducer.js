@@ -6,7 +6,7 @@ export async function getEventProducer(eventId) {
             ep.rating, ep.review
      FROM event_producers ep
      JOIN users u ON u.id = ep.producer_id
-     JOIN producer_profiles pp ON pp.user_id = u.id
+     LEFT JOIN producer_profiles pp ON pp.user_id = u.id
      WHERE ep.event_id = ?`,
     [eventId]
   );

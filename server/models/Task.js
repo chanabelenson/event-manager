@@ -18,16 +18,16 @@ export const verifyTaskOwnership = async (taskId, userId) => {
   return rows.length > 0;
 };
 
-export const addTask = async (eventId, { task_name, task_date, estimated_cost, actual_cost, notes }) => {
+export const addTask = async (eventId, { task_name, task_date, notes }) => {
   const [result] = await pool.query(
-    'INSERT INTO tasks (event_id, task_name, task_date, estimated_cost, actual_cost, notes) VALUES (?, ?, ?, ?, ?, ?)',
-    [eventId, task_name, task_date || null, estimated_cost || 0, actual_cost || 0, notes || null]
+    'INSERT INTO tasks (event_id, task_name, task_date, notes) VALUES (?, ?, ?, ?)',
+    [eventId, task_name, task_date || null, notes || null]
   );
   return result.insertId;
 };
 
 export const updateTask = async (id, fields) => {
-  const allowed = ['task_name', 'task_date', 'notes', 'is_completed', 'estimated_cost', 'actual_cost'];
+  const allowed = ['task_name', 'task_date', 'notes', 'is_completed'];
   const updates = Object.fromEntries(Object.entries(fields).filter(([k]) => allowed.includes(k)));
   if (!Object.keys(updates).length) return;
   const cols = Object.keys(updates).map(k => `${k}=?`).join(', ');
