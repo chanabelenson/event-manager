@@ -4,22 +4,16 @@ import {
   addBudgetItem,
   updateBudgetItem,
   deleteBudgetItem,
-  updateBudgetCeiling,
-  addPayment,
-  deletePayment,
 } from '../controllers/budgetController.js';
+import paymentsRouter from './payments.js';
 
 const router = Router({ mergeParams: true });
-
-// More-specific routes defined first to avoid param collision
-router.patch('/ceiling', updateBudgetCeiling);
-router.delete('/payments/:paymentId', deletePayment);
 
 router.get('/', getBudgetData);
 router.post('/', addBudgetItem);
 router.put('/:id', updateBudgetItem);
 router.delete('/:id', deleteBudgetItem);
 
-router.post('/:itemId/payments', addPayment);
+router.use('/:itemId/payments', paymentsRouter);
 
 export default router;

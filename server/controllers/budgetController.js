@@ -19,18 +19,3 @@ export const deleteBudgetItem = async (req, res) => {
   await BudgetService.deleteBudgetItem(req.params.id, req.user.id);
   res.json({ message: 'נמחק' });
 };
-
-export const updateBudgetCeiling = async (req, res) => {
-  await BudgetService.updateBudgetCeiling(req.params.eventId, req.user.id, req.body.total_budget);
-  res.json({ message: 'עודכן' });
-};
-
-export const addPayment = async (req, res) => {
-  const { id } = await BudgetService.addPayment(req.params.itemId, req.user.id, req.body);
-  res.status(201).json({ id });
-};
-
-export const deletePayment = async (req, res) => {
-  await BudgetService.deletePayment(req.params.paymentId, req.user.id);
-  res.json({ message: 'נמחק' });
-};

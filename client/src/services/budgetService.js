@@ -13,10 +13,9 @@ const handle = async (res) => {
   return data;
 };
 
-export const getBudgetData    = (eventId)              => fetch(`${API}/${eventId}/budget`, opts()).then(handle);
-export const addBudgetItem    = (eventId, body)        => fetch(`${API}/${eventId}/budget`, opts('POST', body)).then(handle);
-export const updateBudgetItem = (eventId, id, body)    => fetch(`${API}/${eventId}/budget/${id}`, opts('PUT', body)).then(handle);
-export const deleteBudgetItem = (eventId, id)          => fetch(`${API}/${eventId}/budget/${id}`, opts('DELETE')).then(handle);
-export const setBudgetCeiling = (eventId, total_budget) => fetch(`${API}/${eventId}/budget/ceiling`, opts('PATCH', { total_budget })).then(handle);
-export const addPayment       = (eventId, itemId, body) => fetch(`${API}/${eventId}/budget/${itemId}/payments`, opts('POST', body)).then(handle);
-export const deletePayment    = (eventId, paymentId)   => fetch(`${API}/${eventId}/budget/payments/${paymentId}`, opts('DELETE')).then(handle);
+export const getBudgetData    = (eventId)               => fetch(`${API}/${eventId}/budget`, opts()).then(handle);
+export const addBudgetItem    = (eventId, body)         => fetch(`${API}/${eventId}/budget`, opts('POST', body)).then(handle);
+export const updateBudgetItem = (eventId, id, body)     => fetch(`${API}/${eventId}/budget/${id}`, opts('PUT', body)).then(handle);
+export const deleteBudgetItem = (eventId, id)           => fetch(`${API}/${eventId}/budget/${id}`, opts('DELETE')).then(handle);
+export const addPayment    = (eventId, itemId, body) => fetch(`${API}/${eventId}/budget/${itemId}/payments`, opts('POST', body)).then(handle);
+export const deletePayment = (eventId, itemId, paymentId) => fetch(`${API}/${eventId}/budget/${itemId}/payments/${paymentId}`, opts('DELETE')).then(handle);

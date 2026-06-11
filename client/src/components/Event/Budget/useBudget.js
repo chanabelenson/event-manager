@@ -4,10 +4,10 @@ import {
   addBudgetItem,
   updateBudgetItem,
   deleteBudgetItem,
-  setBudgetCeiling,
   addPayment,
   deletePayment,
 } from '../../../services/budgetService';
+import { updateEvent } from '../../../services/eventService';
 
 export function useBudget(eventId) {
   const [items, setItems] = useState([]);
@@ -49,7 +49,7 @@ export function useBudget(eventId) {
 
   // ── Ceiling ──
   const updateCeiling = async (amount) => {
-    await setBudgetCeiling(eventId, amount);
+    await updateEvent(eventId, { total_budget: amount });
     setTotalBudget(Number(amount));
   };
 
@@ -64,7 +64,7 @@ export function useBudget(eventId) {
   };
 
   const removePayment = async (itemId, paymentId) => {
-    await deletePayment(eventId, paymentId);
+    await deletePayment(eventId, itemId, paymentId);
     setItems(prev => prev.map(i =>
       i.id === itemId
         ? { ...i, payments: (i.payments || []).filter(p => p.id !== paymentId) }
