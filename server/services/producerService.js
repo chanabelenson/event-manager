@@ -10,11 +10,8 @@ export async function getEventProducer(eventId) {
   return await EventProducer.getEventProducer(eventId);
 }
 
-export async function assignProducer(eventId, producerId, ownerId) {
-  const producers = await User.getAllProducers();
-  if (!producers.find((p) => p.id === producerId))
-    throw new AppError('מפיק לא נמצא', 404);
-  await EventProducer.assignProducer(eventId, producerId);
+export async function getProducerReviews(producerId) {
+  return await EventProducer.getProducerReviews(producerId);
 }
 
 export async function removeProducer(eventId) {

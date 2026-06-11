@@ -40,13 +40,27 @@ export async function rateProducer(eventId, ownerId, rating, review) {
   return true;
 }
 
+export async function getProducerReviews(producerId) {
+  const [rows] = await pool.query(
+    `SELECT ep.rating, ep.review, e.event_name
+     FROM event_producers ep
+     JOIN events e ON e.id = ep.event_id
+     WHERE ep.producer_id = ? AND ep.rating IS NOT NULL
+     ORDER BY e.event_date DESC`,
+    [producerId]
+  );
+  return rows;
+}
+
 export async function getProducerEvents(producerId) {
   const [rows] = await pool.query(
     `SELECT e.id, e.event_name, e.event_date, e.location_name,
             (SELECT COALESCE(SUM(CASE WHEN g.confirmed_count IS NOT NULL THEN g.confirmed_count ELSE g.guests_count END), 0)
-             FROM guests g
-             JOIN guest_statuses gs ON gs.id = g.status_id
-             WHERE g.event_id = e.id AND gs.status_name = 'confirmed') as confirmed_count
+             FROM guests g JOIN guest_statuses gs ON gs.id = g.status_id
+             WHERE g.event_id = e.id AND gs.status_name = 'confirmed') as confirmed_count,
+            (SELECT COALESCE(SUM(g.guests_count), 0)
+             FROM guests g JOIN guest_statuses gs ON gs.id = g.status_id
+             WHERE g.event_id = e.id AND gs.status_name = 'pending') as pending_count
      FROM event_producers ep
      JOIN events e ON e.id = ep.event_id
      WHERE ep.producer_id = ?

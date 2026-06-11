@@ -1,32 +1,44 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getProducerDashboard } from '../../services/producerService';
+import { getProducerDashboard, getPendingRequests } from '../../services/producerService';
 import { useAuth } from '../../context/AuthContext';
 import ConfirmModal from '../../components/Common/ConfirmModal';
 import Settings from '../Settings/Settings';
+import PendingRequests from './PendingRequests';
+import ProducerEventDetail from './ProducerEventDetail';
 
 export default function ProducerDashboard() {
   const [events, setEvents] = useState([]);
+  const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('events');
   const [confirmLogout, setConfirmLogout] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    getProducerDashboard()
-      .then(setEvents)
+    Promise.all([getProducerDashboard(), getPendingRequests()])
+      .then(([eventsData, requestsData]) => {
+        setEvents(eventsData);
+        setRequests(requestsData);
+      })
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
 
   const handleLogout = () => { logout(); navigate('/login'); };
 
+  const handleRespond = (requestId, action) => {
+    setRequests((prev) => prev.filter((r) => r.id !== requestId));
+    if (action === 'approved') {
+      getProducerDashboard().then(setEvents).catch(console.error);
+    }
+  };
+
   const formatDate = (dateStr) =>
-    new Date(dateStr).toLocaleDateString('he-IL', {
-      day: 'numeric', month: 'long', year: 'numeric',
-      hour: '2-digit', minute: '2-digit',
-    });
+    new Date(dateStr).toLocaleDateString('he-IL', { day: 'numeric', month: 'long', year: 'numeric' });
 
   return (
     <div className="dashboard">
@@ -43,25 +55,63 @@ export default function ProducerDashboard() {
 
       {loading ? (
         <div className="dashboard-empty"><p>טוען...</p></div>
-      ) : events.length === 0 ? (
-        <div className="dashboard-empty">
-          <span className="empty-icon">📋</span>
-          <h3>אין אירועים משויכים אליך עדיין</h3>
-        </div>
       ) : (
-        <div className="events-grid">
-          {events.map((event) => (
-            <div key={event.id} className="event-card">
-              <span className="event-card-icon">🎬</span>
-              <h3>{event.event_name}</h3>
-              <p className="event-card-date">📅 {formatDate(event.event_date)}</p>
-              <p className="event-card-location">📍 {event.location_name}</p>
-              <div style={{ marginTop: '8px', padding: '8px', background: 'var(--surface)', borderRadius: '8px' }}>
-                <p>✅ מגיעים: <strong>{event.confirmed_count} אנשים</strong></p>
+        <>
+          <div className="event-nav" style={{ marginBottom: '20px' }}>
+            <button
+              className={activeTab === 'events' ? 'tab-btn active' : 'tab-btn'}
+              onClick={() => setActiveTab('events')}
+            >
+              האירועים שלי
+            </button>
+            <button
+              className={activeTab === 'requests' ? 'tab-btn active' : 'tab-btn'}
+              onClick={() => setActiveTab('requests')}
+            >
+              בקשות ממתינות
+              {requests.length > 0 && (
+                <span style={{
+                  marginRight: '6px', background: '#ef4444', color: 'white',
+                  borderRadius: '999px', padding: '1px 7px', fontSize: '12px',
+                }}>
+                  {requests.length}
+                </span>
+              )}
+            </button>
+          </div>
+
+          {activeTab === 'events' && (
+            events.length === 0 ? (
+              <div className="dashboard-empty">
+                <span className="empty-icon">📋</span>
+                <h3>אין אירועים משויכים אליך עדיין</h3>
               </div>
-            </div>
-          ))}
-        </div>
+            ) : (
+              <div className="events-grid">
+                {events.map((event) => (
+                  <div key={event.id} className="event-card" onClick={() => setSelectedEvent(event)} style={{ cursor: 'pointer' }}>
+                    <span className="event-card-icon">🎬</span>
+                    <h3>{event.event_name}</h3>
+                    <p className="event-card-date">📅 {formatDate(event.event_date)}</p>
+                    <p className="event-card-location">📍 {event.location_name}</p>
+                    <div style={{ marginTop: '8px', padding: '8px', background: 'var(--surface)', borderRadius: '8px' }}>
+                      <p>✅ מגיעים: <strong>{event.confirmed_count}</strong></p>
+                      <p>⏳ טרם ענו: <strong>{event.pending_count}</strong></p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )
+          )}
+
+          {activeTab === 'requests' && (
+            <PendingRequests requests={requests} onRespond={handleRespond} />
+          )}
+        </>
+      )}
+
+      {selectedEvent && (
+        <ProducerEventDetail event={selectedEvent} onClose={() => setSelectedEvent(null)} />
       )}
 
       {showSettings && <Settings onClose={() => setShowSettings(false)} />}

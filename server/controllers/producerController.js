@@ -9,9 +9,8 @@ export const getEventProducer = async (req, res) => {
   res.json(await ProducerService.getEventProducer(req.params.eventId));
 };
 
-export const assignProducer = async (req, res) => {
-  await ProducerService.assignProducer(req.params.eventId, req.body.producer_id, req.user.id);
-  res.json({ message: 'מפיק שויך בהצלחה' });
+export const getProducerReviews = async (req, res) => {
+  res.json(await ProducerService.getProducerReviews(req.params.producerId));
 };
 
 export const removeProducer = async (req, res) => {

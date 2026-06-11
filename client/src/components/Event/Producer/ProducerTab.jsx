@@ -1,96 +1,123 @@
 import { useState, useEffect } from 'react';
-import { getProducers, getEventProducer, assignProducer, removeProducer, rateProducer } from '../../../services/producerService';
-
-const Stars = ({ value, onChange }) => (
-  <div style={{ display: 'flex', gap: '4px', fontSize: '24px', cursor: onChange ? 'pointer' : 'default' }}>
-    {[1, 2, 3, 4, 5].map((n) => (
-      <span key={n} onClick={() => onChange?.(n)} style={{ color: n <= value ? '#f59e0b' : '#d1d5db' }}>★</span>
-    ))}
-  </div>
-);
+import { getProducers, getEventProducer, getEventRequest, sendRequest, cancelRequest, removeProducer, rateProducer } from '../../../services/producerService';
+import ProducerCatalog from './ProducerCatalog';
+import ProducerProfile from './ProducerProfile';
+import RequestConfirmModal from './RequestConfirmModal';
+import AssignedProducerView from './AssignedProducerView';
 
 export default function ProducerTab({ eventId }) {
   const [producers, setProducers] = useState([]);
   const [assigned, setAssigned] = useState(null);
-  const [rating, setRating] = useState(0);
-  const [review, setReview] = useState('');
-  const [ratingSaved, setRatingSaved] = useState(false);
+  const [viewProducer, setViewProducer] = useState(null);
+  const [showManage, setShowManage] = useState(false);
+  const [pendingProducer, setPendingProducer] = useState(null);
+  const [sentProducerId, setSentProducerId] = useState(null);
 
   useEffect(() => {
-    getProducers().then(setProducers).catch(console.error);
-    getEventProducer(eventId).then((p) => {
-      setAssigned(p);
-      if (p?.rating) { setRating(p.rating); setReview(p.review || ''); }
+    getProducers().then((data) => { console.log('producers:', data); setProducers(data); }).catch(console.error);
+    getEventProducer(eventId).then((data) => { console.log('assigned:', data); setAssigned(data); }).catch(console.error);
+    getEventRequest(eventId).then((req) => {
+      if (req) setSentProducerId(req.producer_id);
     }).catch(console.error);
   }, [eventId]);
 
-  const handleAssign = async (producerId) => {
-    await assignProducer(eventId, Number(producerId));
-    const p = producers.find((pr) => pr.id === Number(producerId));
-    setAssigned({ ...p, rating: null, review: null });
+  const handleClickProducer = (producer) => {
+    if (assigned && producer.id === assigned.id) {
+      setShowManage(true);
+    } else {
+      setViewProducer(producer);
+    }
+  };
+
+  const handleRequestConfirm = async () => {
+    try {
+      await sendRequest(eventId, pendingProducer.id);
+    } catch {
+      // בקשה כבר קיימת — treat as sent
+    }
+    setSentProducerId(pendingProducer.id);
+    setPendingProducer(null);
+    setViewProducer(null);
+  };
+
+  const handleCancel = async () => {
+    await cancelRequest(eventId);
+    setSentProducerId(null);
+    setViewProducer(null);
   };
 
   const handleRemove = async () => {
     await removeProducer(eventId);
     setAssigned(null);
-    setRating(0);
-    setReview('');
+    setSentProducerId(null);
+    setShowManage(false);
   };
 
-  const handleRate = async () => {
+  const handleRate = async (rating, review) => {
     await rateProducer(eventId, rating, review);
-    setRatingSaved(true);
-    setTimeout(() => setRatingSaved(false), 2000);
   };
+
+  const sentProducerName = sentProducerId
+    ? producers.find((p) => p.id === sentProducerId)?.full_name
+    : null;
 
   return (
     <div className="tab-content">
       <h3 className="section-title">מפיק האירוע</h3>
 
-      {!assigned ? (
-        <>
-          <p style={{ marginBottom: '12px', color: 'var(--text-muted)' }}>בחר מפיק לאירוע זה:</p>
-          <div className="events-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))' }}>
-            {producers.map((p) => (
-              <div key={p.id} className="event-card" style={{ cursor: 'default' }}>
-                <h3>🎬 {p.full_name}</h3>
-                {p.avg_rating && <Stars value={Math.round(p.avg_rating)} />}
-                {p.phone && <p>📞 {p.phone}</p>}
-                {p.contact_email && <p>✉️ {p.contact_email}</p>}
-                {p.bio && <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>{p.bio}</p>}
-                <p style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
-                  {p.rating_count > 0 ? `דירוג ממוצע: ${p.avg_rating} (${p.rating_count} דירוגים)` : 'אין דירוגים עדיין'}
-                </p>
-                <button className="btn-primary" style={{ marginTop: '8px', width: '100%' }} onClick={() => handleAssign(p.id)}>
-                  + שייך לאירוע
-                </button>
-              </div>
-            ))}
-            {producers.length === 0 && <p>אין מפיקים רשומים במערכת</p>}
-          </div>
-        </>
-      ) : (
-        <div className="event-card" style={{ maxWidth: '400px' }}>
-          <h3>🎬 {assigned.full_name}</h3>
-          {assigned.phone && <p>📞 {assigned.phone}</p>}
-          {assigned.contact_email && <p>✉️ {assigned.contact_email}</p>}
-          {assigned.bio && <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>{assigned.bio}</p>}
+      {sentProducerId && sentProducerName && (
+        <div style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          background: 'var(--surface)', border: '1px solid var(--border)',
+          borderRadius: 'var(--radius-sm)', padding: '10px 14px', marginBottom: '16px',
+        }}>
+          <span style={{ fontSize: '14px' }}>
+            ⏳ ממתין לאישור מ-<strong>{sentProducerName}</strong>
+          </span>
+          <button className="btn-ghost" style={{ color: '#ef4444', fontSize: '13px' }} onClick={handleCancel}>
+            בטל בקשה
+          </button>
+        </div>
+      )}
 
-          <div style={{ marginTop: '16px', borderTop: '1px solid var(--border)', paddingTop: '12px' }}>
-            <p style={{ marginBottom: '6px' }}>דרג את המפיק:</p>
-            <Stars value={rating} onChange={setRating} />
-            <textarea
-              placeholder="כתוב המלצה (אופציונלי)..."
-              value={review}
-              onChange={(e) => setReview(e.target.value)}
-              rows={3}
-              style={{ width: '100%', marginTop: '8px' }}
-            />
-            <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
-              <button className="btn-primary" onClick={handleRate} disabled={!rating}>שמור דירוג</button>
-              <button className="btn-ghost" onClick={handleRemove}>הסר מפיק</button>
-              {ratingSaved && <span style={{ color: 'green', alignSelf: 'center' }}>✓ נשמר</span>}
+      <ProducerCatalog
+        producers={producers}
+        assignedId={assigned?.id}
+        onClickProducer={handleClickProducer}
+      />
+
+      {viewProducer && (
+        <ProducerProfile
+          producer={viewProducer}
+          requestSent={sentProducerId === viewProducer.id}
+          requestLocked={sentProducerId !== null}
+          onRequest={setPendingProducer}
+          onCancel={handleCancel}
+          onClose={() => setViewProducer(null)}
+        />
+      )}
+
+      {pendingProducer && (
+        <RequestConfirmModal
+          producer={pendingProducer}
+          onConfirm={handleRequestConfirm}
+          onCancel={() => setPendingProducer(null)}
+        />
+      )}
+
+      {showManage && assigned && (
+        <div className="modal-overlay" onClick={() => setShowManage(false)}>
+          <div className="modal-card" style={{ maxWidth: '560px', width: '100%' }} onClick={(e) => e.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+              <h3>ניהול מפיק</h3>
+              <button className="btn-ghost" onClick={() => setShowManage(false)}>✕</button>
             </div>
+            <AssignedProducerView
+              producer={assigned}
+              eventId={eventId}
+              onRate={handleRate}
+              onRemove={handleRemove}
+            />
           </div>
         </div>
       )}
