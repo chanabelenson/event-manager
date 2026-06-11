@@ -4,7 +4,7 @@ function buildSlices(items) {
   const map = {};
   items.forEach(item => {
     const cat = item.category || 'ללא קטגוריה';
-    map[cat] = (map[cat] || 0) + Number(item.estimated_cost);
+    map[cat] = (map[cat] || 0) + Number(item.cost);
   });
   return Object.entries(map).filter(([, v]) => v > 0);
 }

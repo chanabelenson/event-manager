@@ -12,8 +12,8 @@ export default function ProducerCard({ producer, isAssigned, onClick }) {
       className="event-card"
       style={{
         cursor: 'pointer',
-        border: isAssigned ? '2px solid var(--primary)' : undefined,
-        boxShadow: isAssigned ? '0 0 0 4px var(--primary)' : undefined,
+        border: isAssigned ? '2px solid var(--lavender)' : undefined,
+        boxShadow: isAssigned ? '0 0 0 4px var(--lavender)' : undefined,
         position: 'relative',
       }}
       onClick={onClick}
@@ -21,7 +21,7 @@ export default function ProducerCard({ producer, isAssigned, onClick }) {
       {isAssigned && (
         <span style={{
           position: 'absolute', top: '10px', left: '10px',
-          background: 'var(--primary)', color: 'white',
+          background: 'var(--lavender)', color: 'white',
           borderRadius: '999px', padding: '2px 10px', fontSize: '12px',
         }}>
           המפיק שלי ✓
