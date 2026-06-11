@@ -32,20 +32,10 @@ export async function addGuest(eventId, userId, { guest_name, email, guests_coun
   return { id: insertId, invitation_token };
 }
 
-export async function updateGuestStatus(guestId, userId, status) {
-  const statusId = STATUS_IDS[status];
-  if (!statusId) throw new AppError('סטטוס לא תקין', 400);
-
+export async function updateGuest(guestId, userId, fields) {
   const owned = await Guest.verifyGuestOwnership(guestId, userId);
   if (!owned) throw new AppError('אורח לא נמצא', 404);
-
-  await Guest.updateGuestStatus(guestId, statusId);
-}
-
-export async function updateGuestTable(guestId, userId, tableId) {
-  const owned = await Guest.verifyGuestOwnership(guestId, userId);
-  if (!owned) throw new AppError('אורח לא נמצא', 404);
-  await Guest.updateGuestTable(guestId, tableId);
+  await Guest.updateGuest(guestId, fields);
 }
 
 export async function autoArrangeBulk(eventId, userId, assignments) {

@@ -10,11 +10,6 @@ export const addTask = async (req, res) => {
   res.status(201).json({ id });
 };
 
-export const toggleTask = async (req, res) => {
-  await TaskService.toggleTask(req.params.id, req.user.id, req.body.is_completed);
-  res.json({ message: 'עודכן' });
-};
-
 export const updateTask = async (req, res) => {
   await TaskService.updateTask(req.params.id, req.user.id, req.body);
   res.json({ message: 'עודכן' });

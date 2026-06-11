@@ -26,15 +26,12 @@ export const addTask = async (eventId, { task_name, task_date, notes }) => {
   return result.insertId;
 };
 
-export const toggleTask = async (id, is_completed) => {
-  await pool.query('UPDATE tasks SET is_completed=? WHERE id=?', [is_completed, id]);
-};
-
-export const updateTask = async (id, { task_name, notes }) => {
-  await pool.query(
-    'UPDATE tasks SET task_name=?, notes=? WHERE id=?',
-    [task_name, notes || null, id]
-  );
+export const updateTask = async (id, fields) => {
+  const allowed = ['task_name', 'task_date', 'notes', 'is_completed'];
+  const updates = Object.fromEntries(Object.entries(fields).filter(([k]) => allowed.includes(k)));
+  if (!Object.keys(updates).length) return;
+  const cols = Object.keys(updates).map(k => `${k}=?`).join(', ');
+  await pool.query(`UPDATE tasks SET ${cols} WHERE id=?`, [...Object.values(updates), id]);
 };
 
 export const deleteTask = async (id) => {

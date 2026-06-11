@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { getGuests, addGuest, updateGuestStatus, deleteGuest } from '../../../services/guestService';
-import { getEvent, updateRsvpDeadline } from '../../../services/eventService';
+import { getGuests, addGuest, updateGuest, deleteGuest } from '../../../services/guestService';
+import { getEvent, updateEvent } from '../../../services/eventService';
 import { getCategories, addCategory } from '../../../services/categoryService';
 import ConfirmModal from '../../Common/ConfirmModal';
 
@@ -44,7 +44,7 @@ export default function GuestsTab({ eventId }) {
   };
 
   const handleStatus = async (id, status) => {
-    await updateGuestStatus(eventId, id, status);
+    await updateGuest(eventId, id, { status });
     setGuests(guests.map((g) => (g.id === id ? { ...g, status } : g)));
   };
 
@@ -55,7 +55,7 @@ export default function GuestsTab({ eventId }) {
   };
 
   const handleDeadlineSave = async () => {
-    await updateRsvpDeadline(eventId, rsvpDeadline || null);
+    await updateEvent(eventId, { rsvp_deadline: rsvpDeadline || null });
     setDeadlineSaved(true);
     setTimeout(() => setDeadlineSaved(false), 2000);
   };
