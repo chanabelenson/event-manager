@@ -1,14 +1,12 @@
 import { Router } from 'express';
-import { getInvitation, updateInvitationStatus } from '../controllers/invitationController.js';
-import { getGiftsForGuest, claimGift, unclaimGift } from '../controllers/invitationGiftsController.js';
+import { getInvitation, updateInvitation } from '../controllers/invitationController.js';
+import invitationGiftsRouter from './invitationGifts.js';
 
 const router = Router();
 
 router.get('/:token', getInvitation);
-router.patch('/:token/status', updateInvitationStatus);
+router.put('/:token', updateInvitation);
 
-router.get('/:token/gifts', getGiftsForGuest);
-router.patch('/:token/gifts/:giftId/claim', claimGift);
-router.patch('/:token/gifts/:giftId/unclaim', unclaimGift);
+router.use('/:token/gifts', invitationGiftsRouter);
 
 export default router;

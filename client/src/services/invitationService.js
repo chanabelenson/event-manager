@@ -14,5 +14,5 @@ const handle = async (res) => {
 };
 
 export const getInvitation = (token) => fetch(`${API}/${token}`, opts()).then(handle);
-export const updateInvitationStatus = (token, status, confirmed_count) =>
-  fetch(`${API}/${token}/status`, opts('PATCH', { status, confirmed_count })).then(handle);
+export const updateInvitation = (token, fields) =>
+  fetch(`${API}/${token}`, opts('PUT', fields)).then(handle);

@@ -10,7 +10,7 @@ export const addUpdate = async (req, res) => {
   res.status(201).json(data);
 };
 
-export const markDone = async (req, res) => {
+export const updateUpdate = async (req, res) => {
   await ProducerUpdateService.markDone(req.params.eventId, req.user.id, req.params.updateId);
   res.json({ message: 'עודכן' });
 };

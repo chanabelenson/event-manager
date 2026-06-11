@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { getInvitation, updateInvitationStatus } from '../../services/invitationService';
+import { getInvitation, updateInvitation } from '../../services/invitationService';
 import GiftsList from '../../components/Invitation/GiftsList';
 
 const formatDate = (dateStr) =>
@@ -33,7 +33,7 @@ export default function Invitation() {
     setSubmitting(true);
     setSuccessMsg('');
     try {
-      await updateInvitationStatus(token, status, status === 'confirmed' ? confirmedCount : 0);
+      await updateInvitation(token, { status, confirmed_count: status === 'confirmed' ? confirmedCount : 0 });
       setData((prev) => ({ ...prev, status, confirmed_count: status === 'confirmed' ? confirmedCount : 0 }));
       setSuccessMsg(status === 'confirmed' ? `אישרת הגעה ל-${confirmedCount} אנשים! נשמח לראותכם 🎉` : 'עדכנו שלא תוכל להגיע 😔');
     } catch (err) {

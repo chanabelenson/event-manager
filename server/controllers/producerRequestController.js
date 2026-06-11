@@ -16,11 +16,12 @@ export const cancelRequest = async (req, res) => {
 };
 
 export const getPendingRequests = async (req, res) => {
-  const data = await ProducerRequestService.getPendingRequests(req.user.id);
+  const { status = 'pending', page = 1, limit = 10 } = req.query;
+  const data = await ProducerRequestService.getPendingRequests(req.user.id, { status, page: Number(page), limit: Number(limit) });
   res.json(data);
 };
 
 export const respondToRequest = async (req, res) => {
-  await ProducerRequestService.respondToRequest(req.params.requestId, req.user.id, req.body.action);
+  await ProducerRequestService.respondToRequest(req.params.id, req.user.id, req.body.action);
   res.json({ message: 'בקשה עודכנה' });
 };

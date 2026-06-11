@@ -1,16 +1,19 @@
 import * as ProducerService from '../services/producerService.js';
-import { AppError } from '../utils/AppError.js';
 
 export const getProducers = async (req, res) => {
   res.json(await ProducerService.getProducers());
 };
 
-export const getEventProducer = async (req, res) => {
-  res.json(await ProducerService.getEventProducer(req.params.eventId));
+export const getProducerReviews = async (req, res) => {
+  res.json(await ProducerService.getProducerReviews(req.params.id));
 };
 
-export const getProducerReviews = async (req, res) => {
-  res.json(await ProducerService.getProducerReviews(req.params.producerId));
+export const getProducerDashboard = async (req, res) => {
+  res.json(await ProducerService.getProducerDashboard(req.user.id));
+};
+
+export const getEventProducer = async (req, res) => {
+  res.json(await ProducerService.getEventProducer(req.params.eventId));
 };
 
 export const removeProducer = async (req, res) => {
@@ -18,12 +21,13 @@ export const removeProducer = async (req, res) => {
   res.json({ message: 'מפיק הוסר' });
 };
 
-export const rateProducer = async (req, res) => {
-  await ProducerService.rateProducer(req.params.eventId, req.user.id, req.body.rating, req.body.review);
-  res.json({ message: 'דירוג נשמר' });
-};
-
-export const getProducerDashboard = async (req, res) => {
-  if (req.user.role !== 'producer') throw new AppError('אין הרשאה', 403);
-  res.json(await ProducerService.getProducerDashboard(req.user.id));
+export const updateEventProducer = async (req, res) => {
+  const { rating, review, producer_id } = req.body;
+  if (producer_id) {
+    await ProducerService.assignProducer(req.params.eventId, producer_id, req.user.id);
+  }
+  if (rating !== undefined) {
+    await ProducerService.rateProducer(req.params.eventId, req.user.id, rating, review);
+  }
+  res.json({ message: 'עודכן' });
 };

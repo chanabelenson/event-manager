@@ -7,7 +7,7 @@ export const getInvitation = async (req, res) => {
   res.json(guest);
 };
 
-export const updateInvitationStatus = async (req, res) => {
+export const updateInvitation = async (req, res) => {
   await InvitationService.updateInvitationStatus(req.params.token, req.body.status, req.body.confirmed_count);
-  res.json({ message: 'סטטוס עודכן בהצלחה' });
+  res.json({ message: 'עודכן' });
 };

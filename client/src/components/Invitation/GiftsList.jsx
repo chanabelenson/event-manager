@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getGiftsForGuest, claimGift, unclaimGift } from '../../services/invitationGiftService';
+import { getGiftsForGuest, updateGiftClaim } from '../../services/invitationGiftService';
 
 export default function GiftsList({ token }) {
   const [gifts, setGifts] = useState([]);
@@ -41,12 +41,12 @@ export default function GiftsList({ token }) {
     try {
       setError('');
       if (gift.claimed_by_me) {
-        await unclaimGift(token, gift.id);
+        await updateGiftClaim(token, gift.id, false);
         setGifts((prev) =>
           prev.map((g) => (g.id === gift.id ? { ...g, claimed_by_me: false, is_claimed: false } : g))
         );
       } else {
-        await claimGift(token, gift.id);
+        await updateGiftClaim(token, gift.id, true);
         setGifts((prev) =>
           prev.map((g) => (g.id === gift.id ? { ...g, claimed_by_me: true, is_claimed: true } : g))
         );

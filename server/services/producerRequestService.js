@@ -26,8 +26,8 @@ export async function cancelRequest(eventId, ownerId) {
   await ProducerRequest.cancelByEvent(eventId);
 }
 
-export async function getPendingRequests(producerId) {
-  return await ProducerRequest.getPendingRequestsByProducer(producerId);
+export async function getPendingRequests(producerId, { status, page, limit }) {
+  return await ProducerRequest.getRequestsByProducer(producerId, { status, page, limit });
 }
 
 export async function respondToRequest(requestId, producerId, action) {

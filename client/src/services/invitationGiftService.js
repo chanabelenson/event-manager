@@ -9,8 +9,5 @@ const handle = async (res) => {
 export const getGiftsForGuest = (token) =>
   fetch(base(token)).then(handle);
 
-export const claimGift = (token, giftId) =>
-  fetch(`${base(token)}/${giftId}/claim`, { method: 'PATCH' }).then(handle);
-
-export const unclaimGift = (token, giftId) =>
-  fetch(`${base(token)}/${giftId}/unclaim`, { method: 'PATCH' }).then(handle);
+export const updateGiftClaim = (token, giftId, claimed) =>
+  fetch(`${base(token)}/${giftId}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ claimed }) }).then(handle);

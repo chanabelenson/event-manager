@@ -6,6 +6,8 @@ import authRoutes from './routes/auth.js';
 import eventRoutes from './routes/events.js';
 import invitationRoutes from './routes/invitation.js';
 import producerRoutes from './routes/producers.js';
+import producerRouter from './routes/producerRouter.js';
+import eventProducerRouter from './routes/eventProducerRouter.js';
 import { logger } from './middleware/logger.js';
 import { authMiddleware, requireRole } from './middleware/auth.js';
 import { errorHandler } from './middleware/errorHandler.js';
@@ -26,8 +28,10 @@ app.use(logger);
 
 app.use('/api/auth', authRoutes);
 app.use('/api/events', authMiddleware, requireRole('owner'), eventRoutes);
-app.use('/api/invitation', invitationRoutes);
+app.use('/api/events/:eventId/producers', authMiddleware, eventProducerRouter);
 app.use('/api/producers', authMiddleware, producerRoutes);
+app.use('/api/producer', authMiddleware, producerRouter);
+app.use('/api/invitation', invitationRoutes);
 
 app.use(errorHandler);
 
