@@ -42,7 +42,7 @@ export async function autoArrangeBulk(eventId, userId, assignments) {
   if (!Array.isArray(assignments)) throw new AppError('נתונים שגויים', 400);
   const event = await Event.findEventById(eventId, userId);
   if (!event) throw new AppError('אירוע לא נמצא', 404);
-  await Guest.bulkUpdateGuestTables(assignments);
+  await Guest.bulkUpdateGuestTables(eventId, assignments);
 }
 
 export async function getTableAssignments(eventId, userId) {

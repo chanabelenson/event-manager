@@ -16,12 +16,7 @@ function effectiveCount(guest) {
 }
 
 function initFromGuests(guests) {
-  const s = {};
-  for (const g of guests) {
-    if (g.status !== 'confirmed' || !g.table_id) continue;
-    s[g.id] = { [g.table_id]: effectiveCount(g) };
-  }
-  return s;
+  return {};
 }
 
 function initFromArranged(arranged) {
@@ -270,10 +265,9 @@ export default function SeatingChart({ tables, guests, arrangedTables, savedAssi
 
   return (
     <div
-      className="sc-root"
+      className={`sc-root${tableDrag ? ' sc-dragging' : ''}`}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
-      className="sc-root sc-no-select"
     >
       {tableDrag?.moved && (
         <div className="floating-chip" style={{ left: tableDrag.x, top: tableDrag.y }}>
@@ -301,7 +295,7 @@ export default function SeatingChart({ tables, guests, arrangedTables, savedAssi
                 draggable
                 onDragStart={() => setDragGuest(g)}
                 onDragEnd={() => setDragGuest(null)}
-                style={g.category ? { borderRight: `4px solid ${categoryColors[g.category]}` } : {}}
+                style={g.category ? { borderLeft: `4px solid ${categoryColors[g.category]}` } : {}}
               >
                 <div className="chip-info">
                   <span className="chip-name">{g.guest_name}</span>

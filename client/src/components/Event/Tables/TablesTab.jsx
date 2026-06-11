@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getTables, addTable, deleteTable } from '../../../services/tableService';
-import { getGuests, updateGuest, autoArrangeSave, getAssignments } from '../../../services/guestService';
+import { getGuests, autoArrangeSave, getAssignments } from '../../../services/guestService';
 import { autoArrangeSeating } from '../../../utils/seatingArrangement';
 import ConfirmModal from '../../Common/ConfirmModal';
 import SeatingChart from './SeatingChart';
@@ -58,11 +58,6 @@ export default function TablesTab({ eventId }) {
 
   const handleSave = async (assignments) => {
     await autoArrangeSave(eventId, assignments);
-    const primaryByGuest = {};
-    assignments.forEach(({ guestId, tableId }) => {
-      if (!primaryByGuest[guestId]) primaryByGuest[guestId] = tableId;
-    });
-    setGuests(guests.map((g) => ({ ...g, table_id: primaryByGuest[g.id] ?? null })));
   };
 
   const handleAutoArrange = async () => {
@@ -70,21 +65,10 @@ export default function TablesTab({ eventId }) {
     setArranging(true);
     try {
       const result = autoArrangeSeating(guests, tables);
-      const assignments = result.flatMap((t) =>
-        t.seated_guests.map((g) => ({ guestId: g.id, tableId: t.id, count: g.effective_count }))
-      );
-      const primaryByGuest = {};
-      assignments.forEach(({ guestId, tableId }) => {
-        if (!primaryByGuest[guestId]) primaryByGuest[guestId] = tableId;
-      });
       setArrangedTables(result);
-      setGuests(
-        guests.map((g) => (primaryByGuest[g.id] ? { ...g, table_id: primaryByGuest[g.id] } : g))
-      );
-      await autoArrangeSave(eventId, assignments);
     } catch (err) {
       console.error(err);
-      alert('שגיאה בשמירת הסידור לשרת');
+      alert('שגיאה בסידור האוטומטי');
     } finally {
       setArranging(false);
     }

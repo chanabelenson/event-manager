@@ -53,12 +53,48 @@ export const updateGuest = async (id, fields) => {
   await pool.query(`UPDATE guests SET ${cols} WHERE id=?`, [...Object.values(updates), id]);
 };
 
-export const bulkUpdateGuestTables = async (assignments) => {
-  await Promise.all(
-    assignments.map(({ guestId, tableId }) =>
-      pool.query('UPDATE guests SET table_id=? WHERE id=?', [tableId, guestId])
-    )
-  );
+export const bulkUpdateGuestTables = async (eventId, assignments) => {
+  const conn = await pool.getConnection();
+  try {
+    await conn.beginTransaction();
+
+    // מחיקת כל השיבוצים הקיימים לאירוע זה
+    await conn.query(
+      `DELETE gta FROM guest_table_assignments gta
+       JOIN guests g ON g.id = gta.guest_id
+       WHERE g.event_id = ?`,
+      [eventId]
+    );
+
+    // הכנסת השיבוצים החדשים
+    if (assignments.length > 0) {
+      const values = assignments.map(({ guestId, tableId, count }) => [guestId, tableId, count]);
+      await conn.query(
+        'INSERT INTO guest_table_assignments (guest_id, table_id, count) VALUES ?',
+        [values]
+      );
+    }
+
+    // עדכון table_id על האורח לשולחן הראשי (הגדול ביותר)
+    const primaryByGuest = {};
+    for (const { guestId, tableId, count } of assignments) {
+      if (!primaryByGuest[guestId] || count > primaryByGuest[guestId].count) {
+        primaryByGuest[guestId] = { tableId, count };
+      }
+    }
+    await Promise.all(
+      Object.entries(primaryByGuest).map(([guestId, { tableId }]) =>
+        conn.query('UPDATE guests SET table_id=? WHERE id=?', [tableId, guestId])
+      )
+    );
+
+    await conn.commit();
+  } catch (err) {
+    await conn.rollback();
+    throw err;
+  } finally {
+    conn.release();
+  }
 };
 
 export const deleteGuest = async (id) => {
@@ -83,10 +119,10 @@ export const updateGuestStatusByToken = async (token, statusId) => {
 
 export const getTableAssignments = async (eventId) => {
   const [rows] = await pool.query(
-    `SELECT g.id as guestId, g.table_id as tableId,
-      COALESCE(g.confirmed_count, g.guests_count, 1) as count
-     FROM guests g
-     WHERE g.event_id = ? AND g.table_id IS NOT NULL`,
+    `SELECT gta.guest_id as guestId, gta.table_id as tableId, gta.count
+     FROM guest_table_assignments gta
+     JOIN guests g ON g.id = gta.guest_id
+     WHERE g.event_id = ?`,
     [eventId]
   );
   return rows;
