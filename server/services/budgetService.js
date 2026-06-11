@@ -42,9 +42,8 @@ export async function deleteBudgetItem(itemId, userId) {
 }
 
 export async function updateBudgetCeiling(eventId, userId, total_budget) {
-  const event = await Event.findEventById(eventId, userId);
-  if (!event) throw new AppError('אירוע לא נמצא', 404);
-  await Event.updateTotalBudget(eventId, userId, total_budget);
+  const updated = await Event.updateEvent(eventId, userId, { total_budget });
+  if (!updated) throw new AppError('אירוע לא נמצא', 404);
 }
 
 export async function addPayment(itemId, userId, data) {

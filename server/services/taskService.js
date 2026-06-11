@@ -16,12 +16,6 @@ export async function addTask(eventId, userId, { task_name, task_date, notes }) 
   return { id };
 }
 
-export async function toggleTask(taskId, userId, is_completed) {
-  const owned = await Task.verifyTaskOwnership(taskId, userId);
-  if (!owned) throw new AppError('משימה לא נמצאה', 404);
-  await Task.toggleTask(taskId, is_completed);
-}
-
 export async function updateTask(taskId, userId, fields) {
   const owned = await Task.verifyTaskOwnership(taskId, userId);
   if (!owned) throw new AppError('משימה לא נמצאה', 404);

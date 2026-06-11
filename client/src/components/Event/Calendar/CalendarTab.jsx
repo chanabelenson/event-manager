@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getTasks, addTask, toggleTask, deleteTask } from '../../../services/taskService';
+import { getTasks, addTask, updateTask, deleteTask } from '../../../services/taskService';
 import CalendarGrid from './CalendarGrid';
 import DayModal from './DayModal';
 
@@ -51,7 +51,7 @@ export default function CalendarTab({ eventId, createdAt, eventDate }) {
 
   const handleToggle = async (id, is_completed) => {
     try {
-      await toggleTask(eventId, id, !is_completed);
+      await updateTask(eventId, id, { is_completed: !is_completed });
       setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, is_completed: !is_completed } : t)));
     } catch (error) {
       console.error("שגיאה בעדכון משימה:", error);

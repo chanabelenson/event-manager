@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getMyEvents, createEvent, getEventById, updateRsvpDeadline, deleteEvent } from '../controllers/eventsController.js';
+import { getMyEvents, createEvent, getEventById, updateEvent, deleteEvent } from '../controllers/eventsController.js';
 import guestsRouter from './guests.js';
 import tablesRouter from './tables.js';
 import tasksRouter from './tasks.js';
@@ -10,9 +10,9 @@ import categoriesRouter from './categories.js';
 const router = Router();
 
 router.get('/', getMyEvents);
-router.post('/', createEvent);
 router.get('/:id', getEventById);
-router.patch('/:id/rsvp-deadline', updateRsvpDeadline);
+router.post('/', createEvent);
+router.put('/:id', updateEvent);
 router.delete('/:id', deleteEvent);
 
 router.use('/:eventId/guests', guestsRouter);

@@ -43,12 +43,14 @@ export const addGuest = async (eventId, { guest_name, email, guests_count, categ
   return { insertId: result.insertId, invitation_token: token };
 };
 
-export const updateGuestStatus = async (id, statusId) => {
-  await pool.query('UPDATE guests SET status_id=? WHERE id=?', [statusId, id]);
-};
-
-export const updateGuestTable = async (id, tableId) => {
-  await pool.query('UPDATE guests SET table_id=? WHERE id=?', [tableId || null, id]);
+export const updateGuest = async (id, fields) => {
+  const STATUS_IDS = { pending: 1, confirmed: 2, declined: 3 };
+  const allowed = ['table_id', 'guests_count', 'category_id'];
+  const updates = Object.fromEntries(Object.entries(fields).filter(([k]) => allowed.includes(k)));
+  if (fields.status) updates.status_id = STATUS_IDS[fields.status];
+  if (!Object.keys(updates).length) return;
+  const cols = Object.keys(updates).map(k => `${k}=?`).join(', ');
+  await pool.query(`UPDATE guests SET ${cols} WHERE id=?`, [...Object.values(updates), id]);
 };
 
 export const bulkUpdateGuestTables = async (assignments) => {

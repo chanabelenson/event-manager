@@ -21,8 +21,8 @@ export const createEvent = async (req, res) => {
   res.status(201).json(event);
 };
 
-export const updateRsvpDeadline = async (req, res) => {
-  await EventService.updateRsvpDeadline(req.params.id, req.user.id, req.body.rsvp_deadline);
+export const updateEvent = async (req, res) => {
+  await EventService.updateEvent(req.params.id, req.user.id, req.body);
   res.json({ message: 'עודכן' });
 };
 

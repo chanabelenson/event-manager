@@ -24,19 +24,13 @@ export async function createEvent(userId, { event_name, event_date, location_nam
   return result.insertId;
 }
 
-export async function updateRsvpDeadline(eventId, userId, rsvp_deadline) {
-  const [result] = await pool.query(
-    'UPDATE events SET rsvp_deadline=? WHERE id=? AND user_id=?',
-    [rsvp_deadline || null, eventId, userId]
-  );
+export async function updateEvent(eventId, userId, fields) {
+  const allowed = ['rsvp_deadline', 'event_name', 'event_date', 'location_name', 'location_address', 'total_budget'];
+  const updates = Object.fromEntries(Object.entries(fields).filter(([k]) => allowed.includes(k)));
+  if (!Object.keys(updates).length) return;
+  const cols = Object.keys(updates).map(k => `${k}=?`).join(', ');
+  const [result] = await pool.query(`UPDATE events SET ${cols} WHERE id=? AND user_id=?`, [...Object.values(updates), eventId, userId]);
   return result.affectedRows > 0;
-}
-
-export async function updateTotalBudget(eventId, userId, total_budget) {
-  await pool.query(
-    'UPDATE events SET total_budget=? WHERE id=? AND user_id=?',
-    [total_budget, eventId, userId]
-  );
 }
 
 export async function deleteEventById(eventId, userId) {

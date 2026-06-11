@@ -15,8 +15,7 @@ const handle = async (res) => {
 
 export const getGuests = (eventId) => fetch(`${API}/${eventId}/guests`, opts()).then(handle);
 export const addGuest = (eventId, body) => fetch(`${API}/${eventId}/guests`, opts('POST', body)).then(handle);
-export const updateGuestStatus = (eventId, id, status) => fetch(`${API}/${eventId}/guests/${id}/status`, opts('PATCH', { status })).then(handle);
-export const updateGuestTable = (eventId, id, table_id) => fetch(`${API}/${eventId}/guests/${id}/table`, opts('PATCH', { table_id })).then(handle);
-export const autoArrangeSave = (eventId, assignments) => fetch(`${API}/${eventId}/guests/auto-arrange`, opts('POST', { assignments })).then(handle);
+export const updateGuest = (eventId, id, fields) => fetch(`${API}/${eventId}/guests/${id}`, opts('PUT', fields)).then(handle);
+export const autoArrangeSave = (eventId, assignments) => fetch(`${API}/${eventId}/guests`, opts('PUT', { assignments })).then(handle);
 export const deleteGuest = (eventId, id) => fetch(`${API}/${eventId}/guests/${id}`, opts('DELETE')).then(handle);
-export const getAssignments = (eventId) => fetch(`${API}/${eventId}/guests/assignments`, opts()).then(handle);
+export const getAssignments = (eventId) => fetch(`${API}/${eventId}/guests?include=assignments`, opts()).then(handle);

@@ -1,6 +1,10 @@
 import * as GuestService from '../services/guestService.js';
 
 export const getGuests = async (req, res) => {
+  if (req.query.include === 'assignments') {
+    const data = await GuestService.getTableAssignments(req.params.eventId, req.user.id);
+    return res.json(data);
+  }
   const guests = await GuestService.getGuests(req.params.eventId, req.user.id);
   res.json(guests);
 };
@@ -10,19 +14,9 @@ export const addGuest = async (req, res) => {
   res.status(201).json({ id, invitation_token });
 };
 
-export const updateStatus = async (req, res) => {
-  await GuestService.updateGuestStatus(req.params.id, req.user.id, req.body.status);
+export const updateGuest = async (req, res) => {
+  await GuestService.updateGuest(req.params.id, req.user.id, req.body);
   res.json({ message: 'עודכן' });
-};
-
-export const updateTable = async (req, res) => {
-  await GuestService.updateGuestTable(req.params.id, req.user.id, req.body.table_id);
-  res.json({ message: 'עודכן' });
-};
-
-export const getAssignments = async (req, res) => {
-  const data = await GuestService.getTableAssignments(req.params.eventId, req.user.id);
-  res.json(data);
 };
 
 export const bulkUpdateTables = async (req, res) => {
