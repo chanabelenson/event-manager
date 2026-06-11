@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import ProducerUpdates from './ProducerUpdates';
 import ConfirmModal from '../../Common/ConfirmModal';
+import './Producer.css';
 
 const Stars = ({ value, onChange }) => (
-  <div style={{ display: 'flex', gap: '4px', fontSize: '24px', cursor: onChange ? 'pointer' : 'default' }}>
+  <div className={`producer-stars${onChange ? ' lg' : ''}`}>
     {[1, 2, 3, 4, 5].map((n) => (
-      <span key={n} onClick={() => onChange?.(n)} style={{ color: n <= value ? '#f59e0b' : '#d1d5db' }}>★</span>
+      <span key={n} onClick={() => onChange?.(n)} className={n <= value ? 'star-filled' : 'star-empty'}>★</span>
     ))}
   </div>
 );
@@ -23,26 +24,25 @@ export default function AssignedProducerView({ producer, eventId, onRate, onRemo
   };
 
   return (
-    <div className="event-card" style={{ maxWidth: '500px' }}>
+    <div className="assigned-producer-card">
       <h3>🎬 {producer.full_name}</h3>
       {producer.phone && <p>📞 {producer.phone}</p>}
       {producer.contact_email && <p>✉️ {producer.contact_email}</p>}
-      {producer.bio && <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>{producer.bio}</p>}
+      {producer.bio && <p className="producer-card-bio">{producer.bio}</p>}
 
-      <div style={{ marginTop: '16px', borderTop: '1px solid var(--border)', paddingTop: '12px' }}>
-        <p style={{ marginBottom: '6px' }}>דרג את המפיק:</p>
+      <div className="assigned-producer-rating">
+        <p>דרג את המפיק:</p>
         <Stars value={rating} onChange={setRating} />
         <textarea
           placeholder="כתוב המלצה (אופציונלי)..."
           value={review}
           onChange={(e) => setReview(e.target.value)}
           rows={3}
-          style={{ width: '100%', marginTop: '8px' }}
         />
-        <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
+        <div className="assigned-rating-actions">
           <button className="btn-primary" onClick={handleRate} disabled={!rating}>שמור דירוג</button>
           <button className="btn-ghost" onClick={() => setConfirmRemove(true)}>הסר מפיק</button>
-          {ratingSaved && <span style={{ color: 'green', alignSelf: 'center' }}>✓ נשמר</span>}
+          {ratingSaved && <span className="rating-saved">✓ נשמר</span>}
         </div>
       </div>
 

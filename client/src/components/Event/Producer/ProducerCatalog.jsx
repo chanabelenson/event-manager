@@ -1,3 +1,4 @@
+import './Producer.css';
 import ProducerCard from './ProducerCard';
 
 export default function ProducerCatalog({ producers, assignedId, onClickProducer }) {
@@ -9,7 +10,7 @@ export default function ProducerCatalog({ producers, assignedId, onClickProducer
   ];
 
   return (
-    <div className="events-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))' }}>
+    <div className="producer-catalog">
       {sorted.map((p) => (
         <ProducerCard
           key={p.id}

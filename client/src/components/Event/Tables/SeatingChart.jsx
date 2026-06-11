@@ -273,7 +273,7 @@ export default function SeatingChart({ tables, guests, arrangedTables, savedAssi
       className="sc-root"
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
-      style={{ userSelect: 'none', touchAction: tableDrag ? 'none' : 'auto' }}
+      className="sc-root sc-no-select"
     >
       {tableDrag?.moved && (
         <div className="floating-chip" style={{ left: tableDrag.x, top: tableDrag.y }}>
@@ -281,7 +281,7 @@ export default function SeatingChart({ tables, guests, arrangedTables, savedAssi
         </div>
       )}
 
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '14px' }}>
+      <div className="sc-save-row">
         <button className="btn-primary" onClick={handleSave} disabled={saving}>
           {saving ? 'שומר...' : '💾 שמור שיבוץ'}
         </button>

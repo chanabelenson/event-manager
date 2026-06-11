@@ -53,7 +53,7 @@ export default function Invitation() {
           <h1>שגיאה</h1>
         </div>
         <div className="invitation-body">
-          <p style={{ color: 'var(--rose)', textAlign: 'center' }}>{error}</p>
+          <p className="invitation-error-text">{error}</p>
         </div>
       </div>
     </div>

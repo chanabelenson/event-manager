@@ -43,7 +43,7 @@ export default function NewEventModal({ onClose, onCreated }) {
             <input name="location_name" placeholder="למשל: אולם ורד הגליל" value={form.location_name} onChange={handleChange} required />
           </div>
           <div className="input-group">
-            <label>כתובת <span style={{ fontWeight: 400, opacity: 0.6 }}>(אופציונלי)</span></label>
+            <label>כתובת <span className="label-optional">(אופציונלי)</span></label>
             <input name="location_address" placeholder="רחוב, עיר" value={form.location_address} onChange={handleChange} />
           </div>
           {error && <p className="auth-error">{error}</p>}

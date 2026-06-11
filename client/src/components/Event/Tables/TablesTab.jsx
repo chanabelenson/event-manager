@@ -92,8 +92,8 @@ export default function TablesTab({ eventId }) {
 
   return (
     <div className="tab-content">
-      <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-end', flexWrap: 'wrap', marginBottom: '8px' }}>
-        <form className="inline-form" onSubmit={handleAddTable} style={{ margin: 0 }}>
+      <div className="tables-toolbar">
+        <form className="inline-form tables-add-form" onSubmit={handleAddTable}>
           <span>שולחן מספר {nextTableNumber}</span>
           <input
             type="number"
@@ -109,8 +109,7 @@ export default function TablesTab({ eventId }) {
         {tables.map((t) => (
           <button
             key={t.id}
-            className="btn-ghost"
-            style={{ fontSize: '12px', padding: '4px 10px', color: '#c0392b' }}
+            className="btn-ghost table-delete-btn"
             onClick={() => setConfirmDelete(t)}
           >
             🗑 שולחן {t.table_number}

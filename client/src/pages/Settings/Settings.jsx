@@ -71,26 +71,26 @@ export default function Settings({ onClose }) {
 
   return (
     <div className="modal-overlay">
-      <div className="modal-card" style={{ maxWidth: '420px', width: '100%', position: 'relative' }}>
-        <button onClick={onClose} style={{ position: 'absolute', top: '12px', left: '12px', background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer', color: '#999' }}>✕</button>
+      <div className="modal-card settings-card">
+        <button onClick={onClose} className="settings-close-btn">✕</button>
         <h2>שינוי סיסמה</h2>
 
         {step === 'initial' && (
-          <div style={{ textAlign: 'center' }}>
-            <p style={{ color: '#555', marginBottom: '20px' }}>
+          <div className="settings-step-center">
+            <p className="settings-info-text">
               נשלח קוד אימות חד-פעמי לכתובת האימייל הרשומה על שמך.
             </p>
             {error && <p className="auth-error">{error}</p>}
-            <button className="btn-primary" onClick={handleSendCode} disabled={loading} style={{ width: '100%', marginBottom: '10px' }}>
+            <button className="btn-primary settings-full-btn" onClick={handleSendCode} disabled={loading}>
               {loading ? 'שולח...' : 'שלח קוד לאימייל שלי'}
             </button>
-            <button className="btn-ghost" onClick={onClose} style={{ width: '100%' }}>חזרה לדף הבית</button>
+            <button className="btn-ghost settings-full-btn" onClick={onClose}>חזרה לדף הבית</button>
           </div>
         )}
 
         {step === 'verify' && (
           <form onSubmit={handleVerifyCode} className="auth-form">
-            <p style={{ color: '#555', marginBottom: '8px', textAlign: 'center' }}>
+            <p className="settings-info-text">
               קוד אימות נשלח לאימייל שלך. הקוד תקף ל-10 דקות.
             </p>
             <input
@@ -139,20 +139,20 @@ export default function Settings({ onClose }) {
         )}
 
         {step === 'expired' && (
-          <div style={{ textAlign: 'center' }}>
-            <p style={{ fontSize: '32px', marginBottom: '8px' }}>⏰</p>
-            <p style={{ color: 'var(--rose)', fontWeight: 600, marginBottom: '8px' }}>{error}</p>
-            <p style={{ color: '#555', fontSize: '14px', marginBottom: '20px' }}>יש לשלוח קוד חדש ולנסות שוב.</p>
-            <button className="btn-primary" onClick={handleSendCode} disabled={loading} style={{ width: '100%', marginBottom: '10px' }}>
+          <div className="settings-step-center">
+            <p className="settings-expired-icon">⏰</p>
+            <p className="settings-expired-msg">{error}</p>
+            <p className="settings-expired-hint">יש לשלוח קוד חדש ולנסות שוב.</p>
+            <button className="btn-primary settings-full-btn" onClick={handleSendCode} disabled={loading}>
               {loading ? 'שולח...' : 'שלח קוד חדש'}
             </button>
-            <button className="btn-ghost" onClick={onClose} style={{ width: '100%' }}>ביטול</button>
+            <button className="btn-ghost settings-full-btn" onClick={onClose}>ביטול</button>
           </div>
         )}
 
         {step === 'success' && (
-          <div style={{ textAlign: 'center' }}>
-            <p style={{ color: 'green', fontSize: '16px', marginBottom: '20px' }}>✓ הסיסמה שונתה בהצלחה!</p>
+          <div className="settings-step-center">
+            <p className="settings-success-msg">✓ הסיסמה שונתה בהצלחה!</p>
             <button className="btn-primary" onClick={onClose}>חזרה לדף הבית</button>
           </div>
         )}

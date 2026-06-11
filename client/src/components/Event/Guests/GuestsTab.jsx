@@ -68,12 +68,12 @@ export default function GuestsTab({ eventId }) {
         <div className="budget-summary-item"><span>ממתינים</span><strong>{pending}</strong></div>
       </div>
 
-      <div className="inline-form" style={{ alignItems: 'center' }}>
-        <label style={{ whiteSpace: 'nowrap' }}>מועד אחרון לאישור:</label>
+      <div className="inline-form guests-deadline-form">
+        <label className="deadline-label">מועד אחרון לאישור:</label>
         <input type="date" value={rsvpDeadline} onChange={(e) => setRsvpDeadline(e.target.value)} />
         <button className="btn-primary" onClick={handleDeadlineSave}>שמור</button>
-        {deadlineSaved && <span style={{ color: 'green' }}>✓ נשמר</span>}
-        {!rsvpDeadline && <small style={{ color: 'gray' }}>(ברירת מחדל: יומיים לפני האירוע)</small>}
+        {deadlineSaved && <span className="saved-indicator">✓ נשמר</span>}
+        {!rsvpDeadline && <small className="deadline-default">(ברירת מחדל: יומיים לפני האירוע)</small>}
       </div>
 
       <form className="inline-form" onSubmit={handleAddCategory}>

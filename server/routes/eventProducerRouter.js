@@ -6,20 +6,20 @@ import updatesRouter from './updatesRouter.js';
 
 // ── event producer router ────────────────────────
 const router = Router({ mergeParams: true });
-router.use(requireRole('owner'));
 
-// ה-CRUD הבסיסי של המפיק באירוע
-router.get('/', getEventProducer);
-router.put('/', updateEventProducer);  // כולל דירוג או עדכון
-router.delete('/', removeProducer);    // הסרת המפיק מהאירוע
+// נתיבים פתוחים לשני הצדדים (owner + producer)
+router.use('/updates', updatesRouter);
 
-// ראוטר מקונן עבור בקשות ספציפיות לאירוע הזה
+// נתיבים בלעדיים לבעל האירוע
+router.get('/', requireRole('owner'), getEventProducer);
+router.post('/', requireRole('owner'), sendRequest);
+router.put('/', requireRole('owner'), updateEventProducer);
+router.delete('/', requireRole('owner'), removeProducer);
+
 const eventRequestRouter = Router({ mergeParams: true });
-eventRequestRouter.get('/', getEventRequest);
-eventRequestRouter.post('/', sendRequest);     // העברנו את ה-POST של שליחת הבקשה לכאן!
-eventRequestRouter.delete('/', cancelRequest); // ביטול בקשה
+eventRequestRouter.get('/', requireRole('owner'), getEventRequest);
+eventRequestRouter.delete('/', requireRole('owner'), cancelRequest);
 
 router.use('/request', eventRequestRouter);
-router.use('/updates', updatesRouter);
 
 export default router;

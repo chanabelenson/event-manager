@@ -27,8 +27,8 @@ app.use(cookieParser());
 app.use(logger);
 
 app.use('/api/auth', authRoutes);
-app.use('/api/events', authMiddleware, requireRole('owner'), eventRoutes);
 app.use('/api/events/:eventId/producers', authMiddleware, eventProducerRouter);
+app.use('/api/events', authMiddleware, requireRole('owner'), eventRoutes);
 app.use('/api/producers', authMiddleware, producerRoutes);
 app.use('/api/producer', authMiddleware, producerRouter);
 app.use('/api/invitation', invitationRoutes);

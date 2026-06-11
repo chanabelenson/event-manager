@@ -1,9 +1,11 @@
 import pool from '../config/db.js';
+import { ROLES } from '../utils/constants.js';
 
 export async function findUserByEmail(email) {
   const [rows] = await pool.query(
-    `SELECT u.*, up.password_hash
+    `SELECT u.id, u.full_name, u.email, ur.role_name AS role, up.password_hash
      FROM users u
+     JOIN user_roles ur ON ur.id = u.role_id
      JOIN user_passwords up ON up.user_id = u.id
      WHERE u.email = ?`,
     [email]
@@ -13,8 +15,10 @@ export async function findUserByEmail(email) {
 
 export async function findUserById(id) {
   const [rows] = await pool.query(
-    `SELECT u.id, u.full_name, u.email, u.role, pp.phone, pp.contact_email, pp.bio
+    `SELECT u.id, u.full_name, u.email, ur.role_name AS role,
+            pp.phone, pp.contact_email, pp.bio
      FROM users u
+     JOIN user_roles ur ON ur.id = u.role_id
      LEFT JOIN producer_profiles pp ON pp.user_id = u.id
      WHERE u.id = ?`,
     [id]
@@ -52,10 +56,10 @@ export async function deleteResetCode(userId) {
   await pool.query('DELETE FROM password_reset_codes WHERE user_id = ?', [userId]);
 }
 
-export async function createUser(name, email, hashedPassword, role = 'owner') {
+export async function createUser(name, email, hashedPassword, roleId = ROLES.OWNER) {
   const [result] = await pool.query(
-    'INSERT INTO users (full_name, email, role) VALUES (?, ?, ?)',
-    [name, email, role]
+    'INSERT INTO users (full_name, email, role_id) VALUES (?, ?, ?)',
+    [name, email, roleId]
   );
   const userId = result.insertId;
   await pool.query(
@@ -79,8 +83,9 @@ export async function getAllProducers() {
      FROM users u
      JOIN producer_profiles pp ON pp.user_id = u.id
      LEFT JOIN event_producers ep ON ep.producer_id = u.id
-     WHERE u.role = 'producer'
+     WHERE u.role_id = ?
      GROUP BY u.id, u.full_name, u.email, pp.phone, pp.contact_email, pp.bio`,
+    [ROLES.PRODUCER]
   );
   return rows;
 }

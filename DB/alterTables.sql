@@ -1,9 +1,0 @@
-ALTER TABLE guests ADD COLUMN email VARCHAR(255) NULL;
-ALTER TABLE guests DROP COLUMN phone_number;
-ALTER TABLE user_passwords
-ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
-ALTER TABLE users ADD COLUMN role ENUM('owner', 'producer') NOT NULL DEFAULT 'owner';
-
-ALTER TABLE budget_items 
-  CHANGE estimated_cost cost DECIMAL(10,2) NOT NULL DEFAULT 0,
-  DROP COLUMN actual_cost;

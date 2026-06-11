@@ -13,7 +13,6 @@ const handle = async (res) => {
   return data;
 };
 
-const API = '/api/producers';
 const PRODUCER_API = '/api/producer';
 const EVENT_API = '/api/events';
 

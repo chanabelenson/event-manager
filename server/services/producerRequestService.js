@@ -2,6 +2,7 @@ import * as ProducerRequest from '../models/ProducerRequest.js';
 import * as EventProducer from '../models/EventProducer.js';
 import * as Event from '../models/Event.js';
 import { AppError } from '../utils/AppError.js';
+import { REQUEST_STATUS } from '../utils/constants.js';
 
 export async function sendRequest(eventId, ownerId, producerId) {
   const event = await Event.findEventById(eventId, ownerId);
@@ -38,9 +39,10 @@ export async function respondToRequest(requestId, producerId, action) {
   if (request.producer_id !== producerId) throw new AppError('אין הרשאה', 403);
   if (request.status !== 'pending') throw new AppError('הבקשה כבר טופלה', 400);
 
-  await ProducerRequest.updateStatus(requestId, action);
-
   if (action === 'approved') {
+    await ProducerRequest.updateStatus(requestId, REQUEST_STATUS.APPROVED);
     await EventProducer.assignProducer(request.event_id, producerId);
+  } else {
+    await ProducerRequest.deleteRequest(requestId);
   }
 }

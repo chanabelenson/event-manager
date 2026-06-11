@@ -1,6 +1,7 @@
 import * as ProducerUpdate from '../models/ProducerUpdate.js';
 import * as EventProducer from '../models/EventProducer.js';
 import * as Event from '../models/Event.js';
+import * as ProducerRequest from '../models/ProducerRequest.js';
 import { AppError } from '../utils/AppError.js';
 
 async function verifyAccess(eventId, userId, role) {
@@ -8,8 +9,11 @@ async function verifyAccess(eventId, userId, role) {
     const event = await Event.findEventById(eventId, userId);
     if (!event) throw new AppError('אין גישה', 403);
   } else {
+    // מפיק מורשה אם הוא מוקצה לאירוע או שיש לו בקשה פעילה
     const producer = await EventProducer.getEventProducer(eventId);
-    if (!producer || producer.id !== userId) throw new AppError('אין גישה', 403);
+    if (producer && producer.id === userId) return;
+    const pending = await ProducerRequest.getRequestByEventAndProducer(eventId, userId);
+    if (!pending) throw new AppError('אין גישה', 403);
   }
 }
 

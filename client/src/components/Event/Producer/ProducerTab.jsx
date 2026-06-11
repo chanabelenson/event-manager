@@ -4,9 +4,10 @@ import ProducerCatalog from './ProducerCatalog';
 import ProducerProfile from './ProducerProfile';
 import RequestConfirmModal from './RequestConfirmModal';
 import AssignedProducerView from './AssignedProducerView';
+import './Producer.css';
 
 export default function ProducerTab({ eventId }) {
-const [producers, setProducers] = useState([]);
+  const [producers, setProducers] = useState([]);
   const [assigned, setAssigned] = useState(null);
   const [viewProducer, setViewProducer] = useState(null);
   const [showManage, setShowManage] = useState(false);
@@ -66,17 +67,9 @@ const [producers, setProducers] = useState([]);
       <h3 className="section-title">מפיק האירוע</h3>
 
       {sentProducerId && sentProducerName && (
-        <div style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          background: 'var(--surface)', border: '1px solid var(--border)',
-          borderRadius: 'var(--radius-sm)', padding: '10px 14px', marginBottom: '16px',
-        }}>
-          <span style={{ fontSize: '14px' }}>
-            ⏳ ממתין לאישור מ-<strong>{sentProducerName}</strong>
-          </span>
-          <button className="btn-ghost" style={{ color: '#ef4444', fontSize: '13px' }} onClick={handleCancel}>
-            בטל בקשה
-          </button>
+        <div className="producer-pending-banner">
+          <span>⏳ ממתין לאישור מ-<strong>{sentProducerName}</strong></span>
+          <button className="btn-cancel-request" onClick={handleCancel}>בטל בקשה</button>
         </div>
       )}
 
@@ -107,8 +100,8 @@ const [producers, setProducers] = useState([]);
 
       {showManage && assigned && (
         <div className="modal-overlay" onClick={() => setShowManage(false)}>
-          <div className="modal-card" style={{ maxWidth: '560px', width: '100%' }} onClick={(e) => e.stopPropagation()}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+          <div className="modal-card scrollable" style={{ maxWidth: '560px', width: '100%' }} onClick={(e) => e.stopPropagation()}>
+            <div className="manage-modal-header">
               <h3>ניהול מפיק</h3>
               <button className="btn-ghost" onClick={() => setShowManage(false)}>✕</button>
             </div>

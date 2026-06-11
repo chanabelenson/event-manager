@@ -57,25 +57,20 @@ export default function ProducerDashboard() {
         <div className="dashboard-empty"><p>טוען...</p></div>
       ) : (
         <>
-          <div className="event-nav" style={{ marginBottom: '20px' }}>
+          <div className="event-nav">
             <button
-              className={activeTab === 'events' ? 'tab-btn active' : 'tab-btn'}
+              className={`event-nav-btn${activeTab === 'events' ? ' active' : ''}`}
               onClick={() => setActiveTab('events')}
             >
               האירועים שלי
             </button>
             <button
-              className={activeTab === 'requests' ? 'tab-btn active' : 'tab-btn'}
+              className={`event-nav-btn${activeTab === 'requests' ? ' active' : ''}`}
               onClick={() => setActiveTab('requests')}
             >
               בקשות ממתינות
               {requests.length > 0 && (
-                <span style={{
-                  marginRight: '6px', background: '#ef4444', color: 'white',
-                  borderRadius: '999px', padding: '1px 7px', fontSize: '12px',
-                }}>
-                  {requests.length}
-                </span>
+                <span className="tab-badge">{requests.length}</span>
               )}
             </button>
           </div>
@@ -89,12 +84,12 @@ export default function ProducerDashboard() {
             ) : (
               <div className="events-grid">
                 {events.map((event) => (
-                  <div key={event.id} className="event-card" onClick={() => setSelectedEvent(event)} style={{ cursor: 'pointer' }}>
+                  <div key={event.id} className="event-card" onClick={() => setSelectedEvent(event)}>
                     <span className="event-card-icon">🎬</span>
                     <h3>{event.event_name}</h3>
                     <p className="event-card-date">📅 {formatDate(event.event_date)}</p>
                     <p className="event-card-location">📍 {event.location_name}</p>
-                    <div style={{ marginTop: '8px', padding: '8px', background: 'var(--surface)', borderRadius: '8px' }}>
+                    <div className="producer-event-stats">
                       <p>✅ מגיעים: <strong>{event.confirmed_count}</strong></p>
                       <p>⏳ טרם ענו: <strong>{event.pending_count}</strong></p>
                     </div>

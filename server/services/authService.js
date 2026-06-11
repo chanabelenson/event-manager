@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import * as User from '../models/User.js';
 import { AppError } from '../utils/AppError.js';
 import { sendResetCodeEmail } from '../utils/email.js';
+import { ROLES } from '../utils/constants.js';
 
 export async function registerUser(name, email, password, role = 'owner', producerData = {}) {
   const exists = await User.emailExists(email);
@@ -9,8 +10,9 @@ export async function registerUser(name, email, password, role = 'owner', produc
   if (password.length < 6) throw new AppError('הסיסמה חייבת להכיל לפחות 6 תווים', 400);
   if (!['owner', 'producer'].includes(role)) throw new AppError('תפקיד לא תקין', 400);
 
+  const roleId = role === 'producer' ? ROLES.PRODUCER : ROLES.OWNER;
   const hashedPassword = await bcrypt.hash(password, 10);
-  const userId = await User.createUser(name, email, hashedPassword, role);
+  const userId = await User.createUser(name, email, hashedPassword, roleId);
 
   if (role === 'producer') {
     await User.createProducerProfile(userId, producerData);

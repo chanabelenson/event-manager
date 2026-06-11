@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { getProducerReviews } from '../../../services/producerService';
+import './Producer.css';
 
 const Stars = ({ value }) => (
-  <div style={{ display: 'flex', gap: '2px', fontSize: '16px' }}>
+  <div className="producer-stars">
     {[1, 2, 3, 4, 5].map((n) => (
-      <span key={n} style={{ color: n <= value ? '#f59e0b' : '#d1d5db' }}>★</span>
+      <span key={n} className={n <= value ? 'star-filled' : 'star-empty'}>★</span>
     ))}
   </div>
 );
@@ -19,28 +20,30 @@ export default function ProducerProfile({ producer, onRequest, onCancel, request
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-card" style={{ maxWidth: '480px', width: '100%' }} onClick={(e) => e.stopPropagation()}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+        <div className="producer-profile-header">
           <h3>🎬 {producer.full_name}</h3>
           <button className="btn-ghost" onClick={onClose}>✕</button>
         </div>
 
-        {producer.phone && <p>📞 {producer.phone}</p>}
-        {producer.contact_email && <p>✉️ {producer.contact_email}</p>}
-        {producer.bio && <p style={{ fontSize: '13px', color: 'var(--text-muted)', margin: '8px 0' }}>{producer.bio}</p>}
+        <div className="producer-profile-meta">
+          {producer.phone && <p>📞 {producer.phone}</p>}
+          {producer.contact_email && <p>✉️ {producer.contact_email}</p>}
+        </div>
+        {producer.bio && <p className="producer-profile-bio">{producer.bio}</p>}
 
-        <div style={{ margin: '16px 0', borderTop: '1px solid var(--border)', paddingTop: '12px' }}>
-          <h4 style={{ marginBottom: '10px' }}>ביקורות ודירוגים</h4>
+        <div className="producer-reviews-section">
+          <h4>ביקורות ודירוגים</h4>
           {reviews.length === 0 ? (
-            <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>אין ביקורות עדיין</p>
+            <p className="producer-reviews-empty">אין ביקורות עדיין</p>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div className="producer-reviews-list">
               {reviews.map((r, i) => (
-                <div key={i} style={{ padding: '10px', background: 'var(--surface)', borderRadius: 'var(--radius-sm)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                    <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>{r.event_name}</span>
+                <div key={i} className="producer-review-item">
+                  <div className="producer-review-item-header">
+                    <span className="producer-review-event">{r.event_name}</span>
                     <Stars value={r.rating} />
                   </div>
-                  {r.review && <p style={{ fontSize: '13px' }}>{r.review}</p>}
+                  {r.review && <p className="producer-review-text">{r.review}</p>}
                 </div>
               ))}
             </div>
@@ -48,13 +51,9 @@ export default function ProducerProfile({ producer, onRequest, onCancel, request
         </div>
 
         {requestSent ? (
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <span className="btn-secondary" style={{ flex: 1, textAlign: 'center', cursor: 'default' }}>
-              ✓ בקשה נשלחה
-            </span>
-            <button className="btn-ghost" style={{ color: '#ef4444' }} onClick={onCancel}>
-              בטל בקשה
-            </button>
+          <div className="producer-profile-actions">
+            <span className="btn-secondary producer-request-sent">✓ בקשה נשלחה</span>
+            <button className="btn-cancel-request" onClick={onCancel}>בטל בקשה</button>
           </div>
         ) : (
           <button

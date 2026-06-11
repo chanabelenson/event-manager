@@ -1,0 +1,378 @@
+/* ── Producer Catalog ── */
+.producer-catalog {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 24px;
+}
+
+/* ── Producer Card ── */
+.producer-card {
+  cursor: pointer;
+  position: relative;
+}
+
+.producer-card.assigned {
+  border: 2px solid var(--lavender);
+  box-shadow: 0 0 0 4px rgba(155, 114, 207, 0.18);
+}
+
+.producer-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: var(--lavender);
+  color: #fff;
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.producer-card-name {
+  margin-top: 4px;
+}
+
+.producer-card-name.has-badge {
+  margin-top: 24px;
+}
+
+.producer-card-bio {
+  font-size: 13px;
+  color: var(--text);
+  margin-top: 4px;
+}
+
+.producer-card-rating-text {
+  font-size: 12px;
+  color: var(--text);
+  margin-top: 4px;
+  opacity: 0.75;
+}
+
+.producer-stars {
+  display: flex;
+  gap: 2px;
+  font-size: 16px;
+}
+
+.producer-stars.lg {
+  gap: 4px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.star-filled { color: #f59e0b; }
+.star-empty  { color: #d1d5db; }
+
+/* ── Pending Request Banner ── */
+.producer-pending-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--gold-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  gap: 12px;
+}
+
+.producer-pending-banner span {
+  font-size: 14px;
+  color: var(--text-h);
+}
+
+.btn-cancel-request {
+  background: none;
+  border: none;
+  font-size: 13px;
+  font-family: var(--font-body);
+  font-weight: 500;
+  color: var(--rose);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.btn-cancel-request:hover {
+  background: var(--rose-light);
+}
+
+/* ── Producer Profile Modal ── */
+.producer-profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.producer-profile-meta p {
+  font-size: 14px;
+  color: var(--text);
+  margin: 4px 0;
+}
+
+.producer-profile-bio {
+  font-size: 13px;
+  color: var(--text);
+  margin: 8px 0;
+}
+
+.producer-reviews-section {
+  margin: 16px 0;
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+}
+
+.producer-reviews-section h4 {
+  font-family: var(--font-heading);
+  font-size: 16px;
+  color: var(--text-h);
+  margin-bottom: 10px;
+}
+
+.producer-reviews-empty {
+  color: var(--text);
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+.producer-reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.producer-review-item {
+  padding: 10px 14px;
+  background: var(--gold-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.producer-review-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.producer-review-event {
+  font-size: 13px;
+  color: var(--text);
+}
+
+.producer-review-text {
+  font-size: 13px;
+  color: var(--text-h);
+  margin-top: 4px;
+}
+
+.producer-profile-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.producer-request-sent {
+  flex: 1;
+  text-align: center;
+  cursor: default;
+}
+
+/* ── Assigned Producer View ── */
+.assigned-producer-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.assigned-producer-card p {
+  font-size: 14px;
+  color: var(--text);
+  margin: 2px 0;
+}
+
+.assigned-producer-rating {
+  margin-top: 16px;
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.assigned-producer-rating > p {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-h);
+  margin: 0;
+}
+
+.assigned-producer-rating textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text-h);
+  outline: none;
+  resize: vertical;
+  direction: rtl;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.assigned-producer-rating textarea:focus {
+  border-color: var(--lavender);
+  box-shadow: 0 0 0 3px rgba(155, 114, 207, 0.12);
+}
+
+.assigned-rating-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.rating-saved {
+  font-size: 13px;
+  color: #2e7d32;
+  font-weight: 500;
+}
+
+/* ── Producer Updates ── */
+.producer-updates {
+  margin-top: 20px;
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.producer-updates h4 {
+  font-family: var(--font-heading);
+  font-size: 16px;
+  color: var(--text-h);
+  margin: 0;
+}
+
+.producer-updates-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.producer-updates-empty {
+  font-size: 14px;
+  color: var(--text);
+  opacity: 0.65;
+}
+
+.producer-update-input-row {
+  display: flex;
+  gap: 8px;
+}
+
+.producer-update-input-row input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text-h);
+  outline: none;
+  direction: rtl;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.producer-update-input-row input:focus {
+  border-color: var(--lavender);
+  box-shadow: 0 0 0 3px rgba(155, 114, 207, 0.12);
+}
+
+/* ── Update Item ── */
+.update-item {
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  transition: background 0.2s;
+}
+
+.update-item.owner-update  { background: var(--bg-card); }
+.update-item.producer-update { background: var(--gold-bg); }
+.update-item.done { opacity: 0.55; }
+
+.update-item-author {
+  font-size: 12px;
+  color: var(--text);
+  margin-bottom: 4px;
+  display: block;
+}
+
+.update-item-content {
+  font-size: 14px;
+  color: var(--text-h);
+}
+
+.update-item-content.done {
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+
+.update-done-icon {
+  font-size: 18px;
+  color: #2e7d32;
+  flex-shrink: 0;
+}
+
+.btn-mark-done {
+  font-size: 12px;
+  padding: 4px 10px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── Request Confirm Modal ── */
+.request-confirm-message {
+  margin: 12px 0 20px;
+  font-size: 15px;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.request-confirm-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+/* ── Scrollable modal ── */
+.modal-card.scrollable {
+  max-height: 90svh;
+  overflow-y: auto;
+}
+
+/* ── Manage Modal Header ── */
+.manage-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.manage-modal-header h3 {
+  font-family: var(--font-heading);
+  font-size: 20px;
+  color: var(--text-h);
+  margin: 0;
+}
