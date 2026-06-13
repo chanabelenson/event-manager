@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { createEvent } from '../../services/eventService';
+import drumroll from '../../audio/DRUMROL4.WAV';
 
 export default function NewEventModal({ onClose, onCreated }) {
   const [form, setForm] = useState({
@@ -16,6 +17,7 @@ export default function NewEventModal({ onClose, onCreated }) {
     setLoading(true);
     try {
       const newEvent = await createEvent(form);
+      new Audio(drumroll).play();
       onCreated(newEvent);
       onClose();
     } catch (err) {
