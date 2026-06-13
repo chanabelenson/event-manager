@@ -20,8 +20,8 @@ export const login = (email, password) => fetch(`${API}/login`, opts('POST', { e
 export const logout = () => fetch(`${API}/logout`, opts('POST')).then(handle);
 export const getMe = () => fetch(`${API}/me`, opts()).then(handle);
 export const sendResetCode = () =>
-  fetch(`${API}/send-reset-code`, opts('POST')).then(handle);
+  fetch(`${API}/password/reset-request`, opts('POST')).then(handle);
 export const verifyResetCode = (code) =>
-  fetch(`${API}/verify-reset-code`, opts('POST', { code })).then(handle);
+  fetch(`${API}/password/verify`, opts('POST', { code })).then(handle);
 export const changePassword = (code, currentPassword, newPassword) =>
-  fetch(`${API}/change-password`, opts('PUT', { code, currentPassword, newPassword })).then(handle);
+  fetch(`${API}/password/change`, opts('PUT', { code, currentPassword, newPassword })).then(handle);
