@@ -210,6 +210,18 @@ CREATE TABLE gifts (
     FOREIGN KEY (claimed_by) REFERENCES guests(id) ON DELETE SET NULL
 );
 
+-- הוספת טבלת שיבוץ אורחים לשולחנות (many-to-many)
+CREATE TABLE IF NOT EXISTS guest_table_assignments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    guest_id INT NOT NULL,
+    table_id INT NOT NULL,
+    count INT NOT NULL DEFAULT 1,
+    UNIQUE KEY unique_guest_table (guest_id, table_id),
+    FOREIGN KEY (guest_id) REFERENCES guests(id) ON DELETE CASCADE,
+    FOREIGN KEY (table_id) REFERENCES tables(id) ON DELETE CASCADE
+);
+
+
 
 -- ==========================================
 -- 5. הזנת נתונים ראשוניים (Seed Data)
