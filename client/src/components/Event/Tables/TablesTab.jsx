@@ -5,14 +5,6 @@ import { autoArrangeSeating } from '../../../utils/seatingArrangement';
 import ConfirmModal from '../../Common/ConfirmModal';
 import SeatingChart from './SeatingChart';
 
-function effectiveCount(guest) {
-  return Number(
-    guest.status === 'confirmed' && guest.confirmed_count != null
-      ? guest.confirmed_count
-      : guest.guests_count || 1
-  );
-}
-
 export default function TablesTab({ eventId }) {
   const [tables, setTables] = useState([]);
   const [guests, setGuests] = useState([]);
