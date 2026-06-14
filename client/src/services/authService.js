@@ -1,10 +1,9 @@
 const API = '/api/auth';
 
-// פונקציית העזר שמייצרת את האפשרויות ומכניסה אוטומטית אבטחה (credentials)
 const opts = (method, body) => ({
   method: method || 'GET',
   headers: { 'Content-Type': 'application/json' },
-  credentials: 'include', // קריטי לניהול ה-Session של המשתמש המחובר
+  credentials: 'include',
   ...(body ? { body: JSON.stringify(body) } : {}),
 });
 

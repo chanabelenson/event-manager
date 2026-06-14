@@ -88,18 +88,15 @@ function SeatingChartEditor({ tables, guests, initialSeatMap, onSave }) {
   const confirmed = guests.filter((guest) => guest.status === 'confirmed');
 
  function placedCount(guestId) {
-  // שונה מ-activeSeatMap ל-seatMap
   return Object.values(seatMap[guestId] || {}).reduce((sum, count) => sum + count, 0);
 }
 
 function countAtTable(tableId) {
-  // שונה מ-activeSeatMap ל-seatMap
   return confirmed.reduce((sum, guest) => sum + ((seatMap[guest.id] || {})[tableId] || 0), 0);
 }
 function getOccupied(tableId) {
   const result = [];
   for (const guest of confirmed) {
-    // שונה מ-activeSeatMap ל-seatMap בשורה הבאה
     const count = (seatMap[guest.id] || {})[tableId] || 0;
     for (let i = 0; i < count; i++) {
       result.push({ guestId: guest.id, name: guest.guest_name, category: guest.category });

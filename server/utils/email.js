@@ -1,15 +1,13 @@
 import nodemailer from 'nodemailer';
 
-// הגדרת החיבור לגוגל באמצעות המשתנים מקובץ ה-.env
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: process.env.EMAIL_USER, // מושך את המייל מה-.env שלך
-    pass: process.env.EMAIL_PASS  // מושך את סיסמת 16 האותיות מה-.env שלך
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
   }
 });
 
-// פונקציה לשליחת מייל הזמנה
 export async function sendInvitationEmail({ guestEmail, guestName, eventName, invitationLink }) {
   try {
     const mailOptions = {

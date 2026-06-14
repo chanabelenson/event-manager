@@ -58,7 +58,6 @@ export const bulkUpdateGuestTables = async (eventId, assignments) => {
   try {
     await conn.beginTransaction();
 
-    // מחיקת כל השיבוצים הקיימים לאירוע זה
     await conn.query(
       `DELETE gta FROM guest_table_assignments gta
        JOIN guests g ON g.id = gta.guest_id
@@ -66,7 +65,6 @@ export const bulkUpdateGuestTables = async (eventId, assignments) => {
       [eventId]
     );
 
-    // הכנסת השיבוצים החדשים
     if (assignments.length > 0) {
       const values = assignments.map(({ guestId, tableId, count }) => [guestId, tableId, count]);
       await conn.query(
@@ -75,7 +73,6 @@ export const bulkUpdateGuestTables = async (eventId, assignments) => {
       );
     }
 
-    // עדכון table_id על האורח לשולחן הראשי (הגדול ביותר)
     const primaryByGuest = {};
     for (const { guestId, tableId, count } of assignments) {
       if (!primaryByGuest[guestId] || count > primaryByGuest[guestId].count) {

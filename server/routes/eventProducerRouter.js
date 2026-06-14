@@ -4,13 +4,10 @@ import { getEventProducer, removeProducer, updateEventProducer } from '../contro
 import { getEventRequest, sendRequest, cancelRequest } from '../controllers/producerRequestController.js';
 import updatesRouter from './updatesRouter.js';
 
-// ── event producer router ────────────────────────
 const router = Router({ mergeParams: true });
 
-// נתיבים פתוחים לשני הצדדים (owner + producer)
 router.use('/updates', updatesRouter);
 
-// נתיבים בלעדיים לבעל האירוע
 router.get('/', requireRole('owner'), getEventProducer);
 router.post('/', requireRole('owner'), sendRequest);
 router.put('/', requireRole('owner'), updateEventProducer);

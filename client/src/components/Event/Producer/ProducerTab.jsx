@@ -34,7 +34,6 @@ export default function ProducerTab({ eventId }) {
     try {
       await sendRequest(eventId, pendingProducer.id);
     } catch {
-      // בקשה כבר קיימת — treat as sent
     }
     setSentProducerId(pendingProducer.id);
     setPendingProducer(null);

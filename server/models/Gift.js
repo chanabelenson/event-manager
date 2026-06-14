@@ -29,7 +29,6 @@ export const isClaimed = async (id) => {
   return rows[0]?.claimed_by !== null;
 };
 
-// לאורח - לא מחזיר מי תבע, רק אם תבוע
 export const getGiftsForGuest = async (eventId, guestId) => {
   const [rows] = await pool.query(
     `SELECT id, name, description, link,

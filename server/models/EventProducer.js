@@ -26,7 +26,6 @@ export async function removeProducer(eventId) {
 }
 
 export async function rateProducer(eventId, ownerId, rating, review) {
-  // verify ownership
   const [rows] = await pool.query(
     'SELECT id FROM events WHERE id = ? AND user_id = ?',
     [eventId, ownerId]

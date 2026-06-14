@@ -23,7 +23,6 @@ export function useBudget(eventId) {
 
   useEffect(() => { load().catch(console.error); }, [load]);
 
-  // ── Derived totals ──
   const totalCost  = items.reduce((s, i) => s + Number(i.cost), 0);
   const totalPaid  = items.reduce(
     (s, i) => s + (i.payments || []).reduce((ps, p) => ps + Number(p.amount), 0),
@@ -31,7 +30,6 @@ export function useBudget(eventId) {
   );
   const remaining = totalBudget - totalCost;
 
-  // ── Item CRUD ──
   const createItem = async (form) => {
     const { id } = await addBudgetItem(eventId, form);
     setItems(prev => [...prev, { id, ...form, cost: Number(form.cost) || 0, payments: [] }]);
@@ -47,13 +45,11 @@ export function useBudget(eventId) {
     setItems(prev => prev.filter(i => i.id !== itemId));
   };
 
-  // ── Ceiling ──
   const updateCeiling = async (amount) => {
     await updateEvent(eventId, { total_budget: amount });
     setTotalBudget(Number(amount));
   };
 
-  // ── Payments ──
   const createPayment = async (itemId, paymentData) => {
     const { id } = await addPayment(eventId, itemId, paymentData);
     setItems(prev => prev.map(i =>

@@ -1,6 +1,5 @@
 const API = '/api/invitation';
 
-// פונקציית עזר מקומית מותאמת לאורחים אנונימיים (ללא credentials)
 const opts = (method, body) => ({
   method: method || 'GET',
   headers: { 'Content-Type': 'application/json' },
